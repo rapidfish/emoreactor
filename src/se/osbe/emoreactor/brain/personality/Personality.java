@@ -6,13 +6,19 @@ import java.util.Map;
 import se.osbe.emoreactor.brain.reactor.ReactorException;
 import se.osbe.emoreactor.helper.DiceHelper;
 
+/**
+ * Configuration class to configure Brain objects
+ * 
+ * @author Oskar Bergström
+ *
+ */
 public class Personality {
 
 	private final Map<PersonalityType, Integer> _properties;
 
-	private final Integer emoSpanSizeMax = 20;
-	private final Integer emoSpanSizeDefault = 3;
-	private final Integer awarenessPercentageDefault = 100; // 70%
+	private final Integer EMO_SPAN_SIZE_MAX_DEFAULT = 20;
+	private final Integer EMO_SPAN_SIZE_DEFAULT = 3;
+	private final Integer AWARENESS_PERCENTAGE_DEFAULT = 100;
 
 	private Integer _emoSpanSizeMax;
 	private Integer _emoSpanSize;
@@ -43,7 +49,7 @@ public class Personality {
 	}
 	
 	public Integer getEmoSpanSizeMax() {
-		return _emoSpanSizeMax != null ? _emoSpanSizeMax : emoSpanSizeMax;
+		return _emoSpanSizeMax != null ? _emoSpanSizeMax : EMO_SPAN_SIZE_MAX_DEFAULT;
 	}
 
 	public void setEmoSpanSizeMax(Integer emoSpanSizeMax) {
@@ -51,7 +57,7 @@ public class Personality {
 	}
 
 	public Integer getEmoSpanSize() {
-		return _emoSpanSize != null ? _emoSpanSize : emoSpanSizeDefault;
+		return _emoSpanSize != null ? _emoSpanSize : EMO_SPAN_SIZE_DEFAULT;
 	}
 
 	public void setEmoSpanSize(Integer emoSpanSize) {
@@ -59,7 +65,7 @@ public class Personality {
 	}
 
 	public Integer getAwarenessPercentage() {
-		return _awarenessPercentage != null ? _awarenessPercentage : awarenessPercentageDefault;
+		return _awarenessPercentage != null ? _awarenessPercentage : AWARENESS_PERCENTAGE_DEFAULT;
 	}
 
 	public void setAwarenessPercentage(Integer awarenessPercentage) {
