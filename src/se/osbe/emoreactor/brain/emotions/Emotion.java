@@ -9,7 +9,7 @@ import se.osbe.emoreactor.brain.emotions.feelings.Feeling;
 import se.osbe.emoreactor.brain.emotions.feelings.FeelingType;
 
 /*
-	At runtime every brain is having an composite emotion, a sum of all added emotion at one point range in time.
+	At runtime every brain is having a composite emotion, a sum of all added emotion at one point range in time.
 	Emotions tends to fade towards their brains preset personalities over time. Like equalizing towards that as a stable fix point of balance for the individual personalities.
 	The only thing that can change what that point of balance is, is if the brain experince anything that disturbs it teporary, when new emotions arrive from perceptions, or if an disorder related event occurs (personality changing moment in runtime).
 */
