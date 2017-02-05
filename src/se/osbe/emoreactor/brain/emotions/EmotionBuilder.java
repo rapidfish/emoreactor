@@ -193,7 +193,7 @@ public class EmotionBuilder {
 			throw new ReactorException("EmotiongBuilder has no feelings to build up on!");
 		}
 		Emotion emotion = new Emotion(StringUtils.isNotEmpty(description) ? description : "anonomus");
-		emotion.addListOfFeelings(_feelings);
+		emotion.addFeelings(_feelings);
 		reset();
 		return emotion;
 	}

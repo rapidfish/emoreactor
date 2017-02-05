@@ -198,6 +198,7 @@ public class Personality {
 			}
 			even = !even;
 		}
+		sb.append("\n").append("Awareness:").append("\t").append(getAwarenessPercentage()).append("%");
 		return sb.toString();
 	}
 
@@ -246,6 +247,7 @@ public class Personality {
 		System.out.print(p.getIntuitionVsSensing() + "(" + p.getIntencityForType(p.getIntuitionVsSensing()) +"%) <--> ");
 		System.out.print(p.getFeelingVsThinking() + "(" + p.getIntencityForType(p.getFeelingVsThinking()) +"%) <--> ");
 		System.out.println(p.getPercievingVsJudging() + "(" + p.getIntencityForType(p.getPercievingVsJudging()) +"%)");
+		System.out.println();
 		System.out.println(p);
 	}
 }

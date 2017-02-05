@@ -60,7 +60,7 @@ public class Brain {
 
 			// process emo according to personality here!
 			boolean isAccepted = false;
-			if (_emoSpanSize < _emoSpanSize) {
+			if (_emoSpanSize < _emoSpanSizeMax) {
 				isAccepted = _emoQueue.offer(emoCandidate);
 				if (!isAccepted) {
 					System.err.println("WARNING! EMOTION QUEUE IS TOO BIG - OVERLOADING!!!");
@@ -101,12 +101,24 @@ public class Brain {
 		return _id;
 	}
 
+	public Integer getEmoSpanSize() {
+		return _emoSpanSize;
+	}
+
+	public Integer getEmoSpanSizeMax() {
+		return _emoSpanSizeMax;
+	}
+
+	public Integer getAwarenessPercentage() {
+		return _awarenessPercentage;
+	}
+
 	public static void main(String[] args) throws ReactorException {
 		Personality personality = new Personality();
 		Brain brain = new Brain(personality);
 		System.out.println("Personality:\n" + brain.getPersonality());
 		System.out.println("---------------------------------------------------");
-		System.out.println("Awareness: " + brain._awarenessPercentage + "%");
+		System.out.println("Awareness: " + brain.getAwarenessPercentage() + "%");
 		System.out.println("---------------------------------------------------");
 		EmotionBuilder eb = new EmotionBuilder();
 		for (int i = 0; i < 10; i++) {
@@ -115,7 +127,7 @@ public class Brain {
 							"Agony=?;Anger=?;Depressed=?;Confused=?;Helpless=?;Indifferent=?;Afraid=?;Hurt=?;Sad=?;Judgemental=?;Open=?;Loving=?;Happy=?;Interested=?;Alive=?;Positive=?;Peaceful=?;Strong=?;Relaxed=?")
 					.build("Emo" + i);
 			Perception perception = new SightPerception(emo);
-			boolean isAdded = brain.feedPerceptionToBrain(perception);
+			brain.feedPerceptionToBrain(perception);
 		}
 
 		for (int i = 0; i < 10; i++) {

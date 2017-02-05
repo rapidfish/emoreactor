@@ -31,7 +31,7 @@ public class Emotion implements Cloneable {
 		return _feelingMap;
 	}
 
-	public void addOneFeeling(Feeling feeling) {
+	public void addFeeling(Feeling feeling) {
 		if (_feelingMap.containsKey(feeling.getFeelingType())) {
 			Feeling tmp = _feelingMap.get(feeling.getFeelingType());
 			int intencity = tmp.getIntencity() + feeling.getIntencity();
@@ -42,9 +42,9 @@ public class Emotion implements Cloneable {
 		}
 	}
 
-	public void addListOfFeelings(List<Feeling> emotions) {
-		for (Feeling feeling : emotions) {
-			addOneFeeling(feeling);
+	public void addFeelings(List<Feeling> feelings) {
+		for (Feeling feeling : feelings) {
+			addFeeling(feeling);
 		}
 	}
 
