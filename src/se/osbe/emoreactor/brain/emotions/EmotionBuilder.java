@@ -119,6 +119,11 @@ public class EmotionBuilder {
 		}
 		return this;
 	}
+	
+	public EmotionBuilder addFeelings(List<Feeling> feelings) {
+		_feelings.addAll(feelings);
+		return this;
+	}
 
 	/**
 	 * Add scripted feelings in plain text format.<br>

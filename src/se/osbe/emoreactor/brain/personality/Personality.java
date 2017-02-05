@@ -10,6 +10,14 @@ public class Personality {
 
 	private final Map<PersonalityType, Integer> _properties;
 
+	private final Integer emoSpanSizeMax = 20;
+	private final Integer emoSpanSizeDefault = 3;
+	private final Integer awarenessPercentageDefault = 100; // 70%
+
+	private Integer _emoSpanSizeMax;
+	private Integer _emoSpanSize;
+	private Integer _awarenessPercentage;
+	
 	public Personality() throws ReactorException {
 		this(50, 50, 50, 50); // Percentage in pair
 	}
@@ -32,6 +40,30 @@ public class Personality {
 		if(!validateRange(percievingVsJudging)) {
 			throw new ReactorException("PercievingVsJudging illegal value, out of range!");
 		}
+	}
+	
+	public Integer getEmoSpanSizeMax() {
+		return _emoSpanSizeMax != null ? _emoSpanSizeMax : emoSpanSizeMax;
+	}
+
+	public void setEmoSpanSizeMax(Integer emoSpanSizeMax) {
+		_emoSpanSizeMax = emoSpanSizeMax;
+	}
+
+	public Integer getEmoSpanSize() {
+		return _emoSpanSize != null ? _emoSpanSize : emoSpanSizeDefault;
+	}
+
+	public void setEmoSpanSize(Integer emoSpanSize) {
+		_emoSpanSize = emoSpanSize;
+	}
+
+	public Integer getAwarenessPercentage() {
+		return _awarenessPercentage != null ? _awarenessPercentage : awarenessPercentageDefault;
+	}
+
+	public void setAwarenessPercentage(Integer awarenessPercentage) {
+		_awarenessPercentage = awarenessPercentage;
 	}
 
 	public Integer getIntencityForType(PersonalityType type){

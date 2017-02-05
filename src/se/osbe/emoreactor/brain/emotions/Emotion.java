@@ -82,7 +82,8 @@ public class Emotion implements Cloneable {
 
 	@Override
 	public String toString() {
-		String result = "Emotion: " + _description + " " + _feelingMap.values();
-		return result;
+		StringBuilder sb = new StringBuilder("Emotion: ");
+		sb.append(_description).append(" ").append(_feelingMap.values());
+		return sb.toString();
 	}
 }
