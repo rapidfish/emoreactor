@@ -17,15 +17,14 @@ import se.osbe.emoreactor.helper.DiceHelper;
 
 public class Brain {
 
-	private final String 			_id;
-	private final Personality 		_personality;
-	private Emotion 				_emotionRegister;
-	private final Queue<Emotion> 	_emoQueue;
-
-	private DiceHelper 				_dice;
-	private Integer 				_emoSpanSize;
-	private Integer 				_emoSpanSizeMax;
-	private Integer 				_awarenessPercentage;
+	private final String _id;
+	private final Personality _personality;
+	private final Queue<Emotion> _emoQueue;
+	private Emotion _emotionRegister;
+	private DiceHelper _dice;
+	private Integer _emoSpanSize;
+	private Integer _emoSpanSizeMax;
+	private Integer _awarenessPercentage;
 	private EmotionBuilder _eb;
 
 	@SuppressWarnings("unused")
@@ -34,40 +33,27 @@ public class Brain {
 	}
 
 	public Brain(Personality personality) {
-		
-		// Meta
 		_id = BrainHelper.createUUID();
-
-		// Brain configuration - start values
 		_personality = personality;
-		_emoSpanSize = personality.getEmoSpanSize(); // EMO_SPAN_SIZE_DEFAULT;
-		_emoSpanSizeMax = personality.getEmoSpanSizeMax(); // EMO_SPAN_SIZE_DEFAULT;
-		_awarenessPercentage = personality.getAwarenessPercentage(); //AWARENESS_PERCENTAGE_DEFAULT;
-
-		// Setup central part for processing emotions
-		_emoQueue = new LinkedList<Emotion>();
-		
-		// Setup Helpers
+		_awarenessPercentage = 100; // 100%
+		_emoQueue = new LinkedList<Emotion>(); // slamma upp emotions
 		_dice = new DiceHelper();
 		_eb = new EmotionBuilder();
 		_emotionRegister = null;
 	}
 
 	public boolean feedPerceptionToBrain(Perception perception) {
-
 		PerceptionType perceptionType = perception.getPerceptionType();
 		Emotion emoCandidate = perception.getEmotionCandidate();
-
-			// process emo according to personality here!
-			boolean isAccepted = false;
-			if (_emoSpanSize < _emoSpanSizeMax) {
-				isAccepted = _emoQueue.offer(emoCandidate);
-				if (!isAccepted) {
-					System.err.println("WARNING! EMOTION QUEUE IS TOO BIG - OVERLOADING!!!");
-				}
-			} else if(_emoSpanSize >= _emoSpanSizeMax) {
-				// Trauma level
+		boolean isAccepted = false;
+		if (_emoSpanSize < _emoSpanSizeMax) {
+			isAccepted = _emoQueue.offer(emoCandidate);
+			if (!isAccepted) {
+				System.err.println("WARNING! EMOTION QUEUE IS TOO BIG - OVERLOADING!!!");
 			}
+		} else if (_emoSpanSize >= _emoSpanSizeMax) {
+			// Trauma level
+		}
 		return isAccepted;
 	}
 
@@ -76,20 +62,25 @@ public class Brain {
 	}
 
 	public void tic() {
+		
 		Emotion inboundEmotion = _emoQueue.poll();
 		if (inboundEmotion == null) {
 			return;
 		}
-
 		// Does the perception get through the attention barrier and create an
 		// emotion reaction?
 		// If a perception is detected, a reaction can not be avoided!
 		boolean perceptionDetected = false;
 		perceptionDetected = _dice.percentageChance(_awarenessPercentage);
 		if (perceptionDetected) {
-			List<Feeling> inboundFeelings = inboundEmotion.getEmotionsAsList();
+			List<Feeling> inboundFeelings = inboundEmotion.getEmotionList();
 			_eb.reset();
-			_eb.addFeelings();
+			_eb.addFeelings(inboundFeelings);
+			try {
+				_emotionRegister = _eb.build("" + System.currentTimeMillis());
+			} catch (ReactorException e) {
+				e.printStackTrace();
+			}
 		} else {
 			// The polled emotion never got attention from the brain, but gets
 			// consumed and brain cannot react
@@ -113,6 +104,10 @@ public class Brain {
 		return _awarenessPercentage;
 	}
 
+	public Emotion getEmotionNow() {
+		return _emotionRegister;
+	}
+
 	public static void main(String[] args) throws ReactorException {
 		Personality personality = new Personality();
 		Brain brain = new Brain(personality);
@@ -131,7 +126,8 @@ public class Brain {
 		}
 
 		for (int i = 0; i < 10; i++) {
-			System.out.println(brain._emoQueue.poll());
+			brain.tic();
+			System.out.println(brain.getEmotionNow());
 		}
 	}
 }

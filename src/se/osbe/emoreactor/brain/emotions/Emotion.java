@@ -1,6 +1,7 @@
 package se.osbe.emoreactor.brain.emotions;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -67,8 +68,8 @@ public class Emotion implements Cloneable {
 		return _feelingMap.get(type);
 	}
 
-	public List<Feeling> getEmotionsAsList() {
-		return (List<Feeling>) _feelingMap.values();
+	public List<Feeling> getEmotionList() {
+		return new LinkedList<Feeling>(_feelingMap.values());
 	}
 
 	public String getDescription() {
@@ -78,6 +79,31 @@ public class Emotion implements Cloneable {
 	@Override
 	protected Object clone() throws CloneNotSupportedException {
 		return super.clone();
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((_feelingMap == null) ? 0 : _feelingMap.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Emotion other = (Emotion) obj;
+		if (_feelingMap == null) {
+			if (other._feelingMap != null)
+				return false;
+		} else if (!_feelingMap.equals(other._feelingMap))
+			return false;
+		return true;
 	}
 
 	@Override

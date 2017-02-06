@@ -16,14 +16,6 @@ public class Personality {
 
 	private final Map<PersonalityType, Integer> _properties;
 
-	private final Integer EMO_SPAN_SIZE_MAX_DEFAULT = 20;
-	private final Integer EMO_SPAN_SIZE_DEFAULT = 3;
-	private final Integer AWARENESS_PERCENTAGE_DEFAULT = 100;
-
-	private Integer _emoSpanSizeMax;
-	private Integer _emoSpanSize;
-	private Integer _awarenessPercentage;
-	
 	public Personality() throws ReactorException {
 		this(50, 50, 50, 50); // Percentage in pair
 	}
@@ -48,30 +40,6 @@ public class Personality {
 		}
 	}
 	
-	public Integer getEmoSpanSizeMax() {
-		return _emoSpanSizeMax != null ? _emoSpanSizeMax : EMO_SPAN_SIZE_MAX_DEFAULT;
-	}
-
-	public void setEmoSpanSizeMax(Integer emoSpanSizeMax) {
-		_emoSpanSizeMax = emoSpanSizeMax;
-	}
-
-	public Integer getEmoSpanSize() {
-		return _emoSpanSize != null ? _emoSpanSize : EMO_SPAN_SIZE_DEFAULT;
-	}
-
-	public void setEmoSpanSize(Integer emoSpanSize) {
-		_emoSpanSize = emoSpanSize;
-	}
-
-	public Integer getAwarenessPercentage() {
-		return _awarenessPercentage != null ? _awarenessPercentage : AWARENESS_PERCENTAGE_DEFAULT;
-	}
-
-	public void setAwarenessPercentage(Integer awarenessPercentage) {
-		_awarenessPercentage = awarenessPercentage;
-	}
-
 	public Integer getIntencityForType(PersonalityType type){
 		return _properties.get(type);
 	}
@@ -198,7 +166,6 @@ public class Personality {
 			}
 			even = !even;
 		}
-		sb.append("\n").append("Awareness:").append("\t").append(getAwarenessPercentage()).append("%");
 		return sb.toString();
 	}
 
