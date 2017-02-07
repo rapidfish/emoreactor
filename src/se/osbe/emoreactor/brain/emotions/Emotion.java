@@ -5,15 +5,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import se.osbe.emoreactor.brain.emotions.feelings.AbstractFeeling;
 import se.osbe.emoreactor.brain.emotions.feelings.Feeling;
 import se.osbe.emoreactor.brain.emotions.feelings.FeelingType;
 
-/*
-	At runtime every brain is having a composite emotion, a sum of all added emotion at one point range in time.
-	Emotions tends to fade towards their brains preset personalities over time. Like equalizing towards that as a stable fix point of balance for the individual personalities.
-	The only thing that can change what that point of balance is, is if the brain experince anything that disturbs it teporary, when new emotions arrive from perceptions, or if an disorder related event occurs (personality changing moment in runtime).
-*/
 public class Emotion implements Cloneable {
 
 	private final Map<FeelingType, Feeling> _feelingMap;
@@ -28,19 +22,12 @@ public class Emotion implements Cloneable {
 		_feelingMap = new HashMap<FeelingType, Feeling>();
 	}
 
-	public Map<FeelingType, Feeling> getUnderlayingFeelings() {
+	public Map<FeelingType, Feeling> getFeelingMap() {
 		return _feelingMap;
 	}
 
 	public void addFeeling(Feeling feeling) {
-		if (_feelingMap.containsKey(feeling.getFeelingType())) {
-			Feeling tmp = _feelingMap.get(feeling.getFeelingType());
-			int intencity = tmp.getIntencity() + feeling.getIntencity();
-			((AbstractFeeling) tmp).setIntencity(intencity);
-			_feelingMap.put(tmp.getFeelingType(), tmp);
-		} else {
-			_feelingMap.put(feeling.getFeelingType(), feeling);
-		}
+		_feelingMap.put(feeling.getFeelingType(), feeling);
 	}
 
 	public void addFeelings(List<Feeling> feelings) {
@@ -56,19 +43,15 @@ public class Emotion implements Cloneable {
 		return false;
 	}
 
-	public boolean isFeelingWithinEmotion(FeelingType emo) {
+	public boolean hasFeeling(FeelingType emo) {
 		return _feelingMap.containsKey(emo);
 	}
 
-	public boolean isFeelingEmpty() {
-		return _feelingMap.isEmpty();
-	}
-
-	public Feeling getEmotionFromFeelingOrNull(FeelingType type) {
+	public Feeling getFeeling(FeelingType type) {
 		return _feelingMap.get(type);
 	}
 
-	public List<Feeling> getEmotionList() {
+	public List<Feeling> getFeelings() {
 		return new LinkedList<Feeling>(_feelingMap.values());
 	}
 

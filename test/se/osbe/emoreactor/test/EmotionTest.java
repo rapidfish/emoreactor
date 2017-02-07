@@ -42,7 +42,7 @@ public class EmotionTest {
 	@Test
 	public void constructorTest() throws ReactorException {
 
-		int value = 100;
+		Integer value = 100;
 
 		AbstractFeeling emo0 = new AfraidFeeling(value);
 		AbstractFeeling emo1 = new AgonyFeeling(value);
@@ -84,25 +84,25 @@ public class EmotionTest {
 		_emotionList.add(emo17);
 		_emotionList.add(emo18);
 
-		Assert.assertEquals(value, emo0.getIntencity());
-		Assert.assertEquals(value, emo1.getIntencity());
-		Assert.assertEquals(value, emo2.getIntencity());
-		Assert.assertEquals(value, emo3.getIntencity());
-		Assert.assertEquals(value, emo4.getIntencity());
-		Assert.assertEquals(value, emo5.getIntencity());
-		Assert.assertEquals(value, emo6.getIntencity());
-		Assert.assertEquals(value, emo7.getIntencity());
-		Assert.assertEquals(value, emo8.getIntencity());
-		Assert.assertEquals(value, emo9.getIntencity());
-		Assert.assertEquals(value, emo10.getIntencity());
-		Assert.assertEquals(value, emo11.getIntencity());
-		Assert.assertEquals(value, emo12.getIntencity());
-		Assert.assertEquals(value, emo13.getIntencity());
-		Assert.assertEquals(value, emo14.getIntencity());
-		Assert.assertEquals(value, emo15.getIntencity());
-		Assert.assertEquals(value, emo16.getIntencity());
-		Assert.assertEquals(value, emo17.getIntencity());
-		Assert.assertEquals(value, emo18.getIntencity());
+		Assert.assertEquals(value, emo0.getLevel());
+		Assert.assertEquals(value, emo1.getLevel());
+		Assert.assertEquals(value, emo2.getLevel());
+		Assert.assertEquals(value, emo3.getLevel());
+		Assert.assertEquals(value, emo4.getLevel());
+		Assert.assertEquals(value, emo5.getLevel());
+		Assert.assertEquals(value, emo6.getLevel());
+		Assert.assertEquals(value, emo7.getLevel());
+		Assert.assertEquals(value, emo8.getLevel());
+		Assert.assertEquals(value, emo9.getLevel());
+		Assert.assertEquals(value, emo10.getLevel());
+		Assert.assertEquals(value, emo11.getLevel());
+		Assert.assertEquals(value, emo12.getLevel());
+		Assert.assertEquals(value, emo13.getLevel());
+		Assert.assertEquals(value, emo14.getLevel());
+		Assert.assertEquals(value, emo15.getLevel());
+		Assert.assertEquals(value, emo16.getLevel());
+		Assert.assertEquals(value, emo17.getLevel());
+		Assert.assertEquals(value, emo18.getLevel());
 	}
 
 	@After

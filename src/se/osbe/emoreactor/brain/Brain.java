@@ -1,12 +1,10 @@
 package se.osbe.emoreactor.brain;
 
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
 
 import se.osbe.emoreactor.brain.emotions.Emotion;
 import se.osbe.emoreactor.brain.emotions.EmotionBuilder;
-import se.osbe.emoreactor.brain.emotions.feelings.Feeling;
 import se.osbe.emoreactor.brain.perception.Perception;
 import se.osbe.emoreactor.brain.perception.PerceptionType;
 import se.osbe.emoreactor.brain.perception.SightPerception;
@@ -20,7 +18,7 @@ public class Brain {
 	private final String _id;
 	private final Personality _personality;
 	private final Queue<Emotion> _emoQueue;
-	private Emotion _emotionRegister;
+	private Emotion _emotionNow;
 	private DiceHelper _dice;
 	private Integer _emoSpanSize;
 	private Integer _emoSpanSizeMax;
@@ -39,7 +37,7 @@ public class Brain {
 		_emoQueue = new LinkedList<Emotion>(); // slamma upp emotions
 		_dice = new DiceHelper();
 		_eb = new EmotionBuilder();
-		_emotionRegister = null;
+		_emotionNow = null;
 	}
 
 	public boolean feedPerceptionToBrain(Perception perception) {
@@ -67,20 +65,17 @@ public class Brain {
 		if (inboundEmotion == null) {
 			return;
 		}
+		
 		// Does the perception get through the attention barrier and create an
 		// emotion reaction?
 		// If a perception is detected, a reaction can not be avoided!
+		
 		boolean perceptionDetected = false;
 		perceptionDetected = _dice.percentageChance(_awarenessPercentage);
 		if (perceptionDetected) {
-			List<Feeling> inboundFeelings = inboundEmotion.getEmotionList();
-			_eb.reset();
-			_eb.addFeelings(inboundFeelings);
-			try {
-				_emotionRegister = _eb.build("" + System.currentTimeMillis());
-			} catch (ReactorException e) {
-				e.printStackTrace();
-			}
+			
+			// TODO: inboundEmotion, now what?
+			
 		} else {
 			// The polled emotion never got attention from the brain, but gets
 			// consumed and brain cannot react
@@ -105,7 +100,7 @@ public class Brain {
 	}
 
 	public Emotion getEmotionNow() {
-		return _emotionRegister;
+		return _emotionNow;
 	}
 
 	public static void main(String[] args) throws ReactorException {

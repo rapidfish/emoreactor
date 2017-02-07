@@ -41,7 +41,12 @@ public class EmotionBuilder {
 		_dice = new DiceHelper();
 	}
 
-	public EmotionBuilder addEmotion(FeelingType emotionEnum, int intencity) throws ReactorException {
+	public EmotionBuilder addEmotion(Emotion emo){
+		emo.getFeelings();
+		return this;
+	}
+	
+	public EmotionBuilder addFeelingByType(FeelingType emotionEnum, int intencity) throws ReactorException {
 		AbstractFeeling feeling;
 		switch (emotionEnum) {
 		case AGONY:
@@ -120,11 +125,6 @@ public class EmotionBuilder {
 		return this;
 	}
 	
-	public EmotionBuilder addFeelings(List<Feeling> feelings) {
-		_feelings.addAll(feelings);
-		return this;
-	}
-
 	/**
 	 * Add scripted feelings in plain text format.<br>
 	 * <br>
@@ -178,7 +178,7 @@ public class EmotionBuilder {
 				} else {
 					tmp = Integer.parseInt(operands[1]);
 				}
-				addEmotion(emo, tmp);
+				addFeelingByType(emo, tmp);
 			}
 		}
 		return this;

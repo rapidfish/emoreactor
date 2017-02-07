@@ -2,7 +2,7 @@ package se.osbe.emoreactor.brain.emotions.feelings;
 
 public interface Feeling {
 	
-	public int getIntencity();
+	public Integer getLevel();
 	
 	public FeelingType getFeelingType();
 	
