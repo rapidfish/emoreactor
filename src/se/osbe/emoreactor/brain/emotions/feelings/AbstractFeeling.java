@@ -90,18 +90,18 @@ public abstract class AbstractFeeling implements Feeling {
 	}
 
 	/**
-	 * Declines the emotion (by one resolution). Depending on which phase the
+	 * Steps the emotion (by one resolution). Depending on which phase the
 	 * feeling is in, the returning level is either in its attack-, sustain- or
 	 * release- phase depending on how long duration (no of calls to this
 	 * methods) has passed.
 	 * 
-	 * Basically it just returns the now value, and the rest is managed inside
-	 * this method (phase state is kept within this class).
+	 * Basically it just returns the now value, and the rest of the "feeling over 
+	 * time" is managed inside this method (phase state is kept within this class).
 	 * 
 	 * @return the present level of the feeling, after the most resent decline
 	 *         is done, null if consumed (duration has 0 steps left)!
 	 */
-	public Integer decline() {
+	public Integer step() {
 
 		// Problem: keep duration in Emotion or Feeling???
 		// Send duration from Emotion to Feeling
