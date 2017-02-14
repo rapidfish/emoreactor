@@ -46,7 +46,7 @@ public class EmotionBuilder {
 		return this;
 	}
 	
-	public EmotionBuilder addFeelingByType(FeelingType emotionEnum, int intencity) throws ReactorException {
+	public EmotionBuilder addFeelingByType(FeelingType emotionEnum, Double intencity) throws ReactorException {
 		AbstractFeeling feeling;
 		switch (emotionEnum) {
 		case AGONY:
@@ -167,16 +167,16 @@ public class EmotionBuilder {
 			String[] operands = statement.split("=");
 			if (operands.length == 2) {
 				FeelingType emo = new BrainHelper().getEmotionEnumForPattern(operands[0]);
-				Integer tmp = 0;
+				Double tmp = new Double(0);
 				if(operands[1].startsWith("?")){
-					tmp = _dice.getRandomIntBetween(0, 10);
+					tmp = _dice.getRandomPercentage();
 				} else if(operands[1].startsWith("*")){
 					tmp = _dice.getRandomPercentage();
 				}  else if(operands[1].startsWith("-*")) {
-					int p = _dice.getRandomPercentage();
+					Double p = _dice.getRandomPercentage();
 					tmp = _dice.getFiftyFifty() ? p : ((-1) * p);
 				} else {
-					tmp = Integer.parseInt(operands[1]);
+					tmp = Double.parseDouble(operands[1]);
 				}
 				addFeelingByType(emo, tmp);
 			}
@@ -205,9 +205,9 @@ public class EmotionBuilder {
 
 	public static void main(String[] args) throws Exception {
 		EmotionBuilder feelingBuilder = new EmotionBuilder();
-		Emotion feeling1 = feelingBuilder.addFeelings("agon=?;a=-4;p=*;hel=*").build("My Feeling1");
-		Emotion feeling2 = feelingBuilder.reset().addFeeling(new RelaxedFeeling(3)).build("My feeling2"); // .addFeelings("Alive=5;OPE=4;Confused=2").build();
-		System.out.println(feeling1);
+//		Emotion feeling1 = feelingBuilder.addFeelings("agon=15;afr=10;hel=24").build("My Feeling1");
+		Emotion feeling2 = feelingBuilder.reset().addFeeling(new RelaxedFeeling(3d)).build("My feeling2"); // .addFeelings("Alive=5;OPE=4;Confused=2").build();
+//		System.out.println(feeling1);
 		System.out.println(feeling2);
 	}
 }

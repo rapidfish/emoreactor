@@ -26,16 +26,20 @@ public class Emotion implements Cloneable {
 		return _feelingMap;
 	}
 
-	public void addFeeling(Feeling feeling) {
-		_feelingMap.put(feeling.getFeelingType(), feeling);
-	}
-
 	public void addFeelings(List<Feeling> feelings) {
 		for (Feeling feeling : feelings) {
 			addFeeling(feeling);
 		}
 	}
 
+	public void addFeeling(Feeling feeling) {
+		FeelingType type = feeling.getFeelingType();
+		Feeling f = (_feelingMap.containsKey(type)) ? _feelingMap.get(type) : feeling;
+		if (feeling.getAmplitude() >= f.getAmplitude()) {
+			_feelingMap.put(type, feeling);
+		}
+	}
+	
 	public boolean removeFeeling(FeelingType emo) {
 		if (_feelingMap.containsKey(emo)) {
 			_feelingMap.remove(emo);
@@ -92,7 +96,7 @@ public class Emotion implements Cloneable {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder("Emotion: ");
-		sb.append(_description).append(" ").append(_feelingMap.values());
+		sb.append("emo: ").append(_description).append(" ").append(_feelingMap.values());
 		return sb.toString();
 	}
 }

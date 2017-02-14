@@ -26,6 +26,7 @@ public class BrainHelper {
 			String description = type.description().toLowerCase();
 			if (name.matches(candidate) || description.matches(candidate)) {
 				result = type;
+				break;
 			}
 		}
 		return result;
@@ -63,8 +64,8 @@ public class BrainHelper {
 		System.out.println("createUUID: " + createUUID());
 		System.out.println();
 		DiceHelper dh = new DiceHelper();
-		int x=5;
-		int y=10;
+		Double x=5d;
+		Double y=10d;
 		System.out.println("Chans: " + x + " av " + y + ": " + dh.isLucky(x, y));
 	}
 }

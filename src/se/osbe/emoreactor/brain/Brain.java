@@ -17,12 +17,12 @@ public class Brain {
 
 	private final String _id;
 	private final Personality _personality;
-	private final Queue<Emotion> _emoQueue;
-	private Emotion _emotionNow;
-	private DiceHelper _dice;
-	private Integer _emoSpanSize;
-	private Integer _emoSpanSizeMax;
 	private Integer _awarenessPercentage;
+	
+	private final Queue<Emotion> _emoQueue;
+	private Emotion _emoNow;
+
+	private DiceHelper _dice;
 	private EmotionBuilder _eb;
 
 	@SuppressWarnings("unused")
@@ -37,20 +37,19 @@ public class Brain {
 		_emoQueue = new LinkedList<Emotion>(); // slamma upp emotions
 		_dice = new DiceHelper();
 		_eb = new EmotionBuilder();
-		_emotionNow = null;
+		_emoNow = new Emotion("Emotion now") {
+		};
 	}
 
-	public boolean feedPerceptionToBrain(Perception perception) {
+	public boolean addInboundPerception(Perception perception) {
 		PerceptionType perceptionType = perception.getPerceptionType();
 		Emotion emoCandidate = perception.getEmotionCandidate();
 		boolean isAccepted = false;
-		if (_emoSpanSize < _emoSpanSizeMax) {
+		if (_dice.getRandomPercentage() <= _awarenessPercentage) {
 			isAccepted = _emoQueue.offer(emoCandidate);
 			if (!isAccepted) {
-				System.err.println("WARNING! EMOTION QUEUE IS TOO BIG - OVERLOADING!!!");
+				System.err.println("WARNING! EMOTION QUEUE IS OVERLOADED!!! " + perception);
 			}
-		} else if (_emoSpanSize >= _emoSpanSizeMax) {
-			// Trauma level
 		}
 		return isAccepted;
 	}
@@ -70,37 +69,26 @@ public class Brain {
 		// emotion reaction?
 		// If a perception is detected, a reaction can not be avoided!
 		
-		boolean perceptionDetected = false;
-		perceptionDetected = _dice.percentageChance(_awarenessPercentage);
-		if (perceptionDetected) {
-			
-			// TODO: inboundEmotion, now what?
-			
-		} else {
 			// The polled emotion never got attention from the brain, but gets
 			// consumed and brain cannot react
 			// Here is room for sub-consciousness behaviour
-		}
+		inboundEmotion.getFeelings().forEach(feeling -> {
+			Double feelingVal = feeling.tic();
+			_emoNow.addFeeling(feeling);
+			System.out.println("id: " + _id + ", " + feeling.getFeelingName() + ": " + _emoNow.getFeelings());
+		});
 	}
 
 	public String getId() {
 		return _id;
 	}
 
-	public Integer getEmoSpanSize() {
-		return _emoSpanSize;
-	}
-
-	public Integer getEmoSpanSizeMax() {
-		return _emoSpanSizeMax;
-	}
-
 	public Integer getAwarenessPercentage() {
 		return _awarenessPercentage;
 	}
 
-	public Emotion getEmotionNow() {
-		return _emotionNow;
+	public Emotion getEmoNow() {
+		return _emoNow;
 	}
 
 	public static void main(String[] args) throws ReactorException {
@@ -111,18 +99,14 @@ public class Brain {
 		System.out.println("Awareness: " + brain.getAwarenessPercentage() + "%");
 		System.out.println("---------------------------------------------------");
 		EmotionBuilder eb = new EmotionBuilder();
-		for (int i = 0; i < 10; i++) {
-			Emotion emo = eb
-					.addFeelings(
-							"Agony=?;Anger=?;Depressed=?;Confused=?;Helpless=?;Indifferent=?;Afraid=?;Hurt=?;Sad=?;Judgemental=?;Open=?;Loving=?;Happy=?;Interested=?;Alive=?;Positive=?;Peaceful=?;Strong=?;Relaxed=?")
-					.build("Emo" + i);
-			Perception perception = new SightPerception(emo);
-			brain.feedPerceptionToBrain(perception);
-		}
-
+		
+		Emotion emo = eb.addFeelings("Afra=100;").build("AfraidEmo");
+		Perception perception = new SightPerception(emo);
+		brain.addInboundPerception(perception);
+		
 		for (int i = 0; i < 10; i++) {
 			brain.tic();
-			System.out.println(brain.getEmotionNow());
+			System.out.println(brain.getEmoNow());
 		}
 	}
 }

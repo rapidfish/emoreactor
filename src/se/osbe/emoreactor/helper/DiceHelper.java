@@ -4,22 +4,21 @@ import java.util.Random;
 
 public class DiceHelper {
 
-	private final Random _rnd;
+	private final static Random _rnd = new Random(System.currentTimeMillis());
 
 	public DiceHelper() {
-		_rnd = new Random(System.nanoTime());
 	}
 
 	public boolean getFiftyFifty() {
-		return getRandomIntBetween(0, 1) == 0;
+		return DiceHelper._rnd.nextBoolean();
 	}
-	public boolean isNotLucky(int chance, int dice) {
+	public boolean isNotLucky(Double chance, Double dice) {
 		return !isLucky(chance, dice);
 	}
 
-	public boolean isLucky(int chance, int dice) {
-		Integer result = getRandomIntBetween(1, dice);
-		return result <= chance;
+	public boolean isLucky(Double chance, Double dice) {
+		Double result = getRandomDoubleBetween(1d, dice);
+		return (result.compareTo(chance) <= 0);
 	}
 
 	public boolean percentageChance(int percentage){
@@ -28,29 +27,29 @@ public class DiceHelper {
 		} else if(percentage == 100) {
 			return true;
 		}
-		return getRandomIntBetween(0, 100) < (percentage % 100);
+		return getRandomDoubleBetween(0d, 100d).compareTo(new Double(percentage % 100)) < 0;
 	}
 	
-	public int getRandomPercentage() {
-		return getRandomIntBetween(0, 100);
+	public Double getRandomPercentage() {
+		return getRandomDoubleBetween(0d, 100d);
 	}
 	
-	public int getRandomIntBetween(int min, int max) {
-		if (min == max) {
+	public Double getRandomDoubleBetween(Double min, Double max) {
+		if (min.compareTo(max) == 0) {
 			return min;
 		}
-		int lowest = getLowestInt(min, max);
-		int offset = getHighestInt(min, max) - lowest;
-		int num = _rnd.nextInt(offset + 1);
+		Double lowest = getLowestDouble(min, max);
+		Double diff = getHighestDouble(min, max) - lowest;
+		Double num = diff * DiceHelper._rnd.nextDouble(); // (offset + 1);
 		return (lowest + num);
 	}
 
-	private int getLowestInt(int t1, int t2) {
-		return (t1 < t2) ? t1 : t2;
+	private Double getLowestDouble(Double t1, Double t2) {
+		return (t1.compareTo(t2) < 0) ? t1 : t2;
 	}
 
-	private int getHighestInt(int t1, int t2) {
-		return (t1 < t2) ? t2 : t1;
+	private Double getHighestDouble(Double t1, Double t2) {
+		return (t1.compareTo(t2) < 0) ? t2 : t1;
 	}
 
 	public Integer fibonacci(Integer n) {
@@ -67,7 +66,7 @@ public class DiceHelper {
 	
 	public static void main(String[] args) {
 		for(int i = 0; i < 46; i++) {
-			System.out.println(new DiceHelper().fibonacci(i));
+			System.out.println(new DiceHelper().getRandomDoubleBetween(10d, 12d));
 		}
 	}
 }

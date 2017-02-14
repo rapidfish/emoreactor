@@ -14,14 +14,14 @@ import se.osbe.emoreactor.helper.DiceHelper;
  */
 public class Personality {
 
-	private final Map<PersonalityType, Integer> _properties;
+	private final Map<PersonalityType, Double> _properties;
 
 	public Personality() throws ReactorException {
-		this(50, 50, 50, 50); // Percentage in pair
+		this(50d, 50d, 50d, 50d); // Percentage in pair
 	}
 
-	public Personality(Integer introvertVsExtrovert, Integer intuitionVsSensing, Integer feelingVsThinking, Integer percievingVsJudging) throws ReactorException {
-		_properties = new HashMap<PersonalityType, Integer>(8);
+	public Personality(Double introvertVsExtrovert, Double intuitionVsSensing, Double feelingVsThinking, Double percievingVsJudging) throws ReactorException {
+		_properties = new HashMap<PersonalityType, Double>(8);
 		setIntrovertVsExtravert(introvertVsExtrovert, (100 - introvertVsExtrovert));
 		setIntuitionVsSensing(intuitionVsSensing, (100 - intuitionVsSensing));
 		setFeelingVsThinking(feelingVsThinking, (100 - feelingVsThinking));
@@ -40,7 +40,7 @@ public class Personality {
 		}
 	}
 	
-	public Integer getIntencityForType(PersonalityType type){
+	public Double getIntencityForType(PersonalityType type){
 		return _properties.get(type);
 	}
 	
@@ -64,90 +64,90 @@ public class Personality {
 				: isJudging() ? PersonalityType.JUDGING : PersonalityType.NEUTRAL;
 	}
 
-	public Integer getIntrovert() {
+	public Double getIntrovert() {
 		return _properties.get(PersonalityType.INTROVERT);
 	}
 
-	public Integer getExtrovert() {
+	public Double getExtrovert() {
 		return _properties.get(PersonalityType.EXTROVERT);
 	}
 
-	public Integer getIntuition() {
+	public Double getIntuition() {
 		return _properties.get(PersonalityType.INTUITION);
 	}
 
-	public Integer getSensing() {
+	public Double getSensing() {
 		return _properties.get(PersonalityType.SENSING);
 	}
 
-	public Integer getFeeling() {
+	public Double getFeeling() {
 		return _properties.get(PersonalityType.FEELING);
 	}
 
-	public Integer getThinking() {
+	public Double getThinking() {
 		return _properties.get(PersonalityType.THINKING);
 	}
 
-	public Integer getPercieving() {
+	public Double getPercieving() {
 		return _properties.get(PersonalityType.PERCIEVING);
 	}
 
-	public Integer getJudging() {
+	public Double getJudging() {
 		return _properties.get(PersonalityType.JUDGING);
 	}
 
 	public Boolean isIntrovert() {
-		int introvert = _properties.get(PersonalityType.INTROVERT);
-		int extrovert = _properties.get(PersonalityType.EXTROVERT);
+		Double introvert = _properties.get(PersonalityType.INTROVERT);
+		Double extrovert = _properties.get(PersonalityType.EXTROVERT);
 		return (introvert > extrovert);
 	}
 
 	public Boolean isExtrovert() {
-		int extrovert = _properties.get(PersonalityType.EXTROVERT);
-		int introvert = _properties.get(PersonalityType.INTROVERT);
+		Double extrovert = _properties.get(PersonalityType.EXTROVERT);
+		Double introvert = _properties.get(PersonalityType.INTROVERT);
 		return (extrovert > introvert);
 	}
 
 	public Boolean isIntuition() {
-		int intuition = _properties.get(PersonalityType.INTUITION);
-		int sensing = _properties.get(PersonalityType.SENSING);
+		Double intuition = _properties.get(PersonalityType.INTUITION);
+		Double sensing = _properties.get(PersonalityType.SENSING);
 		return (intuition > sensing);
 	}
 
 	public Boolean isSensing() {
-		int sensing = _properties.get(PersonalityType.SENSING);
-		int intuition = _properties.get(PersonalityType.INTUITION);
+		Double sensing = _properties.get(PersonalityType.SENSING);
+		Double intuition = _properties.get(PersonalityType.INTUITION);
 		return (sensing > intuition);
 	}
 
 	public Boolean isFeeling() {
-		int feeling = _properties.get(PersonalityType.FEELING);
-		int thinking = _properties.get(PersonalityType.THINKING);
+		Double feeling = _properties.get(PersonalityType.FEELING);
+		Double thinking = _properties.get(PersonalityType.THINKING);
 		return (feeling > thinking);
 	}
 
 	public Boolean isThinking() {
-		int thinking = _properties.get(PersonalityType.THINKING);
-		int feeling = _properties.get(PersonalityType.FEELING);
+		Double thinking = _properties.get(PersonalityType.THINKING);
+		Double feeling = _properties.get(PersonalityType.FEELING);
 		return (thinking > feeling);
 	}
 
 	public Boolean isPercieving() {
-		int percieving = _properties.get(PersonalityType.PERCIEVING);
-		int judging = _properties.get(PersonalityType.JUDGING);
+		Double percieving = _properties.get(PersonalityType.PERCIEVING);
+		Double judging = _properties.get(PersonalityType.JUDGING);
 		return (percieving > judging);
 	}
 
 	public Boolean isJudging() {
-		int judging = _properties.get(PersonalityType.JUDGING);
-		int percieving = _properties.get(PersonalityType.PERCIEVING);
+		Double judging = _properties.get(PersonalityType.JUDGING);
+		Double percieving = _properties.get(PersonalityType.PERCIEVING);
 		return (judging > percieving);
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		int percentage;
+		Double percentage;
 		boolean even = true;
 		int typeLen = PersonalityType.values().length;
 		for (int i = 0; i < typeLen ; i++) {
@@ -155,8 +155,8 @@ public class Personality {
 			if(type == PersonalityType.NEUTRAL) {
 				continue;
 			}
-			percentage = _properties.get(type).intValue();
-			sb.append(type.name().toLowerCase()).append(":\t").append(percentage).append("%");
+			percentage = _properties.get(type);
+			sb.append(type.name().toLowerCase()).append(":\t").append(percentage.intValue()).append("%");
 			if (even) {
 				sb.append("\t<-->\t");
 			} else {
@@ -169,35 +169,35 @@ public class Personality {
 		return sb.toString();
 	}
 
-	private boolean validateRange(int param) {
+	private boolean validateRange(Double param) {
 		return (param >= 0 || param <= 100);
 	}
 
-	private Personality setIntrovertVsExtravert(int introvert, int extrovert) {
+	private Personality setIntrovertVsExtravert(Double introvert, Double extrovert) {
 		this.setIntecity(PersonalityType.INTROVERT, introvert);
 		this.setIntecity(PersonalityType.EXTROVERT, extrovert);
 		return this;
 	}
 
-	private Personality setIntuitionVsSensing(int intuition, int sensing) {
+	private Personality setIntuitionVsSensing(Double intuition, Double sensing) {
 		this.setIntecity(PersonalityType.INTUITION, intuition);
 		this.setIntecity(PersonalityType.SENSING, sensing);
 		return this;
 	}
 
-	private Personality setFeelingVsThinking(int feeling, int thinking) {
+	private Personality setFeelingVsThinking(Double feeling, Double thinking) {
 		this.setIntecity(PersonalityType.FEELING, feeling);
 		this.setIntecity(PersonalityType.THINKING, thinking);
 		return this;
 	}
 
-	private Personality setPerceivingVsJudging(int percieving, int judging) {
+	private Personality setPerceivingVsJudging(Double percieving, Double judging) {
 		this.setIntecity(PersonalityType.PERCIEVING, percieving);
 		this.setIntecity(PersonalityType.JUDGING, judging);
 		return this;
 	}
 
-	private void setIntecity(PersonalityType type, int intecity) {
+	private void setIntecity(PersonalityType type, Double intecity) {
 		_properties.put(type, intecity);
 	}
 	
