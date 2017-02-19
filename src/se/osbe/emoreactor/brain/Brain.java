@@ -9,6 +9,7 @@ import se.osbe.emoreactor.brain.perception.Perception;
 import se.osbe.emoreactor.brain.perception.PerceptionType;
 import se.osbe.emoreactor.brain.perception.SightPerception;
 import se.osbe.emoreactor.brain.personality.Personality;
+import se.osbe.emoreactor.brain.reactor.Reactor;
 import se.osbe.emoreactor.brain.reactor.ReactorException;
 import se.osbe.emoreactor.helper.BrainHelper;
 import se.osbe.emoreactor.helper.DiceHelper;
@@ -19,12 +20,15 @@ public class Brain {
 	private final Personality _personality;
 	private Integer _awarenessPercentage;
 	
-	private final Queue<Emotion> _emoQueue;
-	private Emotion _emoNow;
-
 	private DiceHelper _dice;
-	private EmotionBuilder _eb;
-
+	private long _mainDurationCount;
+	
+	private final Queue<Emotion> _perceptionQueue;
+	
+	private Reactor _reactor;
+	
+	private Emotion _emoNow;
+	
 	@SuppressWarnings("unused")
 	private Brain() {
 		this(null);
@@ -34,19 +38,20 @@ public class Brain {
 		_id = BrainHelper.createUUID();
 		_personality = personality;
 		_awarenessPercentage = 100; // 100%
-		_emoQueue = new LinkedList<Emotion>(); // slamma upp emotions
+		_perceptionQueue = new LinkedList<Emotion>(); // incomming emo's from perception
 		_dice = new DiceHelper();
-		_eb = new EmotionBuilder();
-		_emoNow = new Emotion("Emotion now") {
-		};
+		_mainDurationCount = 0;
+		_reactor = new Reactor();
 	}
 
 	public boolean addInboundPerception(Perception perception) {
 		PerceptionType perceptionType = perception.getPerceptionType();
 		Emotion emoCandidate = perception.getEmotionCandidate();
 		boolean isAccepted = false;
+		
+		// Add only if it got the brains attention
 		if (_dice.getRandomPercentage() <= _awarenessPercentage) {
-			isAccepted = _emoQueue.offer(emoCandidate);
+			isAccepted = _perceptionQueue.offer(emoCandidate);
 			if (!isAccepted) {
 				System.err.println("WARNING! EMOTION QUEUE IS OVERLOADED!!! " + perception);
 			}
@@ -58,25 +63,38 @@ public class Brain {
 		return _personality;
 	}
 
-	public void tic() {
+	public void tic() throws ReactorException {
 		
-		Emotion inboundEmotion = _emoQueue.poll();
-		if (inboundEmotion == null) {
-			return;
+		// Handle perception queue!
+		Emotion inboundEmotion = _perceptionQueue.poll();
+		if (inboundEmotion != null) {
+			inboundEmotion.getFeelings().forEach(feeling -> {
+				_emoNow.addFeeling(feeling);
+				System.out.println("id: " + _id + ", " + feeling.getFeelingType().name() + ": " + _emoNow.getFeelings());
+			});
 		}
 		
-		// Does the perception get through the attention barrier and create an
-		// emotion reaction?
-		// If a perception is detected, a reaction can not be avoided!
+		// evolve emotions
+//		for(FeelingType type : FeelingType.values()) {
+//			List<Feeling> sameFeelings = _registry.get(type);
+//			sameFeelings.forEach(feeling -> {
+//				try {
+//					Double intencity = calculateIntencity(feeling, _mainDurationCount);
+//					_emotionBuilder.addFeeling(type, intencity, feeling.getDuration());
+//				} catch (ReactorException e) {
+//					e.printStackTrace();
+//				} 
+//				//calculateIntencity(feeling, this._mainDurationCount);
+//			});
+//			
+//		}
 		
-			// The polled emotion never got attention from the brain, but gets
-			// consumed and brain cannot react
-			// Here is room for sub-consciousness behaviour
-		inboundEmotion.getFeelings().forEach(feeling -> {
-			Double feelingVal = feeling.tic();
-			_emoNow.addFeeling(feeling);
-			System.out.println("id: " + _id + ", " + feeling.getFeelingName() + ": " + _emoNow.getFeelings());
-		});
+		_reactor.tic(_mainDurationCount);
+		
+		// Increase main duration counter
+		_mainDurationCount ++; 
+		
+		return;
 	}
 
 	public String getId() {
@@ -90,7 +108,7 @@ public class Brain {
 	public Emotion getEmoNow() {
 		return _emoNow;
 	}
-
+	
 	public static void main(String[] args) throws ReactorException {
 		Personality personality = new Personality();
 		Brain brain = new Brain(personality);
@@ -105,7 +123,6 @@ public class Brain {
 		brain.addInboundPerception(perception);
 		
 		for (int i = 0; i < 10; i++) {
-			brain.tic();
 			System.out.println(brain.getEmoNow());
 		}
 	}

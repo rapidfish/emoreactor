@@ -4,12 +4,7 @@ import se.osbe.emoreactor.brain.reactor.ReactorException;
 
 public class InterestedFeeling extends AbstractFeeling {
 	
-	public InterestedFeeling(Double amplitude) throws ReactorException {
-		super(FeelingType.INTERESTED, amplitude);
+	public InterestedFeeling(Double amplitude, long initialTime, long duration) throws ReactorException {
+		super(FeelingType.INTERESTED, amplitude, initialTime, duration);
 	}
-	
-	public InterestedFeeling(int amplitude) throws ReactorException {
-		super(FeelingType.INTERESTED, new Double(amplitude));
-	}
-
 }

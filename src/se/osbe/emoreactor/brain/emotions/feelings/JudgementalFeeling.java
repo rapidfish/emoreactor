@@ -4,12 +4,7 @@ import se.osbe.emoreactor.brain.reactor.ReactorException;
 
 public class JudgementalFeeling extends AbstractFeeling {
 	
-	public JudgementalFeeling(Double amplitude) throws ReactorException {
-		super(FeelingType.JUDGEMENTAL, amplitude);
+	public JudgementalFeeling(Double amplitude, long initialTime, long duration) throws ReactorException {
+		super(FeelingType.JUDGEMENTAL, amplitude, initialTime, duration);
 	}
-
-	public JudgementalFeeling(int amplitude) throws ReactorException {
-		super(FeelingType.JUDGEMENTAL, new Double(amplitude));
-	}
-	
 }

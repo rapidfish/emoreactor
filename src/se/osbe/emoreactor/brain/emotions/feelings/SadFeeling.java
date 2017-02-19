@@ -4,12 +4,7 @@ import se.osbe.emoreactor.brain.reactor.ReactorException;
 
 public class SadFeeling extends AbstractFeeling {
 	
-	public SadFeeling(Double amplitude) throws ReactorException {
-		super(FeelingType.SAD, amplitude);
+	public SadFeeling(Double amplitude, long initialTime, long duration) throws ReactorException {
+		super(FeelingType.SAD, amplitude, initialTime, duration);
 	}
-	
-	public SadFeeling(int amplitude) throws ReactorException {
-		super(FeelingType.SAD, new Double(amplitude));
-	}
-	
 }

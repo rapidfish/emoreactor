@@ -2,14 +2,12 @@ package se.osbe.emoreactor.brain.emotions.feelings;
 
 public interface Feeling {
 
-	public Double tic();
-	
+	public FeelingType getFeelingType();
+
 	public Double getAmplitude();
 	
-	public Double getDuration();
+	public long getInitialTime();
 	
-	public FeelingType getFeelingType();
-	
-	public String getFeelingName();
-	
+	public long getDuration();
+
 }

@@ -4,12 +4,7 @@ import se.osbe.emoreactor.brain.reactor.ReactorException;
 
 public class StrongFeeling extends AbstractFeeling {
 	
-	public StrongFeeling(Double amplitude) throws ReactorException {
-		super(FeelingType.STRONG, amplitude);
+	public StrongFeeling(Double amplitude, long initialTime, long duration) throws ReactorException {
+		super(FeelingType.STRONG, amplitude, initialTime, duration);
 	}
-	
-	public StrongFeeling(int amplitude) throws ReactorException {
-		super(FeelingType.STRONG, new Double(amplitude));
-	}
-	
 }

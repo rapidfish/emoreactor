@@ -46,65 +46,65 @@ public class EmotionBuilder {
 		return this;
 	}
 	
-	public EmotionBuilder addFeelingByType(FeelingType emotionEnum, Double intencity) throws ReactorException {
+	public EmotionBuilder addFeeling(FeelingType emotionEnum, Double intencity, long initialTime, long duration) throws ReactorException {
 		AbstractFeeling feeling;
 		switch (emotionEnum) {
 		case AGONY:
-			feeling = (AbstractFeeling) new AgonyFeeling(intencity);
+			feeling = (AbstractFeeling) new AgonyFeeling(intencity, initialTime, duration);
 			break;
 		case AFRAID:
-			feeling = (AbstractFeeling) new AfraidFeeling(intencity);
+			feeling = (AbstractFeeling) new AfraidFeeling(intencity, initialTime, duration);
 			break;
 		case ALIVE:
-			feeling = (AbstractFeeling) new AliveFeeling(intencity);
+			feeling = (AbstractFeeling) new AliveFeeling(intencity, initialTime, duration);
 			break;
 		case ANGER:
-			feeling = (AbstractFeeling) new AngerFeeling(intencity);
+			feeling = (AbstractFeeling) new AngerFeeling(intencity, initialTime, duration);
 			break;
 		case CONFUSED:
-			feeling = (AbstractFeeling) new ConfusedFeeling(intencity);
+			feeling = (AbstractFeeling) new ConfusedFeeling(intencity, initialTime, duration);
 			break;
 		case DEPRESSED:
-			feeling = (AbstractFeeling) new DepressedFeeling(intencity);
+			feeling = (AbstractFeeling) new DepressedFeeling(intencity, initialTime, duration);
 			break;
 		case HAPPY:
-			feeling = (AbstractFeeling) new HappyFeeling(intencity);
+			feeling = (AbstractFeeling) new HappyFeeling(intencity, initialTime, duration);
 			break;
 		case HELPLESS:
-			feeling = (AbstractFeeling) new HelplessFeeling(intencity);
+			feeling = (AbstractFeeling) new HelplessFeeling(intencity, initialTime, duration);
 			break;
 		case HURT:
-			feeling = (AbstractFeeling) new HurtFeeling(intencity);
+			feeling = (AbstractFeeling) new HurtFeeling(intencity, initialTime, duration);
 			break;
 		case INDIFFERENT:
-			feeling = (AbstractFeeling) new IndifferentFeeling(intencity);
+			feeling = (AbstractFeeling) new IndifferentFeeling(intencity, initialTime, duration);
 			break;
 		case INTERESTED:
-			feeling = (AbstractFeeling) new InterestedFeeling(intencity);
+			feeling = (AbstractFeeling) new InterestedFeeling(intencity, initialTime, duration);
 			break;
 		case JUDGEMENTAL:
-			feeling = (AbstractFeeling) new JudgementalFeeling(intencity);
+			feeling = (AbstractFeeling) new JudgementalFeeling(intencity, initialTime, duration);
 			break;
 		case LOVING:
-			feeling = (AbstractFeeling) new LovingFeeling(intencity);
+			feeling = (AbstractFeeling) new LovingFeeling(intencity, initialTime, duration);
 			break;
 		case OPEN:
-			feeling = (AbstractFeeling) new OpenFeeling(intencity);
+			feeling = (AbstractFeeling) new OpenFeeling(intencity, initialTime, duration);
 			break;
 		case PEACEFUL:
-			feeling = (AbstractFeeling) new PeacefulFeeling(intencity);
+			feeling = (AbstractFeeling) new PeacefulFeeling(intencity, initialTime, duration);
 			break;
 		case POSITIVE:
-			feeling = (AbstractFeeling) new PositiveFeeling(intencity);
+			feeling = (AbstractFeeling) new PositiveFeeling(intencity, initialTime, duration);
 			break;
 		case RELAXED:
-			feeling = (AbstractFeeling) new RelaxedFeeling(intencity);
+			feeling = (AbstractFeeling) new RelaxedFeeling(intencity, initialTime, duration);
 			break;
 		case SAD:
-			feeling = (AbstractFeeling) new SadFeeling(intencity);
+			feeling = (AbstractFeeling) new SadFeeling(intencity, initialTime, duration);
 			break;
 		case STRONG:
-			feeling = (AbstractFeeling) new StrongFeeling(intencity);
+			feeling = (AbstractFeeling) new StrongFeeling(intencity, initialTime, duration);
 			break;
 		default:
 			throw new ReactorException("Missing enum for constructor");
@@ -178,7 +178,7 @@ public class EmotionBuilder {
 				} else {
 					tmp = Double.parseDouble(operands[1]);
 				}
-				addFeelingByType(emo, tmp);
+				addFeeling(emo, tmp, 1, 100l);
 			}
 		}
 		return this;
@@ -206,7 +206,7 @@ public class EmotionBuilder {
 	public static void main(String[] args) throws Exception {
 		EmotionBuilder feelingBuilder = new EmotionBuilder();
 //		Emotion feeling1 = feelingBuilder.addFeelings("agon=15;afr=10;hel=24").build("My Feeling1");
-		Emotion feeling2 = feelingBuilder.reset().addFeeling(new RelaxedFeeling(3d)).build("My feeling2"); // .addFeelings("Alive=5;OPE=4;Confused=2").build();
+		Emotion feeling2 = feelingBuilder.reset().addFeeling(new RelaxedFeeling(3d, 1, 100)).build("My feeling2"); // .addFeelings("Alive=5;OPE=4;Confused=2").build();
 //		System.out.println(feeling1);
 		System.out.println(feeling2);
 	}

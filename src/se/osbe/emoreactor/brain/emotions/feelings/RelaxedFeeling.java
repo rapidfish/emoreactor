@@ -4,12 +4,7 @@ import se.osbe.emoreactor.brain.reactor.ReactorException;
 
 public class RelaxedFeeling extends AbstractFeeling {
 	
-	public RelaxedFeeling(Double amplitude) throws ReactorException {
-		super(FeelingType.RELAXED, amplitude);
+	public RelaxedFeeling(Double amplitude, long initialTime, long duration) throws ReactorException {
+		super(FeelingType.RELAXED, amplitude, initialTime, duration);
 	}
-	
-	public RelaxedFeeling(int amplitude) throws ReactorException {
-		super(FeelingType.RELAXED, new Double(amplitude));
-	}
-	
 }
