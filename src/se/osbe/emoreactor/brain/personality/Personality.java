@@ -40,7 +40,7 @@ public class Personality {
 		}
 	}
 	
-	public Double getIntencityForType(PersonalityType type){
+	public Double getIntensityForType(PersonalityType type){
 		return _properties.get(type);
 	}
 	
@@ -210,10 +210,10 @@ public class Personality {
 	public static void main(String[] args) throws ReactorException {
 		DiceHelper dice = new DiceHelper();
 		Personality p = new Personality(dice.getRandomPercentage(), dice.getRandomPercentage(), dice.getRandomPercentage(), dice.getRandomPercentage());
-		System.out.print(p.getIntrovertOrExtrovert() + "(" + p.getIntencityForType(p.getIntrovertOrExtrovert()) +"%) <--> ");
-		System.out.print(p.getIntuitionVsSensing() + "(" + p.getIntencityForType(p.getIntuitionVsSensing()) +"%) <--> ");
-		System.out.print(p.getFeelingVsThinking() + "(" + p.getIntencityForType(p.getFeelingVsThinking()) +"%) <--> ");
-		System.out.println(p.getPercievingVsJudging() + "(" + p.getIntencityForType(p.getPercievingVsJudging()) +"%)");
+		System.out.print(p.getIntrovertOrExtrovert() + "(" + p.getIntensityForType(p.getIntrovertOrExtrovert()) +"%) <--> ");
+		System.out.print(p.getIntuitionVsSensing() + "(" + p.getIntensityForType(p.getIntuitionVsSensing()) +"%) <--> ");
+		System.out.print(p.getFeelingVsThinking() + "(" + p.getIntensityForType(p.getFeelingVsThinking()) +"%) <--> ");
+		System.out.println(p.getPercievingVsJudging() + "(" + p.getIntensityForType(p.getPercievingVsJudging()) +"%)");
 		System.out.println();
 		System.out.println(p);
 	}

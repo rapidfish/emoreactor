@@ -46,65 +46,65 @@ public class EmotionBuilder {
 		return this;
 	}
 	
-	public EmotionBuilder addFeeling(FeelingType emotionEnum, Double intencity, long initialTime, long duration) throws ReactorException {
+	public EmotionBuilder addFeeling(FeelingType emotionEnum, Double intensity, long initialTime, long duration) throws ReactorException {
 		AbstractFeeling feeling;
 		switch (emotionEnum) {
 		case AGONY:
-			feeling = (AbstractFeeling) new AgonyFeeling(intencity, initialTime, duration);
+			feeling = (AbstractFeeling) new AgonyFeeling(intensity, initialTime, duration);
 			break;
 		case AFRAID:
-			feeling = (AbstractFeeling) new AfraidFeeling(intencity, initialTime, duration);
+			feeling = (AbstractFeeling) new AfraidFeeling(intensity, initialTime, duration);
 			break;
 		case ALIVE:
-			feeling = (AbstractFeeling) new AliveFeeling(intencity, initialTime, duration);
+			feeling = (AbstractFeeling) new AliveFeeling(intensity, initialTime, duration);
 			break;
 		case ANGER:
-			feeling = (AbstractFeeling) new AngerFeeling(intencity, initialTime, duration);
+			feeling = (AbstractFeeling) new AngerFeeling(intensity, initialTime, duration);
 			break;
 		case CONFUSED:
-			feeling = (AbstractFeeling) new ConfusedFeeling(intencity, initialTime, duration);
+			feeling = (AbstractFeeling) new ConfusedFeeling(intensity, initialTime, duration);
 			break;
 		case DEPRESSED:
-			feeling = (AbstractFeeling) new DepressedFeeling(intencity, initialTime, duration);
+			feeling = (AbstractFeeling) new DepressedFeeling(intensity, initialTime, duration);
 			break;
 		case HAPPY:
-			feeling = (AbstractFeeling) new HappyFeeling(intencity, initialTime, duration);
+			feeling = (AbstractFeeling) new HappyFeeling(intensity, initialTime, duration);
 			break;
 		case HELPLESS:
-			feeling = (AbstractFeeling) new HelplessFeeling(intencity, initialTime, duration);
+			feeling = (AbstractFeeling) new HelplessFeeling(intensity, initialTime, duration);
 			break;
 		case HURT:
-			feeling = (AbstractFeeling) new HurtFeeling(intencity, initialTime, duration);
+			feeling = (AbstractFeeling) new HurtFeeling(intensity, initialTime, duration);
 			break;
 		case INDIFFERENT:
-			feeling = (AbstractFeeling) new IndifferentFeeling(intencity, initialTime, duration);
+			feeling = (AbstractFeeling) new IndifferentFeeling(intensity, initialTime, duration);
 			break;
 		case INTERESTED:
-			feeling = (AbstractFeeling) new InterestedFeeling(intencity, initialTime, duration);
+			feeling = (AbstractFeeling) new InterestedFeeling(intensity, initialTime, duration);
 			break;
 		case JUDGEMENTAL:
-			feeling = (AbstractFeeling) new JudgementalFeeling(intencity, initialTime, duration);
+			feeling = (AbstractFeeling) new JudgementalFeeling(intensity, initialTime, duration);
 			break;
 		case LOVING:
-			feeling = (AbstractFeeling) new LovingFeeling(intencity, initialTime, duration);
+			feeling = (AbstractFeeling) new LovingFeeling(intensity, initialTime, duration);
 			break;
 		case OPEN:
-			feeling = (AbstractFeeling) new OpenFeeling(intencity, initialTime, duration);
+			feeling = (AbstractFeeling) new OpenFeeling(intensity, initialTime, duration);
 			break;
 		case PEACEFUL:
-			feeling = (AbstractFeeling) new PeacefulFeeling(intencity, initialTime, duration);
+			feeling = (AbstractFeeling) new PeacefulFeeling(intensity, initialTime, duration);
 			break;
 		case POSITIVE:
-			feeling = (AbstractFeeling) new PositiveFeeling(intencity, initialTime, duration);
+			feeling = (AbstractFeeling) new PositiveFeeling(intensity, initialTime, duration);
 			break;
 		case RELAXED:
-			feeling = (AbstractFeeling) new RelaxedFeeling(intencity, initialTime, duration);
+			feeling = (AbstractFeeling) new RelaxedFeeling(intensity, initialTime, duration);
 			break;
 		case SAD:
-			feeling = (AbstractFeeling) new SadFeeling(intencity, initialTime, duration);
+			feeling = (AbstractFeeling) new SadFeeling(intensity, initialTime, duration);
 			break;
 		case STRONG:
-			feeling = (AbstractFeeling) new StrongFeeling(intencity, initialTime, duration);
+			feeling = (AbstractFeeling) new StrongFeeling(intensity, initialTime, duration);
 			break;
 		default:
 			throw new ReactorException("Missing enum for constructor");
@@ -135,9 +135,9 @@ public class EmotionBuilder {
 	 * Relaxed<br>
 	 * <br>
 	 * 
-	 * Feelings written on the form [feeling name]=[intencity];<br>
+	 * Feelings written on the form [feeling name]=[intensity];<br>
 	 * where [feeling name] is the name of the basic feeling<br>
-	 * and [intencity] is the intencity of that feeling,<br>
+	 * and [intensity] is the intensity of that feeling,<br>
 	 * finally every feeling is terminated using a semicolon ';'.<br>
 	 * <br>
 	 * 
@@ -148,8 +148,8 @@ public class EmotionBuilder {
 	 * <br>
 	 * 
 	 * Feelings may be set multiple times, but are combined into just one in the
-	 * end. All intencity values are all added together into just one value for
-	 * intencity for each distict feeling.
+	 * end. All intensity values are all added together into just one value for
+	 * intensity for each distict feeling.
 	 * 
 	 * @param string
 	 *            with feelings in plain text, eg. "agony=5;"

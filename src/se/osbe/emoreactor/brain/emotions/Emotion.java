@@ -13,7 +13,7 @@ public class Emotion implements Cloneable {
 	private final Map<FeelingType, Feeling> _feelingMap;
 	private String _description;
 
-	protected Emotion() {
+	public Emotion() {
 		this("");
 	}
 

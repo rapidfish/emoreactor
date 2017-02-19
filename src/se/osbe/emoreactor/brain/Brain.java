@@ -1,10 +1,12 @@
 package se.osbe.emoreactor.brain;
 
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Queue;
 
 import se.osbe.emoreactor.brain.emotions.Emotion;
 import se.osbe.emoreactor.brain.emotions.EmotionBuilder;
+import se.osbe.emoreactor.brain.emotions.feelings.FeelingType;
 import se.osbe.emoreactor.brain.perception.Perception;
 import se.osbe.emoreactor.brain.perception.PerceptionType;
 import se.osbe.emoreactor.brain.perception.SightPerception;
@@ -44,12 +46,11 @@ public class Brain {
 		_reactor = new Reactor();
 	}
 
+	// Add only if within brains attention span
 	public boolean addInboundPerception(Perception perception) {
 		PerceptionType perceptionType = perception.getPerceptionType();
 		Emotion emoCandidate = perception.getEmotionCandidate();
 		boolean isAccepted = false;
-		
-		// Add only if it got the brains attention
 		if (_dice.getRandomPercentage() <= _awarenessPercentage) {
 			isAccepted = _perceptionQueue.offer(emoCandidate);
 			if (!isAccepted) {
@@ -63,38 +64,21 @@ public class Brain {
 		return _personality;
 	}
 
-	public void tic() throws ReactorException {
-		
-		// Handle perception queue!
+	public Map<FeelingType, Double> tic() throws ReactorException {
+
+		// Poll perception from queue!
 		Emotion inboundEmotion = _perceptionQueue.poll();
+		
 		if (inboundEmotion != null) {
 			inboundEmotion.getFeelings().forEach(feeling -> {
 				_emoNow.addFeeling(feeling);
 				System.out.println("id: " + _id + ", " + feeling.getFeelingType().name() + ": " + _emoNow.getFeelings());
 			});
 		}
+
+		Map<FeelingType, Double> emotionNow = _reactor.tic();
 		
-		// evolve emotions
-//		for(FeelingType type : FeelingType.values()) {
-//			List<Feeling> sameFeelings = _registry.get(type);
-//			sameFeelings.forEach(feeling -> {
-//				try {
-//					Double intencity = calculateIntencity(feeling, _mainDurationCount);
-//					_emotionBuilder.addFeeling(type, intencity, feeling.getDuration());
-//				} catch (ReactorException e) {
-//					e.printStackTrace();
-//				} 
-//				//calculateIntencity(feeling, this._mainDurationCount);
-//			});
-//			
-//		}
-		
-		_reactor.tic(_mainDurationCount);
-		
-		// Increase main duration counter
-		_mainDurationCount ++; 
-		
-		return;
+		return emotionNow;
 	}
 
 	public String getId() {
