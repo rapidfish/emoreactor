@@ -55,7 +55,30 @@ public class BrainHelper {
 		String uuid = UUID.randomUUID().toString();
 		return uuid.split("-")[0];
 	}
+	
+	public long getTimeNow() {
+		return System.currentTimeMillis();
+	}
 
+	public String getFormattedWithPrefix(long millis) {
+		StringBuilder sb = new StringBuilder();
+		if (millis <= 1000) {
+			sb.append(millis).append("ms");
+		} else if (millis < 60000) {
+			sb.append(millis / 1000).append("sec");
+		} else if (millis < 3600000) {
+			sb.append(millis / 60000).append("min");
+		} else if (millis < 8640000) {
+			sb.append(millis / 3600000).append("h");
+		} else if(millis < 604800000){
+			sb.append(millis / 8640000).append("days");
+		} else {
+			long tmp = millis / 604800000;
+			sb.append(tmp).append(tmp > 1 ? "weeks" : "week");
+		}
+		return sb.toString();
+	}
+	
 	public static void main(String[] args) {
 		FeelingType emoEnum = null;
 		String matchThis = "dEP";

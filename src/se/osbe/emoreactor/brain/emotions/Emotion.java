@@ -22,18 +22,15 @@ public class Emotion implements Cloneable {
 		_feelingMap = new HashMap<FeelingType, Feeling>();
 	}
 
-	public void addFeelings(List<Feeling> feelings) {
+	public void storeFeelings(List<Feeling> feelings) {
 		for (Feeling feeling : feelings) {
-			addFeeling(feeling);
+			storeFeeling(feeling);
 		}
 	}
 
-	public void addFeeling(Feeling feeling) {
+	public void storeFeeling(Feeling feeling) {
 		FeelingType type = feeling.getFeelingType();
-		Feeling f = (_feelingMap.containsKey(type)) ? _feelingMap.get(type) : feeling;
-		if (feeling.getAmplitude() >= f.getAmplitude()) {
-			_feelingMap.put(type, feeling);
-		}
+		_feelingMap.put(type, feeling);
 	}
 	
 	public boolean removeFeeling(FeelingType type) {
@@ -59,8 +56,6 @@ public class Emotion implements Cloneable {
 		return _description;
 	}
 	
-	// ----------------------------------
-
 	@Override
 	protected Object clone() throws CloneNotSupportedException {
 		return super.clone();
@@ -94,7 +89,7 @@ public class Emotion implements Cloneable {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder("Emotion: ");
-		sb.append("emo: ").append(_description).append(" ").append(_feelingMap.values());
+		sb.append(_description).append(" ").append(_feelingMap.values());
 		return sb.toString();
 	}
 }

@@ -1,5 +1,7 @@
 package se.osbe.emoreactor.brain.emotions;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -34,20 +36,23 @@ import se.osbe.emoreactor.helper.DiceHelper;
 public class EmotionBuilder {
 
 	private List<Feeling> _feelings;
-	private final DiceHelper _dice;
+	private final BrainHelper _brainHelper;
+	private final DiceHelper _diceHelper;
 
 	public EmotionBuilder() {
 		_feelings = new LinkedList<Feeling>();
-		_dice = new DiceHelper();
+		_brainHelper = new BrainHelper();
+		_diceHelper =  new DiceHelper();
 	}
 
-	public EmotionBuilder addEmotion(Emotion emo){
+	public EmotionBuilder addEmotion(Emotion emo) {
 		emo.getFeelings();
 		return this;
 	}
-	
-	public EmotionBuilder addFeeling(FeelingType emotionEnum, Double intensity, long initialTime, long duration) throws ReactorException {
-		AbstractFeeling feeling;
+
+	public EmotionBuilder addFeeling(FeelingType emotionEnum, Double intensity, long initialTime, long duration)
+			throws ReactorException {
+		Feeling feeling;
 		switch (emotionEnum) {
 		case AGONY:
 			feeling = (AbstractFeeling) new AgonyFeeling(intensity, initialTime, duration);
@@ -124,7 +129,7 @@ public class EmotionBuilder {
 		}
 		return this;
 	}
-	
+
 	/**
 	 * Add scripted feelings in plain text format.<br>
 	 * <br>
@@ -152,7 +157,7 @@ public class EmotionBuilder {
 	 * intensity for each distict feeling.
 	 * 
 	 * @param string
-	 *            with feelings in plain text, eg. "agony=5;"
+	 *            with feelings in plain text, eg. "agony=5:3s;"
 	 * @return
 	 * @throws NumberFormatException
 	 * @throws ReactorException
@@ -162,25 +167,50 @@ public class EmotionBuilder {
 			throw new ReactorException(
 					"Error, no script to process due to null or zero length or missing ';' termination");
 		}
-		String[] statements = script.split(";");
-		for (String statement : statements) {
-			String[] operands = statement.split("=");
-			if (operands.length == 2) {
-				FeelingType emo = new BrainHelper().getEmotionEnumForPattern(operands[0]);
-				Double tmp = new Double(0);
-				if(operands[1].startsWith("?")){
-					tmp = _dice.getRandomPercentage();
-				} else if(operands[1].startsWith("*")){
-					tmp = _dice.getRandomPercentage();
-				}  else if(operands[1].startsWith("-*")) {
-					Double p = _dice.getRandomPercentage();
-					tmp = _dice.getFiftyFifty() ? p : ((-1) * p);
-				} else {
-					tmp = Double.parseDouble(operands[1]);
-				}
-				addFeeling(emo, tmp, 1, 100l);
+		List<String> statements = new ArrayList<>(Arrays.asList(script.replaceAll("[ ]", "").split(";")));
+		statements.forEach(statement -> {
+			
+			// split into parts for each operand: operand=4,10[s|m|h]
+			String parts[] = statement.split("=");
+			FeelingType feelingType = null;
+			if(parts[0].contains("*")){
+				Double rnd = _diceHelper.getRandomDoubleBetween(0d, (new Double(FeelingType.values().length)));
+				feelingType = FeelingType.values()[rnd.intValue()];
+			} else {
+				feelingType = new BrainHelper().getEmotionEnumForPattern(parts[0]);
 			}
-		}
+			Double intensity = null;
+			String durationString = null;
+			String prefix = null;
+			long duration = 0;
+			// split params to operand
+			String params[] = parts[1].split(",");
+			if(params.length > 0) {
+				intensity = Double.parseDouble(params[0]);
+				durationString = new String(params[1]);
+				prefix = durationString.replaceAll("\\d", "");
+				duration = Long.parseLong(durationString.replaceAll("\\D", ""));	
+				if(prefix.startsWith("s")) {
+					duration *= 1000;
+				} else if(prefix.startsWith("m")) { 
+					duration *= 60000;
+				} else if(prefix.startsWith("h")) { 
+					duration *= 3600000;
+				} else if(prefix.startsWith("d")) { 
+					duration *= 86400000;
+				}  else if(prefix.startsWith("w")) { 
+					duration *= 604800000;
+				}
+			}else{ 
+				intensity = _diceHelper.getRandomDoubleBetween(1d, 100d);
+				duration = 1000 * _diceHelper.getRandomDoubleBetween(1d, 60d).longValue();
+			}
+			try {
+				addFeeling(feelingType, intensity, _brainHelper.getTimeNow(), duration);
+			} catch (ReactorException e) {
+				e.printStackTrace();
+			}
+		});
 		return this;
 	}
 
@@ -193,7 +223,7 @@ public class EmotionBuilder {
 			throw new ReactorException("EmotiongBuilder has no feelings to build up on!");
 		}
 		Emotion emotion = new Emotion(StringUtils.isNotEmpty(description) ? description : "anonomus");
-		emotion.addFeelings(_feelings);
+		emotion.storeFeelings(_feelings);
 		reset();
 		return emotion;
 	}
@@ -204,10 +234,19 @@ public class EmotionBuilder {
 	}
 
 	public static void main(String[] args) throws Exception {
-		EmotionBuilder feelingBuilder = new EmotionBuilder();
-//		Emotion feeling1 = feelingBuilder.addFeelings("agon=15;afr=10;hel=24").build("My Feeling1");
-		Emotion feeling2 = feelingBuilder.reset().addFeeling(new RelaxedFeeling(3d, 1, 100)).build("My feeling2"); // .addFeelings("Alive=5;OPE=4;Confused=2").build();
-//		System.out.println(feeling1);
-		System.out.println(feeling2);
+		EmotionBuilder eb = new EmotionBuilder();
+		// Emotion feeling1 =
+		// emotionBuilder.addFeelings("agon=15;afr=10;hel=24").build("My
+		// Feeling1");
+		eb.addFeeling(new RelaxedFeeling(3d, 0, 60000));
+		eb.addFeeling(new LovingFeeling(40d, 0, 5*60*1000));
+		eb.addFeelings("*=10,40s;");
+		
+		
+		Emotion feeling = eb.build("My feeling");
+		
+		// System.out.println(emotionBuilder);
+		System.out.println(feeling);
+		feeling.getFeelings().forEach(f->{System.out.println("feeling: " + f.getFeelingType() + ", max amplitude: " + f.getAmplitude() + ", initial time: " + f.getInitialTime() + ", duration: " + f.getDuration() + "ms");});;
 	}
 }

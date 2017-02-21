@@ -1,6 +1,7 @@
 package se.osbe.emoreactor.brain.emotions.feelings;
 
 import se.osbe.emoreactor.brain.reactor.ReactorException;
+import se.osbe.emoreactor.helper.BrainHelper;
 
 /**
  * Difference between feelings and emotions
@@ -34,7 +35,13 @@ public abstract class AbstractFeeling implements Feeling {
 		_feelingType = feeling;
 		_amplitude = amplitude;
 		_duration = duration;
-		_initialTime = initialTime;
+		if(initialTime > 0) {
+			_initialTime = initialTime;
+		} else if(initialTime == 0){
+			 _initialTime = new BrainHelper().getTimeNow();
+		} else {
+			throw new ReactorException("Not possible to initialize with a negative initial time");
+		}
 	}
 
 	public FeelingType getFeelingType() {
@@ -56,8 +63,10 @@ public abstract class AbstractFeeling implements Feeling {
 	@Override
 	public String toString() {
 		String result = null;
+		BrainHelper bh = new BrainHelper();
+		String duration = bh.getFormattedWithPrefix(getDuration());
 		if(getAmplitude() != null){
-			result = _feelingType + "(" + getAmplitude().intValue() + ":)";
+			result = _feelingType + "(max.amp: " + getAmplitude().intValue() + ", duration: " +  duration + ")";
 		}
 		return result;
 	}

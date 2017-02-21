@@ -1,5 +1,6 @@
 package se.osbe.emoreactor.brain;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
@@ -14,23 +15,16 @@ import se.osbe.emoreactor.brain.personality.Personality;
 import se.osbe.emoreactor.brain.reactor.Reactor;
 import se.osbe.emoreactor.brain.reactor.ReactorException;
 import se.osbe.emoreactor.helper.BrainHelper;
-import se.osbe.emoreactor.helper.DiceHelper;
 
 public class Brain {
 
 	private final String _id;
+	private long _ticCounter;
 	private final Personality _personality;
-	private Integer _awarenessPercentage;
-	
-	private DiceHelper _dice;
-	private long _mainDurationCount;
-	
+	private Integer _perceptionAwarenessPercentage;
 	private final Queue<Emotion> _perceptionQueue;
-	
 	private Reactor _reactor;
-	
-	private Emotion _emoNow;
-	
+
 	@SuppressWarnings("unused")
 	private Brain() {
 		this(null);
@@ -39,11 +33,11 @@ public class Brain {
 	public Brain(Personality personality) {
 		_id = BrainHelper.createUUID();
 		_personality = personality;
-		_awarenessPercentage = 100; // 100%
-		_perceptionQueue = new LinkedList<Emotion>(); // incomming emo's from perception
-		_dice = new DiceHelper();
-		_mainDurationCount = 0;
+		_perceptionAwarenessPercentage = 100; // 100%
+		_perceptionQueue = new LinkedList<Emotion>(); // incomming emo's from
+														// perception
 		_reactor = new Reactor();
+		_ticCounter = 0;
 	}
 
 	// Add only if within brains attention span
@@ -51,12 +45,12 @@ public class Brain {
 		PerceptionType perceptionType = perception.getPerceptionType();
 		Emotion emoCandidate = perception.getEmotionCandidate();
 		boolean isAccepted = false;
-		if (_dice.getRandomPercentage() <= _awarenessPercentage) {
-			isAccepted = _perceptionQueue.offer(emoCandidate);
-			if (!isAccepted) {
-				System.err.println("WARNING! EMOTION QUEUE IS OVERLOADED!!! " + perception);
-			}
+		// if (_dice.getRandomPercentage() <= _awarenessPercentage) {
+		isAccepted = _perceptionQueue.offer(emoCandidate);
+		if (!isAccepted) {
+			System.err.println("WARNING! EMOTION QUEUE IS OVERLOADED!!! " + perception);
 		}
+		// }
 		return isAccepted;
 	}
 
@@ -68,16 +62,14 @@ public class Brain {
 
 		// Poll perception from queue!
 		Emotion inboundEmotion = _perceptionQueue.poll();
-		
 		if (inboundEmotion != null) {
-			inboundEmotion.getFeelings().forEach(feeling -> {
-				_emoNow.addFeeling(feeling);
-				System.out.println("id: " + _id + ", " + feeling.getFeelingType().name() + ": " + _emoNow.getFeelings());
-			});
+			System.out.println("Inbound emo: " + inboundEmotion);
+			_reactor.addEmotion(inboundEmotion);
 		}
 
-		Map<FeelingType, Double> emotionNow = _reactor.tic();
-		
+		// Consume one ticTac in reactor
+		Map<FeelingType, Double> emotionNow = _reactor.ticTac();
+		_ticCounter++;
 		return emotionNow;
 	}
 
@@ -85,29 +77,56 @@ public class Brain {
 		return _id;
 	}
 
-	public Integer getAwarenessPercentage() {
-		return _awarenessPercentage;
+	public Integer getPerceptionAwarenessPercentage() {
+		return _perceptionAwarenessPercentage;
 	}
 
-	public Emotion getEmoNow() {
-		return _emoNow;
+	public void setPerceptionAwarenessPercentage(Integer percentage) {
+		_perceptionAwarenessPercentage = (percentage >= 0 && percentage <= 100) ? percentage : 0;
 	}
-	
-	public static void main(String[] args) throws ReactorException {
+
+	public long getTickCounter() {
+		return _ticCounter;
+	}
+
+	boolean isReactorDry() {
+		return _reactor.isRegistryEmpty();
+	}
+
+	public static void main(String[] args) throws ReactorException, InterruptedException {
 		Personality personality = new Personality();
 		Brain brain = new Brain(personality);
 		System.out.println("Personality:\n" + brain.getPersonality());
 		System.out.println("---------------------------------------------------");
-		System.out.println("Awareness: " + brain.getAwarenessPercentage() + "%");
+		System.out.println("Awareness: " + brain.getPerceptionAwarenessPercentage() + "%");
 		System.out.println("---------------------------------------------------");
 		EmotionBuilder eb = new EmotionBuilder();
-		
-		Emotion emo = eb.addFeelings("Afra=100;").build("AfraidEmo");
+		Emotion emo = eb.addFeelings("Anger=60,30s; Agony=20,15s; Indifferent=40,20s;").build("AngerEmo");
+		Emotion emo2 = eb.addFeelings("Anger=60,30s; Agony=20,15s; Indifferent=40,20s;").build("AngerEmo");
 		Perception perception = new SightPerception(emo);
 		brain.addInboundPerception(perception);
-		
-		for (int i = 0; i < 10; i++) {
-			System.out.println(brain.getEmoNow());
-		}
+		do {
+			if (brain.isReactorDry()) {
+				System.out.println("Adding perception: " + perception);
+				brain.addInboundPerception(
+						new SightPerception(eb.addFeelings("Anger=60,30s; Agony=20,15s; Indifferent=40,20s;")
+								.build("Emo" + brain.getTickCounter())));
+			}
+
+			Map<FeelingType, Double> emoNow = brain.tic();
+			System.out.print(brain.getTickCounter() + ":");
+
+			Iterator<FeelingType> i = emoNow.keySet().iterator();
+			while (i.hasNext()) {
+				FeelingType t = i.next();
+				int v = emoNow.get(t).intValue();
+				if (v > 0) {
+					System.out.print(t.description() + ":" + v + ", ");
+				}
+			}
+			System.out.println();
+
+			Thread.sleep(1000);
+		} while (brain.getTickCounter() < 100);
 	}
 }
