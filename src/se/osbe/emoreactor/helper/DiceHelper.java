@@ -21,6 +21,7 @@ public class DiceHelper {
 		return (result.compareTo(chance) <= 0);
 	}
 
+	// Error +0,000001127 (when tested with one billion iterations) in favor for other half 
 	public boolean percentageChance(int percentage){
 		if(percentage == 0) {
 			return false;
@@ -51,7 +52,11 @@ public class DiceHelper {
 	private Double getHighestDouble(Double t1, Double t2) {
 		return (t1.compareTo(t2) < 0) ? t2 : t1;
 	}
-
+	
+	public Integer getRandomFibonacci(int order){
+		return fibonacci(_rnd.nextInt(order));
+	}
+	
 	public Integer fibonacci(Integer n) {
 		Integer before = 0;
 		Integer after = 1;
@@ -65,8 +70,9 @@ public class DiceHelper {
 	}
 	
 	public static void main(String[] args) {
-		for(int i = 0; i < 46; i++) {
-			System.out.println(new DiceHelper().getRandomDoubleBetween(10d, 12d));
+		DiceHelper dice = new DiceHelper();
+		for(int i = 0; i < 10; i++) {
+			System.out.println(dice.getRandomFibonacci(10));
 		}
 	}
 }

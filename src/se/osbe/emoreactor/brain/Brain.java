@@ -1,18 +1,16 @@
 package se.osbe.emoreactor.brain;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 
 import se.osbe.emoreactor.brain.emotions.Emotion;
-import se.osbe.emoreactor.brain.emotions.EmotionBuilder;
 import se.osbe.emoreactor.brain.emotions.feelings.FeelingType;
 import se.osbe.emoreactor.brain.perception.Perception;
 import se.osbe.emoreactor.brain.perception.PerceptionType;
-import se.osbe.emoreactor.brain.perception.SightPerception;
 import se.osbe.emoreactor.brain.personality.Personality;
 import se.osbe.emoreactor.brain.reactor.Reactor;
+import se.osbe.emoreactor.brain.reactor.Reactor.ProgressType;
 import se.osbe.emoreactor.brain.reactor.ReactorException;
 import se.osbe.emoreactor.helper.BrainHelper;
 
@@ -63,7 +61,7 @@ public class Brain {
 		// Poll perception from queue!
 		Emotion inboundEmotion = _perceptionQueue.poll();
 		if (inboundEmotion != null) {
-			System.out.println("Inbound emo: " + inboundEmotion);
+			System.out.println("Inbound perception: " + inboundEmotion);
 			_reactor.addEmotion(inboundEmotion);
 		}
 
@@ -89,44 +87,27 @@ public class Brain {
 		return _ticCounter;
 	}
 
-	boolean isReactorDry() {
+	public boolean isReactorDry() {
 		return _reactor.isRegistryEmpty();
 	}
 
-	public static void main(String[] args) throws ReactorException, InterruptedException {
-		Personality personality = new Personality();
-		Brain brain = new Brain(personality);
-		System.out.println("Personality:\n" + brain.getPersonality());
-		System.out.println("---------------------------------------------------");
-		System.out.println("Awareness: " + brain.getPerceptionAwarenessPercentage() + "%");
-		System.out.println("---------------------------------------------------");
-		EmotionBuilder eb = new EmotionBuilder();
-		Emotion emo = eb.addFeelings("Anger=60,30s; Agony=20,15s; Indifferent=40,20s;").build("AngerEmo");
-		Emotion emo2 = eb.addFeelings("Anger=60,30s; Agony=20,15s; Indifferent=40,20s;").build("AngerEmo");
-		Perception perception = new SightPerception(emo);
-		brain.addInboundPerception(perception);
-		do {
-			if (brain.isReactorDry()) {
-				System.out.println("Adding perception: " + perception);
-				brain.addInboundPerception(
-						new SightPerception(eb.addFeelings("Anger=60,30s; Agony=20,15s; Indifferent=40,20s;")
-								.build("Emo" + brain.getTickCounter())));
-			}
+	public ProgressType getProgressTypeForFeeling(FeelingType type) {
+		return _reactor.getProgressForFeeling(type);
+	}
 
-			Map<FeelingType, Double> emoNow = brain.tic();
-			System.out.print(brain.getTickCounter() + ":");
+	public String getProgressSignForFeeling(FeelingType type) {
+		ProgressType pt = _reactor.getProgressForFeeling(type);
+		String result = null;
+		String k = String.format( "%.2f", pt.getK());
+		if (pt == ProgressType.NEUTRAL) {
+			result = "[" + k + "X]";
+		} else if (pt == ProgressType.POSITIVE) {
+			result = "[+" + k + "X]";
+		} else
 
-			Iterator<FeelingType> i = emoNow.keySet().iterator();
-			while (i.hasNext()) {
-				FeelingType t = i.next();
-				int v = emoNow.get(t).intValue();
-				if (v > 0) {
-					System.out.print(t.description() + ":" + v + ", ");
-				}
-			}
-			System.out.println();
-
-			Thread.sleep(1000);
-		} while (brain.getTickCounter() < 100);
+		if (pt == ProgressType.NEGATIVE) {
+			result = "[" + k + "X]";
+		}
+		return result;
 	}
 }

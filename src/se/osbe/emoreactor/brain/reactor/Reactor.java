@@ -15,10 +15,35 @@ public class Reactor {
 
 	private Map<FeelingType, List<Feeling>> _registry;
 	private Map<FeelingType, Double> _intensityResultMap;
+	private Map<FeelingType, ProgressType> _progressingTypeMap;
 	private final BrainHelper _brainHelper;
+	
+	public enum ProgressType {
+		NEUTRAL, POSITIVE, NEGATIVE;
+		private Double _k;
+		ProgressType() {
+			_k = new Double(0);
+		}
+		public Double getK(){
+			return _k;
+		}
+		public void setK(Double k){
+			_k = k;
+		}
+		public ProgressType getTypeForVal(Double d){
+			if(d.compareTo(0d) == 0){
+				return ProgressType.NEUTRAL;
+			} else if(d.compareTo(0d) > 0 ) {
+				return ProgressType.POSITIVE;
+			} else {
+				return ProgressType.NEGATIVE;
+			}
+		}
+	};
 	
 	public Reactor() {
 		_intensityResultMap = new HashMap<>();
+		_progressingTypeMap = new HashMap<>();
 		_registry = new HashMap<>();
 		for (FeelingType type : FeelingType.values()) {
 			_registry.put(type, new LinkedList<>());
@@ -39,6 +64,10 @@ public class Reactor {
 			}
 		}
 		return true;
+	}
+	
+	public ProgressType getProgressForFeeling(FeelingType type){
+		return _progressingTypeMap.get(type);
 	}
 	
 	public Map<FeelingType, Double> ticTac() throws ReactorException {
@@ -69,6 +98,15 @@ public class Reactor {
 			for (int j = 0; j < calculatedIntensityList.size(); j++) {
 				sum += calculatedIntensityList.get(j);
 			}
+			Double oldSum = _intensityResultMap.get(feelingType);
+			oldSum = (oldSum != null) ? oldSum : new Double(0); 
+			Double delta = sum - oldSum; 
+			ProgressType k = ProgressType.NEUTRAL;
+			if(delta.compareTo(0d) != 0) {
+				k = (delta.compareTo(0d) > 0) ? ProgressType.POSITIVE : ProgressType.NEGATIVE;
+			}
+			k.setK(delta); // store delta
+			_progressingTypeMap.put(feelingType, k);
 			_intensityResultMap.put(feelingType, sum);
 			calculatedIntensityList.clear();
 		}
@@ -91,8 +129,6 @@ public class Reactor {
 		long initialTime = feeling.getInitialTime();
 		long duration = feeling.getDuration();
 		long endTime = (initialTime + duration);
-		//TODO: t är fel här! fixa!
-		// (endTime - initialTime)/duration
 		long t = (timeNow - initialTime);
 		long shaveValue = t % 1000;
 		t -= shaveValue; // Shave off surplus time that eventually will drift away!
