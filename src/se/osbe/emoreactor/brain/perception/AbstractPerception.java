@@ -31,7 +31,7 @@ public abstract class AbstractPerception implements Perception {
 	
 	@Override
 	public String toString() {
-		String result = "Stimuli from sense: " + _perceptionType.getDescription() + " Emo Candidate: (" + _emoCandidate + ")";
+		String result = _perceptionType.getDescription() + " --> Emo(" + _emoCandidate + ")";
 		return result;
 	}
 }

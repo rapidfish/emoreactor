@@ -11,14 +11,8 @@ import se.osbe.emoreactor.brain.emotions.feelings.FeelingType;
 public class Emotion implements Cloneable {
 
 	private final Map<FeelingType, Feeling> _feelingMap;
-	private String _description;
 
-	public Emotion() {
-		this("");
-	}
-
-	protected Emotion(String description) {
-		_description = description;
+	protected Emotion() {
 		_feelingMap = new HashMap<FeelingType, Feeling>();
 	}
 
@@ -52,10 +46,6 @@ public class Emotion implements Cloneable {
 		return new LinkedList<Feeling>(_feelingMap.values());
 	}
 
-	public String getDescription() {
-		return _description;
-	}
-	
 	@Override
 	protected Object clone() throws CloneNotSupportedException {
 		return super.clone();
@@ -88,8 +78,8 @@ public class Emotion implements Cloneable {
 
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder("Emotion: ");
-		sb.append(_description).append(" ").append(_feelingMap.values());
+		StringBuilder sb = new StringBuilder();
+		sb.append(_feelingMap.values());
 		return sb.toString();
 	}
 }

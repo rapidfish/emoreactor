@@ -5,8 +5,6 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
-
 import se.osbe.emoreactor.brain.emotions.feelings.AbstractFeeling;
 import se.osbe.emoreactor.brain.emotions.feelings.AfraidFeeling;
 import se.osbe.emoreactor.brain.emotions.feelings.AgonyFeeling;
@@ -215,14 +213,10 @@ public class EmotionBuilder {
 	}
 
 	public Emotion build() throws ReactorException {
-		return build(null);
-	}
-
-	public Emotion build(String description) throws ReactorException {
 		if (_feelings == null) {
 			throw new ReactorException("EmotiongBuilder has no feelings to build up on!");
 		}
-		Emotion emotion = new Emotion(StringUtils.isNotEmpty(description) ? description : "anonomus");
+		Emotion emotion = new Emotion();
 		emotion.storeFeelings(_feelings);
 		reset();
 		return emotion;
@@ -243,7 +237,7 @@ public class EmotionBuilder {
 		eb.addFeelings("*=10,40s;");
 		
 		
-		Emotion feeling = eb.build("My feeling");
+		Emotion feeling = eb.build();
 		
 		// System.out.println(emotionBuilder);
 		System.out.println(feeling);

@@ -71,6 +71,8 @@ public class DiceHelper {
 	
 	public static void main(String[] args) {
 		DiceHelper dice = new DiceHelper();
+		System.out.println(dice.fibonacci(10));
+		System.out.println("---");
 		for(int i = 0; i < 10; i++) {
 			System.out.println(dice.getRandomFibonacci(10));
 		}

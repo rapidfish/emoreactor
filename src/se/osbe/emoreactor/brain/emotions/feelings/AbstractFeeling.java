@@ -14,7 +14,7 @@ import se.osbe.emoreactor.helper.BrainHelper;
 public abstract class AbstractFeeling implements Feeling {
 
 	private final static String PARAM_IS_NULL = "One or more parameter(s) is set to null";
-	
+
 	private final FeelingType _feelingType;
 	private final Double _amplitude;
 	private final long _duration;
@@ -27,18 +27,18 @@ public abstract class AbstractFeeling implements Feeling {
 
 	protected AbstractFeeling(FeelingType feeling, Double amplitude, long initialTime, long duration)
 			throws ReactorException {
-		
+
 		if (feeling == null) {
 			throw new ReactorException(PARAM_IS_NULL);
 		}
-		
+
 		_feelingType = feeling;
 		_amplitude = amplitude;
 		_duration = duration;
-		if(initialTime > 0) {
+		if (initialTime > 0) {
 			_initialTime = initialTime;
-		} else if(initialTime == 0){
-			 _initialTime = new BrainHelper().getTimeNow();
+		} else if (initialTime == 0) {
+			_initialTime = new BrainHelper().getTimeNow();
 		} else {
 			throw new ReactorException("Not possible to initialize with a negative initial time");
 		}
@@ -55,19 +55,20 @@ public abstract class AbstractFeeling implements Feeling {
 	public long getInitialTime() {
 		return _initialTime;
 	}
-	
+
 	public long getDuration() {
 		return _duration;
 	}
-	
+
 	@Override
 	public String toString() {
-		String result = null;
-		BrainHelper bh = new BrainHelper();
-		String duration = bh.getFormattedWithPrefix(getDuration());
-		if(getAmplitude() != null){
-			result = _feelingType + "(max.amp: " + getAmplitude().intValue() + ", duration: " +  duration + ")";
+		StringBuilder sb = new StringBuilder();
+		if (getAmplitude() != null) {
+			BrainHelper helper = new BrainHelper();
+			String duration = helper.getFormattedWithPrefix(getDuration());
+			sb.append(_feelingType.name()).append("(amplitude=").append(getAmplitude().intValue()).append(", duration=")
+					.append(duration).append(")");
 		}
-		return result;
+		return sb.toString();
 	}
 }

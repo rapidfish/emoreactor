@@ -61,7 +61,7 @@ public class Brain {
 		// Poll perception from queue!
 		Emotion inboundEmotion = _perceptionQueue.poll();
 		if (inboundEmotion != null) {
-			System.out.println("Inbound perception: " + inboundEmotion);
+			System.err.println("Inbound -> " + inboundEmotion);
 			_reactor.addEmotion(inboundEmotion);
 		}
 
@@ -100,13 +100,13 @@ public class Brain {
 		String result = null;
 		String k = String.format( "%.2f", pt.getK());
 		if (pt == ProgressType.NEUTRAL) {
-			result = "[" + k + "X]";
+			result = k;
 		} else if (pt == ProgressType.POSITIVE) {
-			result = "[+" + k + "X]";
+			result = "+" + k;
 		} else
 
 		if (pt == ProgressType.NEGATIVE) {
-			result = "[" + k + "X]";
+			result = k;
 		}
 		return result;
 	}

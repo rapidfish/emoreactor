@@ -5,6 +5,6 @@ import se.osbe.emoreactor.brain.reactor.ReactorException;
 
 public class HearingPerception extends AbstractPerception {
 	public HearingPerception(Emotion emoCandidate) throws ReactorException {
-		super(PerceptionType.HEARING, emoCandidate);
+		super(PerceptionType.HEAR, emoCandidate);
 	}
 }
