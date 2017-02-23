@@ -23,7 +23,7 @@ public class PerceptionBuilder {
 	 * Valid perception types is: Taste, See, Touch, Smell, Hear.
 	 * 
 	 * @param feelingsScript String with feelings separated with semicolon on the form:
-	 * 		[Feeling]=[intensity value], [duration][prefix: s/m/h, seconds, minutes, hours];
+	 * 		[Feeling]=[intensity value], [duration][prefix: s/m/h/w, seconds, minutes, hours, weeks];
 	 * Example: "Agony=24,34s;Sadness=31,45s;Hurt=22,1h"
 	 * @return
 	 * @throws ReactorException
