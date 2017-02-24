@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import se.osbe.emoreactor.brain.reactor.ReactorException;
+import se.osbe.emoreactor.helper.DiceHelperImpl;
 import se.osbe.emoreactor.helper.DiceHelper;
 
 /**
@@ -202,13 +203,13 @@ public class Personality {
 	}
 	
 	public Personality getRandomPersonality() throws ReactorException{
-		DiceHelper dice = new DiceHelper();
+		DiceHelper dice = new DiceHelperImpl();
 		Personality p = new Personality(dice.getRandomPercentage(), dice.getRandomPercentage(), dice.getRandomPercentage(), dice.getRandomPercentage());
 		return p;
 	}
 
 	public static void main(String[] args) throws ReactorException {
-		DiceHelper dice = new DiceHelper();
+		DiceHelper dice = new DiceHelperImpl();
 		Personality p = new Personality(dice.getRandomPercentage(), dice.getRandomPercentage(), dice.getRandomPercentage(), dice.getRandomPercentage());
 		System.out.print(p.getIntrovertOrExtrovert() + "(" + p.getIntensityForType(p.getIntrovertOrExtrovert()) +"%) <--> ");
 		System.out.print(p.getIntuitionVsSensing() + "(" + p.getIntensityForType(p.getIntuitionVsSensing()) +"%) <--> ");

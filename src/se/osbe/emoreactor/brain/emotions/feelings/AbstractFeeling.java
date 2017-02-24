@@ -1,6 +1,7 @@
 package se.osbe.emoreactor.brain.emotions.feelings;
 
 import se.osbe.emoreactor.brain.reactor.ReactorException;
+import se.osbe.emoreactor.helper.BrainHelperImpl;
 import se.osbe.emoreactor.helper.BrainHelper;
 
 /**
@@ -38,7 +39,7 @@ public abstract class AbstractFeeling implements Feeling {
 		if (initialTime > 0) {
 			_initialTime = initialTime;
 		} else if (initialTime == 0) {
-			_initialTime = new BrainHelper().getTimeNow();
+			_initialTime = new BrainHelperImpl().getTimeNow();
 		} else {
 			throw new ReactorException("Not possible to initialize with a negative initial time");
 		}
@@ -64,7 +65,7 @@ public abstract class AbstractFeeling implements Feeling {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		if (getAmplitude() != null) {
-			BrainHelper helper = new BrainHelper();
+			BrainHelper helper = new BrainHelperImpl();
 			String duration = helper.getFormattedWithPrefix(getDuration());
 			sb.append(_feelingType.name()).append("(amplitude=").append(getAmplitude().intValue()).append(", duration=")
 					.append(duration).append(")");

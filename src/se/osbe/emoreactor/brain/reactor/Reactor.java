@@ -41,14 +41,14 @@ public class Reactor {
 		}
 	};
 	
-	public Reactor() {
+	public Reactor(BrainHelper helper) {
 		_intensityResultMap = new HashMap<>();
 		_progressingTypeMap = new HashMap<>();
 		_registry = new HashMap<>();
 		for (FeelingType type : FeelingType.values()) {
 			_registry.put(type, new LinkedList<>());
 		}
-		_brainHelper = new BrainHelper();
+		_brainHelper = helper;
 	}
 
 	public void addEmotion(Emotion emo) {

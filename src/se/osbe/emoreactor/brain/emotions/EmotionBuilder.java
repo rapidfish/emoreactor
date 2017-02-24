@@ -28,7 +28,9 @@ import se.osbe.emoreactor.brain.emotions.feelings.RelaxedFeeling;
 import se.osbe.emoreactor.brain.emotions.feelings.SadFeeling;
 import se.osbe.emoreactor.brain.emotions.feelings.StrongFeeling;
 import se.osbe.emoreactor.brain.reactor.ReactorException;
+import se.osbe.emoreactor.helper.BrainHelperImpl;
 import se.osbe.emoreactor.helper.BrainHelper;
+import se.osbe.emoreactor.helper.DiceHelperImpl;
 import se.osbe.emoreactor.helper.DiceHelper;
 
 public class EmotionBuilder {
@@ -39,8 +41,8 @@ public class EmotionBuilder {
 
 	public EmotionBuilder() {
 		_feelings = new LinkedList<Feeling>();
-		_brainHelper = new BrainHelper();
-		_diceHelper =  new DiceHelper();
+		_brainHelper = new BrainHelperImpl();
+		_diceHelper =  new DiceHelperImpl();
 	}
 
 	public EmotionBuilder addEmotion(Emotion emo) {
@@ -175,7 +177,7 @@ public class EmotionBuilder {
 				Double rnd = _diceHelper.getRandomDoubleBetween(0d, (new Double(FeelingType.values().length)));
 				feelingType = FeelingType.values()[rnd.intValue()];
 			} else {
-				feelingType = new BrainHelper().getEmotionEnumForPattern(parts[0]);
+				feelingType = new BrainHelperImpl().getEmotionEnumForPattern(parts[0]);
 			}
 			Double intensity = null;
 			String durationString = null;

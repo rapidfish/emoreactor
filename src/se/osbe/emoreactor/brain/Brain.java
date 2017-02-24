@@ -12,29 +12,28 @@ import se.osbe.emoreactor.brain.personality.Personality;
 import se.osbe.emoreactor.brain.reactor.Reactor;
 import se.osbe.emoreactor.brain.reactor.Reactor.ProgressType;
 import se.osbe.emoreactor.brain.reactor.ReactorException;
-import se.osbe.emoreactor.helper.BrainHelper;
+import se.osbe.emoreactor.helper.DiceHelper;
 
 public class Brain {
 
-	private final String _id;
 	private long _ticCounter;
 	private final Personality _personality;
 	private Integer _perceptionAwarenessPercentage;
 	private final Queue<Emotion> _perceptionQueue;
 	private Reactor _reactor;
+	private DiceHelper _dice;
 
 	@SuppressWarnings("unused")
 	private Brain() {
-		this(null);
+		this(null, null);
 	}
 
-	public Brain(Personality personality) {
-		_id = BrainHelper.createUUID();
+	public Brain(Personality personality, BrainConfig config) {
 		_personality = personality;
 		_perceptionAwarenessPercentage = 100; // 100%
-		_perceptionQueue = new LinkedList<Emotion>(); // incomming emo's from
-														// perception
-		_reactor = new Reactor();
+		_perceptionQueue = new LinkedList<Emotion>();
+		_reactor = new Reactor(config.getBrainHelper());
+		_dice = config.getDiceHelper();
 		_ticCounter = 0;
 	}
 
@@ -43,12 +42,12 @@ public class Brain {
 		PerceptionType perceptionType = perception.getPerceptionType();
 		Emotion emoCandidate = perception.getEmotionCandidate();
 		boolean isAccepted = false;
-		// if (_dice.getRandomPercentage() <= _awarenessPercentage) {
-		isAccepted = _perceptionQueue.offer(emoCandidate);
-		if (!isAccepted) {
-			System.err.println("WARNING! EMOTION QUEUE IS OVERLOADED!!! " + perception);
+		if (_dice.getRandomPercentage() <= _perceptionAwarenessPercentage) {
+			isAccepted = _perceptionQueue.offer(emoCandidate);
+			if (!isAccepted) {
+				System.err.println("WARNING! EMOTION QUEUE IS OVERLOADED!!! " + perception);
+			}
 		}
-		// }
 		return isAccepted;
 	}
 
@@ -69,10 +68,6 @@ public class Brain {
 		Map<FeelingType, Double> emotionNow = _reactor.ticTac();
 		_ticCounter++;
 		return emotionNow;
-	}
-
-	public String getId() {
-		return _id;
 	}
 
 	public Integer getPerceptionAwarenessPercentage() {
@@ -98,7 +93,7 @@ public class Brain {
 	public String getProgressSignForFeeling(FeelingType type) {
 		ProgressType pt = _reactor.getProgressForFeeling(type);
 		String result = null;
-		String k = String.format( "%.2f", pt.getK());
+		String k = String.format("%.2f", pt.getK());
 		if (pt == ProgressType.NEUTRAL) {
 			result = k;
 		} else if (pt == ProgressType.POSITIVE) {
