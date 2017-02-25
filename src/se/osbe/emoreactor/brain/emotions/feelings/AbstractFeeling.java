@@ -1,8 +1,8 @@
 package se.osbe.emoreactor.brain.emotions.feelings;
 
 import se.osbe.emoreactor.brain.reactor.ReactorException;
-import se.osbe.emoreactor.helper.BrainHelperImpl;
 import se.osbe.emoreactor.helper.BrainHelper;
+import se.osbe.emoreactor.helper.BrainHelperImpl;
 
 /**
  * Difference between feelings and emotions
@@ -59,6 +59,37 @@ public abstract class AbstractFeeling implements Feeling {
 
 	public long getDuration() {
 		return _duration;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((_amplitude == null) ? 0 : _amplitude.hashCode());
+		result = prime * result + (int) (_duration ^ (_duration >>> 32));
+		result = prime * result + ((_feelingType == null) ? 0 : _feelingType.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		AbstractFeeling other = (AbstractFeeling) obj;
+		if (_amplitude == null) {
+			if (other._amplitude != null)
+				return false;
+		} else if (!_amplitude.equals(other._amplitude))
+			return false;
+		if (_duration != other._duration)
+			return false;
+		if (_feelingType != other._feelingType)
+			return false;
+		return true;
 	}
 
 	@Override
