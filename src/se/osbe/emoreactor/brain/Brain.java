@@ -10,7 +10,7 @@ import se.osbe.emoreactor.brain.perception.Perception;
 import se.osbe.emoreactor.brain.perception.PerceptionType;
 import se.osbe.emoreactor.brain.personality.Personality;
 import se.osbe.emoreactor.brain.reactor.Reactor;
-import se.osbe.emoreactor.brain.reactor.Reactor.ProgressType;
+import se.osbe.emoreactor.brain.reactor.Reactor.ProgressTrendType;
 import se.osbe.emoreactor.brain.reactor.ReactorException;
 import se.osbe.emoreactor.helper.DiceHelper;
 
@@ -25,28 +25,32 @@ public class Brain {
 
 	@SuppressWarnings("unused")
 	private Brain() {
-		this(null, null);
+		this(null);
 	}
 
-	public Brain(Personality personality, BrainConfig config) {
-		_personality = personality;
-		_perceptionAwarenessPercentage = 100; // 100%
+	public Brain(BrainConfig config) {
+		_personality = config.getPersonality();
+		this.setPerceptionAwarenessPercentage(config.getPerceptionAwareness());
 		_perceptionQueue = new LinkedList<Emotion>();
 		_reactor = new Reactor(config.getBrainHelper());
 		_dice = config.getDiceHelper();
 		_ticCounter = 0;
 	}
 
+
 	// Add only if within brains attention span
 	public boolean addInboundPerception(Perception perception) {
 		PerceptionType perceptionType = perception.getPerceptionType();
-		Emotion emoCandidate = perception.getEmotionCandidate();
+		Emotion perceptionEmoCandidate = perception.getEmotionCandidate();
 		boolean isAccepted = false;
-		if (_dice.getRandomPercentage() <= _perceptionAwarenessPercentage) {
-			isAccepted = _perceptionQueue.offer(emoCandidate);
+		Double rndPercentage = _dice.getRandomPercentage();
+		if (rndPercentage <= _perceptionAwarenessPercentage) {
+			isAccepted = _perceptionQueue.offer(perceptionEmoCandidate);
 			if (!isAccepted) {
 				System.err.println("WARNING! EMOTION QUEUE IS OVERLOADED!!! " + perception);
 			}
+		} else {
+			System.err.println("Inbound perception candidate passed undetected by the brain: (" + rndPercentage + "/" + _perceptionAwarenessPercentage  + "%), " + perceptionEmoCandidate);
 		}
 		return isAccepted;
 	}
@@ -55,16 +59,27 @@ public class Brain {
 		return _personality;
 	}
 
+	/**
+	 * Process all inbound emotions supplied by the perception queue. Then
+	 * it does internal calculations to summarize changes inside its emotion
+	 * registry. And at last it returns its current emotion (list of feelings
+	 * and their magnitude right now)
+	 * 
+	 * @return What emotion the brain is feeling right now! The result is
+	 *         reflecting latest emotional changes inside the brain since last
+	 *         unit of time has past.
+	 *         
+	 * @throws ReactorException
+	 */
 	public Map<FeelingType, Double> tic() throws ReactorException {
-
 		// Poll perception from queue!
 		Emotion inboundEmotion = _perceptionQueue.poll();
 		if (inboundEmotion != null) {
-			System.err.println("Inbound -> " + inboundEmotion);
+			System.err.println("Tic: Inbound -> " + inboundEmotion);
 			_reactor.addEmotion(inboundEmotion);
 		}
 
-		// Consume one ticTac in reactor
+		// Delegate one unit of processing (time) emotions to the reactor
 		Map<FeelingType, Double> emotionNow = _reactor.ticTac();
 		_ticCounter++;
 		return emotionNow;
@@ -86,21 +101,20 @@ public class Brain {
 		return _reactor.isRegistryEmpty();
 	}
 
-	public ProgressType getProgressTypeForFeeling(FeelingType type) {
+	public ProgressTrendType getProgressTypeForFeeling(FeelingType type) {
 		return _reactor.getProgressForFeeling(type);
 	}
 
 	public String getProgressSignForFeeling(FeelingType type) {
-		ProgressType pt = _reactor.getProgressForFeeling(type);
+		ProgressTrendType pt = _reactor.getProgressForFeeling(type);
 		String result = null;
 		String k = String.format("%.2f", pt.getK());
-		if (pt == ProgressType.NEUTRAL) {
+		if (pt == ProgressTrendType.NEUTRAL) {
 			result = k;
-		} else if (pt == ProgressType.POSITIVE) {
+		} else if (pt == ProgressTrendType.POSITIVE) {
 			result = "+" + k;
 		} else
-
-		if (pt == ProgressType.NEGATIVE) {
+		if (pt == ProgressTrendType.NEGATIVE) {
 			result = k;
 		}
 		return result;

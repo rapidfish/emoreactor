@@ -15,13 +15,13 @@ public class Reactor {
 
 	private Map<FeelingType, List<Feeling>> _registry;
 	private Map<FeelingType, Double> _intensityResultMap;
-	private Map<FeelingType, ProgressType> _progressingTypeMap;
+	private Map<FeelingType, ProgressTrendType> _progressingTypeMap;
 	private final BrainHelper _brainHelper;
 	
-	public enum ProgressType {
+	public enum ProgressTrendType {
 		NEUTRAL, POSITIVE, NEGATIVE;
 		private Double _k;
-		ProgressType() {
+		ProgressTrendType() {
 			_k = new Double(0);
 		}
 		public Double getK(){
@@ -30,13 +30,13 @@ public class Reactor {
 		public void setK(Double k){
 			_k = k;
 		}
-		public ProgressType getTypeForVal(Double d){
+		public ProgressTrendType getTypeForVal(Double d){
 			if(d.compareTo(0d) == 0){
-				return ProgressType.NEUTRAL;
+				return ProgressTrendType.NEUTRAL;
 			} else if(d.compareTo(0d) > 0 ) {
-				return ProgressType.POSITIVE;
+				return ProgressTrendType.POSITIVE;
 			} else {
-				return ProgressType.NEGATIVE;
+				return ProgressTrendType.NEGATIVE;
 			}
 		}
 	};
@@ -66,7 +66,7 @@ public class Reactor {
 		return true;
 	}
 	
-	public ProgressType getProgressForFeeling(FeelingType type){
+	public ProgressTrendType getProgressForFeeling(FeelingType type){
 		return _progressingTypeMap.get(type);
 	}
 	
@@ -101,9 +101,9 @@ public class Reactor {
 			Double oldSum = _intensityResultMap.get(feelingType);
 			oldSum = (oldSum != null) ? oldSum : new Double(0); 
 			Double delta = sum - oldSum; 
-			ProgressType k = ProgressType.NEUTRAL;
+			ProgressTrendType k = ProgressTrendType.NEUTRAL;
 			if(delta.compareTo(0d) != 0) {
-				k = (delta.compareTo(0d) > 0) ? ProgressType.POSITIVE : ProgressType.NEGATIVE;
+				k = (delta.compareTo(0d) > 0) ? ProgressTrendType.POSITIVE : ProgressTrendType.NEGATIVE;
 			}
 			k.setK(delta); // store delta
 			_progressingTypeMap.put(feelingType, k);

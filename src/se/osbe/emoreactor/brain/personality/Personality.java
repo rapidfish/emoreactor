@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import se.osbe.emoreactor.brain.reactor.ReactorException;
-import se.osbe.emoreactor.helper.DiceHelperImpl;
 import se.osbe.emoreactor.helper.DiceHelper;
+import se.osbe.emoreactor.helper.DiceHelperImpl;
 
 /**
  * Configuration class to configure Brain objects
@@ -17,10 +17,22 @@ public class Personality {
 
 	private final Map<PersonalityType, Double> _properties;
 
+	/**
+	 * Default personality having all values set to 50% (introvertVsExtrovert, intuitionVsSensing, feelingVsThinking, percievingVsJudging)
+	 * @throws ReactorException
+	 */
 	public Personality() throws ReactorException {
 		this(50d, 50d, 50d, 50d); // Percentage in pair
 	}
 
+	/**
+	 * Constructor for setting percentage values (individually) for introvertVsExtrovert, intuitionVsSensing, feelingVsThinking, percievingVsJudging.
+	 * @param introvertVsExtrovert Value is set for Introvert only, Extrovert gets what is left of remaining percentage.
+	 * @param intuitionVsSensing
+	 * @param feelingVsThinking
+	 * @param percievingVsJudging
+	 * @throws ReactorException
+	 */
 	public Personality(Double introvertVsExtrovert, Double intuitionVsSensing, Double feelingVsThinking, Double percievingVsJudging) throws ReactorException {
 		_properties = new HashMap<PersonalityType, Double>(8);
 		setIntrovertVsExtravert(introvertVsExtrovert, (100 - introvertVsExtrovert));
