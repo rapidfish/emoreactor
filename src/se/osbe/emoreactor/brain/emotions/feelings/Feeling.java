@@ -10,4 +10,6 @@ public interface Feeling {
 	
 	public long getDuration();
 
+	public void setInitialTime(long defaultTime);
+
 }

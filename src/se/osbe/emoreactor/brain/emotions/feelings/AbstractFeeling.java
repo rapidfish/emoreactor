@@ -36,10 +36,8 @@ public abstract class AbstractFeeling implements Feeling {
 		_feelingType = feeling;
 		_amplitude = amplitude;
 		_duration = duration;
-		if (initialTime > 0) {
+		if (initialTime >= 0) {
 			_initialTime = initialTime;
-		} else if (initialTime == 0) {
-			_initialTime = new BrainHelperImpl().getTimeNow();
 		} else {
 			throw new ReactorException("Not possible to initialize with a negative initial time");
 		}
@@ -61,6 +59,10 @@ public abstract class AbstractFeeling implements Feeling {
 		return _duration;
 	}
 
+	public void setInitialTime(long time){
+		_initialTime = time;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

@@ -19,8 +19,6 @@ public interface BrainHelper {
 
 	PerceptionType getPerceptionTypeForPattern(String str);
 
-	long getTimeNow();
-
 	String getFormattedWithPrefix(long millis);
 
 }

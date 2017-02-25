@@ -30,11 +30,11 @@ public class PerceptionBuilder {
 	 */
 	public PerceptionBuilder addPerception(String type, String feelingsScript) throws ReactorException {
 		PerceptionType pt = PerceptionType.valueOf(type.toUpperCase());
-		return addPerception(pt, _emotionBuilder.addFeelings(feelingsScript).build());
+		return addPerception(pt, _emotionBuilder.addFeelings(feelingsScript).build(null));
 	}
 	
 	public PerceptionBuilder addPerception(PerceptionType type, String feelingsScript) throws ReactorException {
-		return addPerception(type, _emotionBuilder.addFeelings(feelingsScript).build());
+		return addPerception(type, _emotionBuilder.addFeelings(feelingsScript).build(null));
 	}
 
 	public PerceptionBuilder addPerception(PerceptionType perceptionType, Emotion emoCandidate)

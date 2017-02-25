@@ -16,24 +16,22 @@ import se.osbe.emoreactor.helper.DiceHelper;
 
 public class Brain {
 
+	private final BrainConfig _brainConfig;
 	private long _ticCounter;
-	private final Personality _personality;
-	private Integer _perceptionAwarenessPercentage;
 	private final Queue<Emotion> _perceptionQueue;
 	private Reactor _reactor;
 	private DiceHelper _dice;
 
 	@SuppressWarnings("unused")
-	private Brain() {
+	private Brain() throws ReactorException {
 		this(null);
 	}
 
-	public Brain(BrainConfig config) {
-		_personality = config.getPersonality();
-		this.setPerceptionAwarenessPercentage(config.getPerceptionAwareness());
+	public Brain(BrainConfig config) throws ReactorException {
+		_brainConfig = config == null ? new BrainConfigDefaultImpl(new Personality()) : config;
 		_perceptionQueue = new LinkedList<Emotion>();
-		_reactor = new Reactor(config.getBrainHelper());
-		_dice = config.getDiceHelper();
+		_reactor = new Reactor(_brainConfig);
+		_dice = _brainConfig.getDiceHelper();
 		_ticCounter = 0;
 	}
 
@@ -44,19 +42,20 @@ public class Brain {
 		Emotion perceptionEmoCandidate = perception.getEmotionCandidate();
 		boolean isAccepted = false;
 		Double rndPercentage = _dice.getRandomPercentage();
-		if (rndPercentage <= _perceptionAwarenessPercentage) {
+		Integer awareness = _brainConfig.getPerceptionAwareness();
+		if (rndPercentage <= awareness) {
 			isAccepted = _perceptionQueue.offer(perceptionEmoCandidate);
 			if (!isAccepted) {
 				System.err.println("WARNING! EMOTION QUEUE IS OVERLOADED!!! " + perception);
 			}
 		} else {
-			System.err.println("Inbound perception candidate passed undetected by the brain: (" + rndPercentage + "/" + _perceptionAwarenessPercentage  + "%), " + perceptionEmoCandidate);
+			System.err.println("Perception passed undetected for: " + perception.getPerceptionType().getDescription());
 		}
 		return isAccepted;
 	}
 
 	public Personality getPersonality() {
-		return _personality;
+		return _brainConfig.getPersonality();
 	}
 
 	/**
@@ -86,11 +85,11 @@ public class Brain {
 	}
 
 	public Integer getPerceptionAwarenessPercentage() {
-		return _perceptionAwarenessPercentage;
+		return _brainConfig.getPerceptionAwareness();
 	}
 
 	public void setPerceptionAwarenessPercentage(Integer percentage) {
-		_perceptionAwarenessPercentage = (percentage >= 0 && percentage <= 100) ? percentage : 0;
+		_brainConfig.setPerceptionAwareness(percentage);
 	}
 
 	public long getTickCounter() {

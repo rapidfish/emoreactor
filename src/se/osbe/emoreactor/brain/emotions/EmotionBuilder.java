@@ -206,7 +206,7 @@ public class EmotionBuilder {
 				duration = 1000 * _diceHelper.getRandomDoubleBetween(1d, 60d).longValue();
 			}
 			try {
-				addFeeling(feelingType, intensity, _brainHelper.getTimeNow(), duration);
+				addFeeling(feelingType, intensity, 0, duration);
 			} catch (ReactorException e) {
 				e.printStackTrace();
 			}
@@ -214,9 +214,15 @@ public class EmotionBuilder {
 		return this;
 	}
 
-	public Emotion build() throws ReactorException {
+	public Emotion build(Long initialTime) throws ReactorException {
 		if (_feelings == null) {
 			throw new ReactorException("EmotiongBuilder has no feelings to build up on!");
+		}
+		if(initialTime == null) {
+			long defaultTime = System.currentTimeMillis();
+			_feelings.forEach(feeling -> { 
+				feeling.setInitialTime(defaultTime);
+			});
 		}
 		Emotion emotion = new Emotion();
 		emotion.storeFeelings(_feelings);
@@ -234,12 +240,12 @@ public class EmotionBuilder {
 		eb.addFeeling(new RelaxedFeeling(3d, 0, 60000));
 		eb.addFeeling(new LovingFeeling(40d, 0, 5*60*1000));
 		 eb.addFeelings("*=10,40s;");
-		Emotion emotion1 = eb.build();
+		Emotion emotion1 = eb.build(null);
 
 		eb.addFeeling(new RelaxedFeeling(3d, 0, 60000));
 		eb.addFeeling(new LovingFeeling(40d, 0, 5*60*1000));
 		 eb.addFeelings("*=10,40s;");
-		Emotion emotion2 = eb.build();
+		Emotion emotion2 = eb.build(null);
 		
 		// System.out.println(emotionBuilder);
 		System.out.println(emotion1);
@@ -247,6 +253,5 @@ public class EmotionBuilder {
 		System.out.println();
 		System.out.println(emotion2);
 		emotion2.getFeelings().forEach(f->{System.out.println("feeling: " + f.getFeelingType() + ", max amplitude: " + f.getAmplitude() + ", initial time: " + f.getInitialTime() + ", duration: " + f.getDuration() + "ms");});;
-
 	}
 }

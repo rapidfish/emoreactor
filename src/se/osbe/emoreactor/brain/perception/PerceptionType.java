@@ -2,11 +2,11 @@ package se.osbe.emoreactor.brain.perception;
 
 public enum PerceptionType {
 	
-	TASTE("Taste"),
-	SEE("See"), 
-	TOUCH("Touch"), 
-	SMELL("Smell"), 
-	HEAR("Hear");
+	TASTE("Tasting"),
+	SEE("Seeing"), 
+	TOUCH("Touching"), 
+	SMELL("Smelling"), 
+	HEAR("Hearing");
 	
 	private String _description;
 

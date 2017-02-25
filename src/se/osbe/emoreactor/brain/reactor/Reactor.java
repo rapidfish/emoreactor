@@ -6,17 +6,17 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import se.osbe.emoreactor.brain.BrainConfig;
 import se.osbe.emoreactor.brain.emotions.Emotion;
 import se.osbe.emoreactor.brain.emotions.feelings.Feeling;
 import se.osbe.emoreactor.brain.emotions.feelings.FeelingType;
-import se.osbe.emoreactor.helper.BrainHelper;
 
 public class Reactor {
 
-	private Map<FeelingType, List<Feeling>> _registry;
-	private Map<FeelingType, Double> _intensityResultMap;
-	private Map<FeelingType, ProgressTrendType> _progressingTypeMap;
-	private final BrainHelper _brainHelper;
+	private final Map<FeelingType, List<Feeling>> _registry;
+	private final Map<FeelingType, Double> _intensityResultMap;
+	private final Map<FeelingType, ProgressTrendType> _progressingTypeMap;
+	private final BrainConfig _config;
 	
 	public enum ProgressTrendType {
 		NEUTRAL, POSITIVE, NEGATIVE;
@@ -41,14 +41,14 @@ public class Reactor {
 		}
 	};
 	
-	public Reactor(BrainHelper helper) {
+	public Reactor(BrainConfig config) {
+		_config = config;
 		_intensityResultMap = new HashMap<>();
 		_progressingTypeMap = new HashMap<>();
 		_registry = new HashMap<>();
 		for (FeelingType type : FeelingType.values()) {
 			_registry.put(type, new LinkedList<>());
 		}
-		_brainHelper = helper;
 	}
 
 	public void addEmotion(Emotion emo) {
@@ -72,7 +72,7 @@ public class Reactor {
 	
 	public Map<FeelingType, Double> ticTac() throws ReactorException {
 		
-		long timeNow = _brainHelper.getTimeNow(); // Read once per tic
+		long timeNow = getConfig().getTicker().getTicTimeNow(); // Read once per tic
 		List<Double> calculatedIntensityList = new ArrayList<>();
 		
 		for (int i = 0; i < FeelingType.values().length; i++) {
@@ -141,5 +141,9 @@ public class Reactor {
 			result = amplitude * Math.sin((Math.PI / duration) * t);
 		}
 		return result;
+	}
+
+	public BrainConfig getConfig() {
+		return _config;
 	}
 }

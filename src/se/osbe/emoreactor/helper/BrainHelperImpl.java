@@ -55,14 +55,6 @@ public class BrainHelperImpl implements BrainHelper {
 	}
 	
 	/* (non-Javadoc)
-	 * @see se.osbe.emoreactor.helper.BrainHelperIF#getTimeNow()
-	 */
-	@Override
-	public long getTimeNow() {
-		return System.currentTimeMillis();
-	}
-
-	/* (non-Javadoc)
 	 * @see se.osbe.emoreactor.helper.BrainHelperIF#getFormattedWithPrefix(long)
 	 */
 	@Override
