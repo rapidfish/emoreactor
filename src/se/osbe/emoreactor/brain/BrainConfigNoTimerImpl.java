@@ -10,7 +10,7 @@ import se.osbe.emoreactor.helper.BrainHelperImpl;
 import se.osbe.emoreactor.helper.DiceHelper;
 import se.osbe.emoreactor.helper.DiceHelperImpl;
 import se.osbe.emoreactor.helper.Ticker;
-import se.osbe.emoreactor.helper.TurnTickerImpl;
+import se.osbe.emoreactor.helper.TurnBasedTickerImpl;
 
 public class BrainConfigNoTimerImpl implements BrainConfig {
 
@@ -27,7 +27,7 @@ public class BrainConfigNoTimerImpl implements BrainConfig {
 		_diceHelper = new DiceHelperImpl();
 		_perceptionAwareness = new Integer(100); // 100% awareness
 		_personality = personality;
-		_ticker = new TurnTickerImpl();
+		_ticker = new TurnBasedTickerImpl();
 	}
 
 	@Override

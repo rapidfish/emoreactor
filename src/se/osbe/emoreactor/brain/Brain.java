@@ -18,7 +18,7 @@ public class Brain {
 
 	private final BrainConfig _brainConfig;
 	private long _ticCounter;
-	private final Queue<Emotion> _perceptionQueue;
+	private Queue<Emotion> _perceptionQueue;
 	private Reactor _reactor;
 	private DiceHelper _dice;
 

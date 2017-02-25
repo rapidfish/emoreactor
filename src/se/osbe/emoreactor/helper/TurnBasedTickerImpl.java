@@ -1,9 +1,9 @@
 package se.osbe.emoreactor.helper;
 
-public class TurnTickerImpl implements Ticker {
+public class TurnBasedTickerImpl implements Ticker {
 	private long _ticker;
 
-	public TurnTickerImpl() {
+	public TurnBasedTickerImpl() {
 		_ticker = 0;
 	}
 
