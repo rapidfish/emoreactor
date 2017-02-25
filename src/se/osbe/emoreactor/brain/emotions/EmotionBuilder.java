@@ -28,10 +28,10 @@ import se.osbe.emoreactor.brain.emotions.feelings.RelaxedFeeling;
 import se.osbe.emoreactor.brain.emotions.feelings.SadFeeling;
 import se.osbe.emoreactor.brain.emotions.feelings.StrongFeeling;
 import se.osbe.emoreactor.brain.reactor.ReactorException;
-import se.osbe.emoreactor.helper.BrainHelperImpl;
 import se.osbe.emoreactor.helper.BrainHelper;
-import se.osbe.emoreactor.helper.DiceHelperImpl;
+import se.osbe.emoreactor.helper.BrainHelperImpl;
 import se.osbe.emoreactor.helper.DiceHelper;
+import se.osbe.emoreactor.helper.DiceHelperImpl;
 
 public class EmotionBuilder {
 
@@ -231,18 +231,22 @@ public class EmotionBuilder {
 
 	public static void main(String[] args) throws Exception {
 		EmotionBuilder eb = new EmotionBuilder();
-		// Emotion feeling1 =
-		// emotionBuilder.addFeelings("agon=15;afr=10;hel=24").build("My
-		// Feeling1");
 		eb.addFeeling(new RelaxedFeeling(3d, 0, 60000));
 		eb.addFeeling(new LovingFeeling(40d, 0, 5*60*1000));
-		eb.addFeelings("*=10,40s;");
-		
-		
-		Emotion feeling = eb.build();
+		 eb.addFeelings("*=10,40s;");
+		Emotion emotion1 = eb.build();
+
+		eb.addFeeling(new RelaxedFeeling(3d, 0, 60000));
+		eb.addFeeling(new LovingFeeling(40d, 0, 5*60*1000));
+		 eb.addFeelings("*=10,40s;");
+		Emotion emotion2 = eb.build();
 		
 		// System.out.println(emotionBuilder);
-		System.out.println(feeling);
-		feeling.getFeelings().forEach(f->{System.out.println("feeling: " + f.getFeelingType() + ", max amplitude: " + f.getAmplitude() + ", initial time: " + f.getInitialTime() + ", duration: " + f.getDuration() + "ms");});;
+		System.out.println(emotion1);
+		emotion1.getFeelings().forEach(f->{System.out.println("feeling: " + f.getFeelingType() + ", max amplitude: " + f.getAmplitude() + ", initial time: " + f.getInitialTime() + ", duration: " + f.getDuration() + "ms");});;
+		System.out.println();
+		System.out.println(emotion2);
+		emotion2.getFeelings().forEach(f->{System.out.println("feeling: " + f.getFeelingType() + ", max amplitude: " + f.getAmplitude() + ", initial time: " + f.getInitialTime() + ", duration: " + f.getDuration() + "ms");});;
+
 	}
 }
