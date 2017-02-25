@@ -73,11 +73,6 @@ public class PerceptionBuilder {
 		return result;
 	}
 
-	public PerceptionBuilder reset() {
-		_perceptions.clear();
-		return this;
-	}
-
 	public static void main(String[] args) throws ReactorException {
 		PerceptionBuilder builder = new PerceptionBuilder();
 		builder.addPerception("Hearing", "agony=24,30s;");
