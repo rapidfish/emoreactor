@@ -3,6 +3,7 @@ package se.osbe.emoreactor.brain;
 import java.util.Queue;
 
 import se.osbe.emoreactor.brain.emotions.Emotion;
+import se.osbe.emoreactor.brain.perception.PerceptionBuilder;
 import se.osbe.emoreactor.brain.personality.Personality;
 import se.osbe.emoreactor.helper.BrainHelper;
 import se.osbe.emoreactor.helper.DiceHelper;
@@ -16,4 +17,5 @@ public interface BrainConfig {
 	public Personality getPersonality();
 	public Queue<Emotion> getPerceptionQueue();
 	public Ticker getTicker();
+	public PerceptionBuilder getPerceptionBuilder();
 }

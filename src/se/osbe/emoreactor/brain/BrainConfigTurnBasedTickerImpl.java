@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 import se.osbe.emoreactor.brain.emotions.Emotion;
+import se.osbe.emoreactor.brain.perception.PerceptionBuilder;
 import se.osbe.emoreactor.brain.personality.Personality;
 import se.osbe.emoreactor.helper.BrainHelper;
 import se.osbe.emoreactor.helper.BrainHelperImpl;
@@ -12,7 +13,11 @@ import se.osbe.emoreactor.helper.DiceHelperImpl;
 import se.osbe.emoreactor.helper.Ticker;
 import se.osbe.emoreactor.helper.TurnBasedTickerImpl;
 
-public class BrainConfigNoTimerImpl implements BrainConfig {
+/**
+ * Instead of using clock based time as x-axis it uses a manual counter.
+ * Useful when want to run reactor as fast as possible (not wait for clock to tic)
+ */
+public class BrainConfigTurnBasedTickerImpl implements BrainConfig {
 
 	private final BrainHelper _brainHelper;
 	private final DiceHelper _diceHelper;
@@ -20,14 +25,16 @@ public class BrainConfigNoTimerImpl implements BrainConfig {
 	private final Personality _personality;
 	private final Queue<Emotion> _perceptionQueue;
 	private final Ticker _ticker;
+	private PerceptionBuilder _perceptionBuilder;
 
-	public BrainConfigNoTimerImpl(Personality personality) {
+	public BrainConfigTurnBasedTickerImpl(Personality personality) {
 		_perceptionQueue = new LinkedList<Emotion>();
 		_brainHelper = new BrainHelperImpl();
 		_diceHelper = new DiceHelperImpl();
 		_perceptionAwareness = new Integer(100); // 100% awareness
 		_personality = personality;
 		_ticker = new TurnBasedTickerImpl();
+		_perceptionBuilder = new PerceptionBuilder();
 	}
 
 	@Override
@@ -63,5 +70,10 @@ public class BrainConfigNoTimerImpl implements BrainConfig {
 	@Override
 	public Ticker getTicker() {
 		return _ticker;
+	}
+
+	@Override
+	public PerceptionBuilder getPerceptionBuilder() {
+		return _perceptionBuilder;
 	}
 }

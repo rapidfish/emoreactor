@@ -28,11 +28,11 @@ public class Brain {
 	}
 
 	public Brain(BrainConfig config) throws ReactorException {
+		_ticCounter = 0;
 		_brainConfig = config == null ? new BrainConfigDefaultImpl(new Personality()) : config;
 		_perceptionQueue = new LinkedList<Emotion>();
-		_reactor = new Reactor(_brainConfig);
-		_dice = _brainConfig.getDiceHelper();
-		_ticCounter = 0;
+		_reactor = new Reactor(getBrainConfig());
+		_dice = getBrainConfig().getDiceHelper();
 	}
 
 
@@ -42,7 +42,7 @@ public class Brain {
 		Emotion perceptionEmoCandidate = perception.getEmotionCandidate();
 		boolean isAccepted = false;
 		Double rndPercentage = _dice.getRandomPercentage();
-		Integer awareness = _brainConfig.getPerceptionAwareness();
+		Integer awareness = getBrainConfig().getPerceptionAwareness();
 		if (rndPercentage <= awareness) {
 			isAccepted = _perceptionQueue.offer(perceptionEmoCandidate);
 			if (!isAccepted) {
@@ -55,7 +55,7 @@ public class Brain {
 	}
 
 	public Personality getPersonality() {
-		return _brainConfig.getPersonality();
+		return getBrainConfig().getPersonality();
 	}
 
 	/**
@@ -85,11 +85,11 @@ public class Brain {
 	}
 
 	public Integer getPerceptionAwarenessPercentage() {
-		return _brainConfig.getPerceptionAwareness();
+		return getBrainConfig().getPerceptionAwareness();
 	}
 
 	public void setPerceptionAwarenessPercentage(Integer percentage) {
-		_brainConfig.setPerceptionAwareness(percentage);
+		getBrainConfig().setPerceptionAwareness(percentage);
 	}
 
 	public long getTickCounter() {
@@ -117,5 +117,9 @@ public class Brain {
 			result = k;
 		}
 		return result;
+	}
+
+	public BrainConfig getBrainConfig() {
+		return _brainConfig;
 	}
 }

@@ -75,7 +75,8 @@ public class PerceptionBuilder {
 
 	public static void main(String[] args) throws ReactorException {
 		PerceptionBuilder builder = new PerceptionBuilder();
-		builder.addPerception("Hearing", "agony=24,30s;");
+		builder.addPerception(PerceptionType.HEAR, "agony=24,30s;");
+		builder.addPerception(PerceptionType.SEE, "afraid=30,1m;");
 //		builder.addPerception(PerceptionType.SIGHT, "agony=24,30s;");
 		System.out.println(builder.build());
 	}
