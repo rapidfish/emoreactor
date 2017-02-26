@@ -41,19 +41,19 @@ public class PerceptionBuilder {
 			throws ReactorException {
 		Perception perception;
 		switch (perceptionType) {
-		case TASTE:
+		case TASTING:
 			perception = new TastePerception(emoCandidate);
 			break;
-		case SEE:
+		case SEEING:
 			perception = new SightPerception(emoCandidate);
 			break;
-		case TOUCH:
+		case TOUCHING:
 			perception = new TouchPerception(emoCandidate);
 			break;
-		case SMELL:
+		case SMELLING:
 			perception = new SmellPerception(emoCandidate);
 			break;
-		case HEAR:
+		case HEARING:
 			perception = new HearingPerception(emoCandidate);
 			break;
 		default:
@@ -75,8 +75,8 @@ public class PerceptionBuilder {
 
 	public static void main(String[] args) throws ReactorException {
 		PerceptionBuilder builder = new PerceptionBuilder();
-		builder.addPerception(PerceptionType.HEAR, "agony=24,30s;");
-		builder.addPerception(PerceptionType.SEE, "afraid=30,1m;");
+		builder.addPerception(PerceptionType.HEARING, "agony=24,30s;");
+		builder.addPerception(PerceptionType.SEEING, "afraid=30,1m;");
 //		builder.addPerception(PerceptionType.SIGHT, "agony=24,30s;");
 		System.out.println(builder.build());
 	}

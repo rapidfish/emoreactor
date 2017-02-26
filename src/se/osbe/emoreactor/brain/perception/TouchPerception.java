@@ -5,6 +5,6 @@ import se.osbe.emoreactor.brain.reactor.ReactorException;
 
 public class TouchPerception extends AbstractPerception {
 	public TouchPerception(Emotion emoCandidate) throws ReactorException {
-		super(PerceptionType.TOUCH, emoCandidate);
+		super(PerceptionType.TOUCHING, emoCandidate);
 	}
 }

@@ -5,6 +5,6 @@ import se.osbe.emoreactor.brain.reactor.ReactorException;
 
 public class SmellPerception extends AbstractPerception {
 	public SmellPerception(Emotion emoCandidate) throws ReactorException {
-		super(PerceptionType.SMELL, emoCandidate);
+		super(PerceptionType.SMELLING, emoCandidate);
 	}
 }

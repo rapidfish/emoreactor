@@ -5,6 +5,6 @@ import se.osbe.emoreactor.brain.reactor.ReactorException;
 
 public class TastePerception extends AbstractPerception {
 	public TastePerception(Emotion emoCandidate) throws ReactorException {
-		super(PerceptionType.TASTE, emoCandidate);
+		super(PerceptionType.TASTING, emoCandidate);
 	}
 }

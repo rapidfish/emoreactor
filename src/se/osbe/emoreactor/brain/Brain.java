@@ -100,11 +100,11 @@ public class Brain {
 		return _reactor.isRegistryEmpty();
 	}
 
-	public ProgressTrendType getProgressTypeForFeeling(FeelingType type) {
+	public ProgressTrendType getProgressType(FeelingType type) {
 		return _reactor.getProgressForFeeling(type);
 	}
 
-	public String getProgressSignForFeeling(FeelingType type) {
+	public String getProgressSign(FeelingType type) {
 		ProgressTrendType pt = _reactor.getProgressForFeeling(type);
 		String result = null;
 		String k = String.format("%.2f", pt.getK());

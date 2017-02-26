@@ -188,8 +188,12 @@ public class EmotionBuilder {
 			if(params.length > 0) {
 				intensity = Double.parseDouble(params[0]);
 				durationString = new String(params[1]);
-				prefix = durationString.replaceAll("\\d", "");
-				duration = Long.parseLong(durationString.replaceAll("\\D", ""));	
+				if(durationString.contains("*")){
+					duration = _diceHelper.getRandomPercentage().longValue();
+				} else {
+					duration = Long.parseLong(durationString.replaceAll("\\D", ""));
+				}
+				prefix = durationString.replaceAll("[0-9*]", "");
 				if(prefix.startsWith("s")) {
 					duration *= 1000;
 				} else if(prefix.startsWith("m")) { 
