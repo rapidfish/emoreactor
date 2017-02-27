@@ -28,6 +28,7 @@ public class BrainConfigTurnBasedTickerImpl implements BrainConfig {
 	private final Ticker _ticker;
 	private EmotionBuilder _emotionBuilder;
 	private PerceptionBuilder _perceptionBuilder;
+	private boolean _isUseSyncTimeInReactor;
 
 	public BrainConfigTurnBasedTickerImpl(Personality personality) {
 		_perceptionQueue = new LinkedList<Emotion>();
@@ -38,6 +39,7 @@ public class BrainConfigTurnBasedTickerImpl implements BrainConfig {
 		_ticker = new TurnBasedTickerImpl();
 		_emotionBuilder = new EmotionBuilder();
 		_perceptionBuilder = new PerceptionBuilder();
+		_isUseSyncTimeInReactor = false;
 	}
 
 	@Override
@@ -83,5 +85,15 @@ public class BrainConfigTurnBasedTickerImpl implements BrainConfig {
 	@Override
 	public PerceptionBuilder getPerceptionBuilder() {
 		return _perceptionBuilder;
+	}
+
+	@Override
+	public boolean isUseSyncTimeInReactor() {
+		return _isUseSyncTimeInReactor;
+	}
+
+	@Override
+	public void setUseSyncTimeInReactor(boolean sync) {
+		_isUseSyncTimeInReactor = sync;
 	}
 }

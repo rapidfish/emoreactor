@@ -130,8 +130,10 @@ public class Reactor {
 		long duration = feeling.getDuration();
 		long endTime = (initialTime + duration);
 		long t = (timeNow - initialTime);
-		long shaveValue = t % 1000;
-		t -= shaveValue; // Shave off surplus time that eventually will drift away!
+		if(_config.isUseSyncTimeInReactor()){
+			long shaveValue = t % 1000;
+			t -= shaveValue; // Shave off surplus time that eventually will drift away!
+		}
 		if (timeNow <= endTime) {
 			if (duration == 0 || amplitude == 0) {
 				return 0d;

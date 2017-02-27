@@ -24,6 +24,7 @@ public class BrainConfigDefaultImpl implements BrainConfig {
 	private final Ticker _ticker;
 	private final PerceptionBuilder _perceptionBuilder;
 	private EmotionBuilder _emotionBuilder;
+	private boolean _isUseSyncTimeInReactor;
 
 	public BrainConfigDefaultImpl(Personality personality) {
 		_perceptionQueue = new LinkedList<Emotion>();
@@ -34,6 +35,7 @@ public class BrainConfigDefaultImpl implements BrainConfig {
 		_ticker = new TimeTickerImpl();
 		_emotionBuilder = new EmotionBuilder();
 		_perceptionBuilder = new PerceptionBuilder();
+		_isUseSyncTimeInReactor = false;
 	}
 
 	@Override
@@ -79,5 +81,15 @@ public class BrainConfigDefaultImpl implements BrainConfig {
 	@Override
 	public PerceptionBuilder getPerceptionBuilder() {
 		return _perceptionBuilder;
+	}
+
+	@Override
+	public boolean isUseSyncTimeInReactor() {
+		return _isUseSyncTimeInReactor;
+	}
+
+	@Override
+	public void setUseSyncTimeInReactor(boolean sync) {
+		_isUseSyncTimeInReactor = sync;
 	}
 }

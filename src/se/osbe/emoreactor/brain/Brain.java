@@ -48,9 +48,10 @@ public class Brain {
 			if (!isAccepted) {
 				System.err.println("WARNING! EMOTION QUEUE IS OVERLOADED!!! " + perception);
 			}
-		} else {
-			System.err.println("Perception passed undetected for: " + perception.getPerceptionType().getDescription());
-		}
+		} 
+//		else {
+//			System.err.println("Perception passed undetected for: " + perception.getPerceptionType().getDescription());
+//		}
 		return isAccepted;
 	}
 

@@ -20,4 +20,6 @@ public interface BrainConfig {
 	public Ticker getTicker();
 	public PerceptionBuilder getPerceptionBuilder();
 	public EmotionBuilder getEmotionBuilder();
+	public boolean isUseSyncTimeInReactor();
+	public void setUseSyncTimeInReactor(boolean sync);
 }
