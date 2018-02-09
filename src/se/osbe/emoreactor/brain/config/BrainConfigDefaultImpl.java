@@ -1,4 +1,4 @@
-package se.osbe.emoreactor.brain;
+package se.osbe.emoreactor.brain.config;
 
 import java.util.LinkedList;
 import java.util.Queue;

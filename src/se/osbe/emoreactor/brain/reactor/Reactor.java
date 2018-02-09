@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import se.osbe.emoreactor.brain.BrainConfig;
+import se.osbe.emoreactor.brain.config.BrainConfig;
 import se.osbe.emoreactor.brain.emotions.Emotion;
 import se.osbe.emoreactor.brain.emotions.feelings.Feeling;
 import se.osbe.emoreactor.brain.emotions.feelings.FeelingType;

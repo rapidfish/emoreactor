@@ -4,6 +4,8 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 
+import se.osbe.emoreactor.brain.config.BrainConfig;
+import se.osbe.emoreactor.brain.config.BrainConfigDefaultImpl;
 import se.osbe.emoreactor.brain.emotions.Emotion;
 import se.osbe.emoreactor.brain.emotions.feelings.FeelingType;
 import se.osbe.emoreactor.brain.perception.Perception;

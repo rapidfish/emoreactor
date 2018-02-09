@@ -5,7 +5,7 @@ public enum FeelingType {
 	AGONY("Agony"), ANGER("Anger"), DEPRESSED("Depressed"), CONFUSED("Confused"), HELPLESS("Helpless"), INDIFFERENT(
 			"Indifferent"), AFRAID("Afraid"), HURT("Hurt"), SAD("Sad"), JUDGEMENTAL("Judgemental"), OPEN("Open"), LOVING(
 			"Loving"), HAPPY("Happy"), INTERESTED("Interested"), ALIVE("Alive"), POSITIVE("Positive"), PEACEFUL(
-			"Peaceful"), STRONG("Strong"), RELAXED("Relaxed");
+			"Peaceful"), STRONG("Strong"), RELAXED("Relaxed"), RELIEF("Relieved");
 
 	private String _description;
 

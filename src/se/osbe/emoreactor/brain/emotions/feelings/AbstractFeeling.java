@@ -14,7 +14,7 @@ import se.osbe.emoreactor.helper.BrainHelperImpl;
  */
 public abstract class AbstractFeeling implements Feeling {
 
-	private final static String PARAM_IS_NULL = "One or more parameter(s) is set to null";
+	private final static String ERROR_PARAM_IS_NULL = "One or more parameter(s) is set to null";
 
 	private final FeelingType _feelingType;
 	private final Double _amplitude;
@@ -30,7 +30,7 @@ public abstract class AbstractFeeling implements Feeling {
 			throws ReactorException {
 
 		if (feeling == null) {
-			throw new ReactorException(PARAM_IS_NULL);
+			throw new ReactorException(ERROR_PARAM_IS_NULL);
 		}
 
 		_feelingType = feeling;
