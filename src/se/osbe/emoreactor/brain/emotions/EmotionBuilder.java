@@ -25,6 +25,7 @@ import se.osbe.emoreactor.brain.emotions.feelings.OpenFeeling;
 import se.osbe.emoreactor.brain.emotions.feelings.PeacefulFeeling;
 import se.osbe.emoreactor.brain.emotions.feelings.PositiveFeeling;
 import se.osbe.emoreactor.brain.emotions.feelings.RelaxedFeeling;
+import se.osbe.emoreactor.brain.emotions.feelings.ReliefFeeling;
 import se.osbe.emoreactor.brain.emotions.feelings.SadFeeling;
 import se.osbe.emoreactor.brain.emotions.feelings.StrongFeeling;
 import se.osbe.emoreactor.brain.reactor.ReactorException;
@@ -110,6 +111,9 @@ public class EmotionBuilder {
 			break;
 		case STRONG:
 			feeling = (AbstractFeeling) new StrongFeeling(intensity, initialTime, duration);
+			break;
+		case RELIEF:
+			feeling = (AbstractFeeling) new ReliefFeeling(intensity, initialTime, duration);
 			break;
 		default:
 			throw new ReactorException("Missing enum for constructor");

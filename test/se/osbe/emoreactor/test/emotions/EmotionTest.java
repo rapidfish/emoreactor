@@ -26,6 +26,7 @@ import se.osbe.emoreactor.brain.emotions.feelings.OpenFeeling;
 import se.osbe.emoreactor.brain.emotions.feelings.PeacefulFeeling;
 import se.osbe.emoreactor.brain.emotions.feelings.PositiveFeeling;
 import se.osbe.emoreactor.brain.emotions.feelings.RelaxedFeeling;
+import se.osbe.emoreactor.brain.emotions.feelings.ReliefFeeling;
 import se.osbe.emoreactor.brain.emotions.feelings.SadFeeling;
 import se.osbe.emoreactor.brain.emotions.feelings.StrongFeeling;
 import se.osbe.emoreactor.brain.reactor.ReactorException;
@@ -60,6 +61,7 @@ public class EmotionTest {
 		AbstractFeeling emo16 = new RelaxedFeeling(amplitude, initialTime, duration);
 		AbstractFeeling emo17 = new SadFeeling(amplitude, initialTime, duration);
 		AbstractFeeling emo18 = new StrongFeeling(amplitude, initialTime, duration);
+		AbstractFeeling emo19 = new ReliefFeeling(amplitude, initialTime, duration);
 		
 		_emotionList.add(emo0);
 		_emotionList.add(emo1);
@@ -80,6 +82,7 @@ public class EmotionTest {
 		_emotionList.add(emo16);
 		_emotionList.add(emo17);
 		_emotionList.add(emo18);
+		_emotionList.add(emo19);
 	}
 
 	@Test
