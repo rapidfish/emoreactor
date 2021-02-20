@@ -38,7 +38,7 @@ public class EmotionTest {
 	@Before
 	public void setUp() throws Exception {
 		_emotionList = new ArrayList<AbstractFeeling>();
-		Double amplitude = new Double(100);
+		Double amplitude = 100.0;
 		long initialTime = 1;
 		long duration = 100;
 
@@ -87,7 +87,7 @@ public class EmotionTest {
 
 	@Test
 	public void emoAmplitudeTest() throws ReactorException {
-		Double amplitude = new Double(100);
+		Double amplitude = 100.0;
 		_emotionList.forEach(emo -> {
 			Assert.assertEquals(amplitude, emo.getAmplitude());
 		});

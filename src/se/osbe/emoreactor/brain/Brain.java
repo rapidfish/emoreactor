@@ -1,5 +1,6 @@
 package se.osbe.emoreactor.brain;
 
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
@@ -77,7 +78,7 @@ public class Brain {
 		// Poll perception from queue!
 		Emotion inboundEmotion = _perceptionQueue.poll();
 		if (inboundEmotion != null) {
-			System.err.println("Tic: Inbound -> " + inboundEmotion);
+			System.err.println("[" + new Date().getTime() + "] Tic: Register inbound emotion -> " + inboundEmotion);
 			_reactor.addEmotion(inboundEmotion);
 		}
 

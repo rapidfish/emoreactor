@@ -7,10 +7,6 @@ import se.osbe.emoreactor.brain.perception.PerceptionType;
 
 public class BrainHelperImpl implements BrainHelper {
 
-	/* (non-Javadoc)
-	 * @see se.osbe.emoreactor.helper.BrainHelperIF#getEmotionEnumForPattern(java.lang.String)
-	 */
-	@Override
 	public FeelingType getEmotionEnumForPattern(String str) {
 		FeelingType result = null;
 		String candidate = str.toLowerCase() + ".*";
@@ -26,10 +22,6 @@ public class BrainHelperImpl implements BrainHelper {
 		return result;
 	}
 
-	/* (non-Javadoc)
-	 * @see se.osbe.emoreactor.helper.BrainHelperIF#getPerceptionTypeForPattern(java.lang.String)
-	 */
-	@Override
 	public PerceptionType getPerceptionTypeForPattern(String str) {
 		PerceptionType result = null;
 		String candidate = str.toLowerCase() + ".*";
@@ -54,10 +46,6 @@ public class BrainHelperImpl implements BrainHelper {
 		return uuid.split("-")[0];
 	}
 	
-	/* (non-Javadoc)
-	 * @see se.osbe.emoreactor.helper.BrainHelperIF#getFormattedWithPrefix(long)
-	 */
-	@Override
 	public String getFormattedWithPrefix(long millis) {
 		StringBuilder sb = new StringBuilder();
 		if (millis <= 1000) {
@@ -79,12 +67,12 @@ public class BrainHelperImpl implements BrainHelper {
 	
 	public static void main(String[] args) {
 		FeelingType emoEnum = null;
-		String matchThis = "dEP";
+		String matchThis = "hap";
 		emoEnum = new BrainHelperImpl().getEmotionEnumForPattern(matchThis);
 		System.out.println("Found a matching emotion for pattern: '" + matchThis + "' to --> " + emoEnum);
 		System.out.println("createUUID: " + createUUID());
 		System.out.println();
-		DiceHelper dh = new DiceHelperImpl();
+		DiceHelper dh = new DiceHelper();
 		Double x=5d;
 		Double y=10d;
 		System.out.println("Chans: " + x + " av " + y + ": " + dh.isLucky(x, y));

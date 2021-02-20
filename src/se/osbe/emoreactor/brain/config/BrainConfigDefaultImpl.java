@@ -10,7 +10,6 @@ import se.osbe.emoreactor.brain.personality.Personality;
 import se.osbe.emoreactor.helper.BrainHelper;
 import se.osbe.emoreactor.helper.BrainHelperImpl;
 import se.osbe.emoreactor.helper.DiceHelper;
-import se.osbe.emoreactor.helper.DiceHelperImpl;
 import se.osbe.emoreactor.helper.Ticker;
 import se.osbe.emoreactor.helper.TimeTickerImpl;
 
@@ -29,8 +28,8 @@ public class BrainConfigDefaultImpl implements BrainConfig {
 	public BrainConfigDefaultImpl(Personality personality) {
 		_perceptionQueue = new LinkedList<Emotion>();
 		_brainHelper = new BrainHelperImpl();
-		_diceHelper = new DiceHelperImpl();
-		_perceptionAwareness = new Integer(100); // 100% awareness
+		_diceHelper = new DiceHelper();
+		_perceptionAwareness = 100; // 100% awareness
 		_personality = personality;
 		_ticker = new TimeTickerImpl();
 		_emotionBuilder = new EmotionBuilder();
