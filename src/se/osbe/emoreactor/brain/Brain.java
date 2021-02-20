@@ -44,17 +44,16 @@ public class Brain {
 		PerceptionType perceptionType = perception.getPerceptionType();
 		Emotion perceptionEmoCandidate = perception.getEmotionCandidate();
 		boolean isAccepted = false;
-		Double rndPercentage = _dice.getRandomPercentage();
-		Integer awareness = getBrainConfig().getPerceptionAwareness();
-		if (rndPercentage <= awareness) {
+		if (_dice.getRandomPercentage() <= getBrainConfig().getPerceptionAwareness()) {
+			System.err.println(perception.getPerceptionType().getDescription() + " - Perception detected");
 			isAccepted = _perceptionQueue.offer(perceptionEmoCandidate);
 			if (!isAccepted) {
 				System.err.println("WARNING! EMOTION QUEUE IS OVERLOADED!!! " + perception);
 			}
 		} 
-//		else {
-//			System.err.println("Perception passed undetected for: " + perception.getPerceptionType().getDescription());
-//		}
+		else {
+			System.err.println(perception.getPerceptionType().getDescription() + " - Perception passed undetected");
+		}
 		return isAccepted;
 	}
 
@@ -78,7 +77,7 @@ public class Brain {
 		// Poll perception from queue!
 		Emotion inboundEmotion = _perceptionQueue.poll();
 		if (inboundEmotion != null) {
-			System.err.println("[" + new Date().getTime() + "] Tic: Register inbound emotion -> " + inboundEmotion);
+			System.err.println("Sending inbound emotion to reactor -> " + inboundEmotion);
 			_reactor.addEmotion(inboundEmotion);
 		}
 

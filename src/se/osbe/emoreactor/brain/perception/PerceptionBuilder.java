@@ -44,7 +44,7 @@ public class PerceptionBuilder {
 		case TASTING:
 			perception = new TastePerception(emoCandidate);
 			break;
-		case SEEING:
+		case EYE_SIGHT:
 			perception = new SightPerception(emoCandidate);
 			break;
 		case TOUCHING:
@@ -76,7 +76,7 @@ public class PerceptionBuilder {
 	public static void main(String[] args) throws ReactorException {
 		PerceptionBuilder builder = new PerceptionBuilder();
 		builder.addPerception(PerceptionType.HEARING, "agony=24,30s;");
-		builder.addPerception(PerceptionType.SEEING, "afraid=30,1m;");
+		builder.addPerception(PerceptionType.EYE_SIGHT, "afraid=30,1m;");
 //		builder.addPerception(PerceptionType.SIGHT, "agony=24,30s;");
 		System.out.println(builder.build());
 	}

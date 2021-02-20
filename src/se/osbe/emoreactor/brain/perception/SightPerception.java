@@ -5,6 +5,6 @@ import se.osbe.emoreactor.brain.reactor.ReactorException;
 
 public class SightPerception extends AbstractPerception {
 	public SightPerception(Emotion emoCandidate) throws ReactorException {
-		super(PerceptionType.SEEING, emoCandidate);
+		super(PerceptionType.EYE_SIGHT, emoCandidate);
 	}
 }

@@ -26,7 +26,7 @@ public class Demo {
             Personality personality = new Personality(); // default, balance is 50% for all personality params
             BrainConfig brainConfig = new BrainConfigTurnBasedTickerImpl(personality);
             _brain = new Brain(brainConfig); // default, if set to null
-            _brain.setPerceptionAwarenessPercentage(10);
+            _brain.setPerceptionAwarenessPercentage(70);
             _dice = _brain.getBrainConfig().getDiceHelper();
             _brainhelper = _brain.getBrainConfig().getBrainHelper();
             _eb = _brain.getBrainConfig().getEmotionBuilder();
@@ -42,7 +42,6 @@ public class Demo {
             while (true) {
                 Thread.sleep(1000);
                 nextValue();
-                System.out.println(_emoNow.toString() + "\n");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -57,9 +56,10 @@ public class Demo {
 //        if (_brain.isReactorDry()) {
         int intensity = _dice.getRandomDoubleBetween(3d, 15d).intValue();
         int duration = _dice.getRandomDoubleBetween(3d, 60d).intValue();
-        Perception perception = new SightPerception(_eb.addFeelings("*=" + intensity + "," + duration + "s;").build(null));
+        Perception perception = new SightPerception(_eb.addFeelings("ang=" + intensity + "," + duration + "s; Pos=3,3;").build(null));
         _brain.addInboundPerception(perception);
 //        }
         _emoNow = _brain.tic();
+        System.out.println(_emoNow.toString() + "\n");
     }
 }
