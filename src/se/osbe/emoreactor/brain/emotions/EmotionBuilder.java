@@ -232,9 +232,9 @@ public class EmotionBuilder {
             throw new ReactorException("EmotiongBuilder has no feelings to build up on!");
         }
         if (initialTime == null) {
-            long defaultTime = System.currentTimeMillis();
+            long now = System.currentTimeMillis();
             _feelings.forEach(feeling -> {
-                feeling.setInitialTime(defaultTime);
+                feeling.setInitialTime(now);
             });
         }
         Emotion emotion = new Emotion();

@@ -104,7 +104,7 @@ public class Brain {
     public String getProgressSign(FeelingType type) {
         ProgressTrendType pt = reactor.getProgressForFeeling(type);
         String result = null;
-        String k = String.format("%.2f", pt.getK());
+        String k = String.format("%.2f", pt.getCoefficient());
         if (pt == ProgressTrendType.NEUTRAL) {
             result = k;
         } else if (pt == ProgressTrendType.POSITIVE) {

@@ -6,6 +6,7 @@ import se.osbe.emoreactor.brain.emotions.feelings.Feeling;
 import se.osbe.emoreactor.brain.emotions.feelings.FeelingType;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class Reactor {
@@ -44,7 +45,7 @@ public class Reactor {
 
     public Map<FeelingType, Double> ticTac() {
 
-        long timeNow = getConfig().getTicker().getTicTimeNow(); // Read once per tic
+        long now = System.currentTimeMillis(); // Read once per tic
         List<Double> calculatedIntensityList = new ArrayList<>();
 
         IntStream.range(0, FeelingType.values().length).forEach(i -> {
@@ -52,12 +53,12 @@ public class Reactor {
             List<Feeling> listOfSameFeelings = _registry.get(feelingType);
 
             // Clean up old feelings (EOL) and write back to registry
-            listOfSameFeelings = garbageCollect(listOfSameFeelings, timeNow);
+            listOfSameFeelings = garbageCollect(listOfSameFeelings, now);
             _registry.put(feelingType, listOfSameFeelings);
 
             // Calculate intensity for each concurrent feeling
             listOfSameFeelings.forEach(feeling -> calculatedIntensityList.add(
-                    calculateIntensity(feeling, timeNow))
+                    calculateIntensity(feeling, now))
             );
             Double sum = calculatedIntensityList.stream().reduce(0d, Double::sum);
             Double oldSum = _intensityResultMap.get(feelingType);
@@ -67,71 +68,32 @@ public class Reactor {
             if (delta.compareTo(0d) != 0) {
                 trend = (delta.compareTo(0d) > 0) ? ProgressTrendType.POSITIVE : ProgressTrendType.NEGATIVE;
             }
-            trend.setK(delta); // store delta
+            trend.setCoefficient(delta); // store delta
             _progressingTypeMap.put(feelingType, trend);
             _intensityResultMap.put(feelingType, sum);
             calculatedIntensityList.clear();
         });
-
-//        for (int i = 0; i < FeelingType.values().length; i++) {
-//            FeelingType feelingType = FeelingType.values()[i];
-//            List<Feeling> listOfSameFeelings = _registry.get(feelingType);
-//
-//            // Clean up old feelings (EOL) and write back to registry
-//            listOfSameFeelings = garbageCollect(listOfSameFeelings, timeNow);
-//            _registry.put(feelingType, listOfSameFeelings);
-//
-//            // Calculate intensity for each concurrent feeling
-//            listOfSameFeelings.forEach(feeling -> calculatedIntensityList.add(calculateIntensity(feeling, timeNow)));
-//            Double sum = IntStream.range(0, calculatedIntensityList.size()).mapToDouble(index -> (double) calculatedIntensityList.get(index)).sum();
-////            for (int j = 0; j < calculatedIntensityList.size(); j++) {
-////                sum += calculatedIntensityList.get(j);
-////            }
-//            Double oldSum = _intensityResultMap.get(feelingType);
-//            oldSum = (oldSum != null) ? oldSum : (double) 0;
-//            Double delta = sum - oldSum;
-//            ProgressTrendType k = ProgressTrendType.NEUTRAL;
-//            if (delta.compareTo(0d) != 0) {
-//                k = (delta.compareTo(0d) > 0) ? ProgressTrendType.POSITIVE : ProgressTrendType.NEGATIVE;
-//            }
-//            k.setK(delta); // store delta
-//            _progressingTypeMap.put(feelingType, k);
-//            _intensityResultMap.put(feelingType, sum);
-//            calculatedIntensityList.clear();
-//        }
         return _intensityResultMap;
     }
 
-    private List<Feeling> garbageCollect(List<Feeling> feelings, long timeNow) {
-        List<Feeling> result = new ArrayList<>();
-        feelings.forEach(f -> {
-            if (timeNow <= (f.getInitialTime() + f.getDuration())) {
-                result.add(f); // Only feelings with an active life cycle gets passed here
-            }
-        });
-        return result; // return remaining active feelings after cleanup!
+    private List<Feeling> garbageCollect(List<Feeling> feelings, long now) {
+        return feelings.stream()
+                .filter(f -> now <= (f.getInitialTime() + f.getDuration()))
+                .collect(Collectors.toList()); // return remaining active feelings after cleanup!
     }
 
-    private Double calculateIntensity(Feeling feeling, long timeNow) {
+    private Double calculateIntensity(Feeling feeling, long now) {
         Double result = null;
-        long entryTime = feeling.getInitialTime();
+        long initialTime = feeling.getInitialTime();
         long duration = feeling.getDuration();
-        long expirationTime = (entryTime + duration);
-
-        if (timeNow >= expirationTime || timeNow < entryTime) {
+        if (now >= (initialTime + duration) || now < initialTime) {
             return 0d;
         }
-
-        long deltaTimeNow = (timeNow - entryTime);
         Double amplitude = feeling.getAmplitude();
         if (duration == 0 || amplitude == 0) {
             return 0d;
-        } else if (timeNow > expirationTime) {
-            return result; // End of life
         }
-        result = amplitude * Math.sin((Math.PI / duration) * deltaTimeNow);
-
-        return result;
+        return amplitude * Math.sin((Math.PI / duration) * (now - initialTime));
     }
 
     public BrainConfig getConfig() {
@@ -140,18 +102,18 @@ public class Reactor {
 
     public enum ProgressTrendType {
         NEUTRAL, POSITIVE, NEGATIVE;
-        private Double _k;
+        private Double coefficient;
 
         ProgressTrendType() {
-            _k = (double) 0;
+            coefficient = (double) 0;
         }
 
-        public Double getK() {
-            return _k;
+        public Double getCoefficient() {
+            return coefficient;
         }
 
-        public void setK(Double k) {
-            _k = k;
+        public void setCoefficient(Double k) {
+            coefficient = k;
         }
 
         public ProgressTrendType getTypeForVal(Double d) {

@@ -5,8 +5,6 @@ import se.osbe.emoreactor.brain.emotions.EmotionBuilder;
 import se.osbe.emoreactor.brain.perception.PerceptionBuilder;
 import se.osbe.emoreactor.brain.personality.Personality;
 import se.osbe.emoreactor.helper.DiceHelper;
-import se.osbe.emoreactor.helper.Ticker;
-import se.osbe.emoreactor.helper.TimeTickerImpl;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -16,7 +14,6 @@ public class BrainConfigTimeBasedImpl implements BrainConfig {
     private final DiceHelper _diceHelper;
     private final Personality _personality;
     private final Queue<Emotion> _perceptionQueue;
-    private final Ticker _ticker;
     private final PerceptionBuilder _perceptionBuilder;
     private Integer _perceptionAwareness;
     private EmotionBuilder _emotionBuilder;
@@ -26,7 +23,6 @@ public class BrainConfigTimeBasedImpl implements BrainConfig {
         _diceHelper = new DiceHelper();
         _perceptionAwareness = 0;
         _personality = personality;
-        _ticker = new TimeTickerImpl();
         _emotionBuilder = new EmotionBuilder();
         _perceptionBuilder = new PerceptionBuilder();
     }
@@ -54,11 +50,6 @@ public class BrainConfigTimeBasedImpl implements BrainConfig {
     @Override
     public Queue<Emotion> getPerceptionQueue() {
         return _perceptionQueue;
-    }
-
-    @Override
-    public Ticker getTicker() {
-        return _ticker;
     }
 
     @Override
