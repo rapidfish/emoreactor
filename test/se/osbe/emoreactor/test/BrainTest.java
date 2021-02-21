@@ -45,10 +45,13 @@ public class BrainTest {
                         .addFeelings("anger=" + intensity + "," + duration + "s;")
                         .build()
         );
+
         Assert.assertTrue(brain.addInboundPerception(perception));
         emotionNow = brain.tic();
+
         Assert.assertNotNull(emotionNow);
         brain.tic();
+
         Assert.assertEquals(Reactor.ProgressTrendType.POSITIVE, brain.getProgressType(FeelingType.ANGER));
     }
 }
