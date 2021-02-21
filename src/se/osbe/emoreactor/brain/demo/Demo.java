@@ -33,6 +33,7 @@ public class Demo {
         }
         System.out.println("Starting EmoReactor for John Doe, with personality:");
         System.out.println(brain.getPersonality().toString() + "\n");
+        System.out.println(String.format("Awareness: %s", brain.getPerceptionAwarenessPercentage()) + "%\n");
     }
 
     public static void main(String[] args) throws Exception {
@@ -43,24 +44,24 @@ public class Demo {
             int intensity = demo.dice.getRandomDoubleBetween(1d, 5d).intValue(); // 1 - 10
             int duration = 10; //demo.dice.getRandomDoubleBetween(5d, 350d).intValue(); // 2s - 5min
 
-            demo.brain.setPerceptionAwarenessPercentage(100); // awareness %
+            demo.brain.setPerceptionAwarenessPercentage(15); // awareness %
 //            demo.brain.setPerceptionAwarenessPercentage(demo.dice.getRandomDoubleBetween(30d, 60d).intValue());
-            System.out.println(String.format("|%d| - Awareness: %s", demo.brain.getTickCounter(), demo.brain.getPerceptionAwarenessPercentage()) + "%");
+            System.out.println(String.format("|%d|", demo.brain.getTickCounter()));
 
             // Perception perception = new SightPerception(demo.emotionBuilder.addFeelings("ang=" + intensity + "," + duration + "s; Pos=3,3;").build(null));
             Perception perception = new SightPerception(demo.emotionBuilder.addFeelings("*=" + intensity + "," + duration + "s;").build(null));
 
             if (demo.brain.addInboundPerception(perception)) {
-                System.err.println("Perception detected: " + perception.getPerceptionType().getDescription() + perception.toString());
+                System.err.println("Perception detected: " + perception.toString());
             } else {
                 // System.out.println(perception.getPerceptionType().getDescription() + " - Perception passed undetected");
             }
 
-            emotionNow = demo.brain.tic();
-            System.out.println(emotionNow.toString());
+            System.out.println(demo.brain.tic());
 
-            System.out.println(FeelingType.ANGER.toString() + ": " + demo.brain.getProgressType(FeelingType.ANGER));
-            System.out.println();
+//            Stream.of(FeelingType.values()).map(t -> t.description() + ": " + demo.brain.getProgressType(t) + ", ").forEach(System.out::print);
+//            System.out.println();
+
             Thread.sleep(1000);
         }
     }
