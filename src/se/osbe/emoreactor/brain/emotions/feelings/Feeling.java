@@ -2,14 +2,14 @@ package se.osbe.emoreactor.brain.emotions.feelings;
 
 public interface Feeling {
 
-	public FeelingType getFeelingType();
+	FeelingType getFeelingType();
 
-	public Double getAmplitude();
+	Double getAmplitude();
 	
-	public long getInitialTime();
+	long getInitialTime();
 	
-	public long getDuration();
+	long getDuration();
 
-	public void setInitialTime(long defaultTime);
+	void setInitialTime(long defaultTime);
 
 }

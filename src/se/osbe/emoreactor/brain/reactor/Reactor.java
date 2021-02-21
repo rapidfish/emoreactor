@@ -47,7 +47,7 @@ public class Reactor {
         long timeNow = getConfig().getTicker().getTicTimeNow(); // Read once per tic
         List<Double> calculatedIntensityList = new ArrayList<>();
 
-        for (int i = 0; i < FeelingType.values().length; i++) {
+        IntStream.range(0, FeelingType.values().length).forEach(i -> {
             FeelingType feelingType = FeelingType.values()[i];
             List<Feeling> listOfSameFeelings = _registry.get(feelingType);
 
@@ -56,33 +56,49 @@ public class Reactor {
             _registry.put(feelingType, listOfSameFeelings);
 
             // Calculate intensity for each concurrent feeling
-            listOfSameFeelings.forEach(feeling -> {
-                try {
-                    Double intensity = calculateIntensity(feeling, timeNow);
-                    if (intensity != null) {
-                        calculatedIntensityList.add(intensity);
-                    }
-                } catch (ReactorException e) {
-                    e.printStackTrace();
-                }
-            });
-            Double sum = IntStream.range(0, calculatedIntensityList.size())
-                    .mapToDouble(index -> (double)calculatedIntensityList.get(index)).sum();
-//            for (int j = 0; j < calculatedIntensityList.size(); j++) {
-//                sum += calculatedIntensityList.get(j);
-//            }
+            listOfSameFeelings.forEach(feeling -> calculatedIntensityList.add(
+                    calculateIntensity(feeling, timeNow))
+            );
+            Double sum = calculatedIntensityList.stream().reduce(0d, Double::sum);
             Double oldSum = _intensityResultMap.get(feelingType);
             oldSum = (oldSum != null) ? oldSum : (double) 0;
-            Double delta = sum - oldSum;
-            ProgressTrendType k = ProgressTrendType.NEUTRAL;
+            Double delta = (sum - oldSum);
+            ProgressTrendType trend = ProgressTrendType.NEUTRAL;
             if (delta.compareTo(0d) != 0) {
-                k = (delta.compareTo(0d) > 0) ? ProgressTrendType.POSITIVE : ProgressTrendType.NEGATIVE;
+                trend = (delta.compareTo(0d) > 0) ? ProgressTrendType.POSITIVE : ProgressTrendType.NEGATIVE;
             }
-            k.setK(delta); // store delta
-            _progressingTypeMap.put(feelingType, k);
+            trend.setK(delta); // store delta
+            _progressingTypeMap.put(feelingType, trend);
             _intensityResultMap.put(feelingType, sum);
             calculatedIntensityList.clear();
-        }
+        });
+
+//        for (int i = 0; i < FeelingType.values().length; i++) {
+//            FeelingType feelingType = FeelingType.values()[i];
+//            List<Feeling> listOfSameFeelings = _registry.get(feelingType);
+//
+//            // Clean up old feelings (EOL) and write back to registry
+//            listOfSameFeelings = garbageCollect(listOfSameFeelings, timeNow);
+//            _registry.put(feelingType, listOfSameFeelings);
+//
+//            // Calculate intensity for each concurrent feeling
+//            listOfSameFeelings.forEach(feeling -> calculatedIntensityList.add(calculateIntensity(feeling, timeNow)));
+//            Double sum = IntStream.range(0, calculatedIntensityList.size()).mapToDouble(index -> (double) calculatedIntensityList.get(index)).sum();
+////            for (int j = 0; j < calculatedIntensityList.size(); j++) {
+////                sum += calculatedIntensityList.get(j);
+////            }
+//            Double oldSum = _intensityResultMap.get(feelingType);
+//            oldSum = (oldSum != null) ? oldSum : (double) 0;
+//            Double delta = sum - oldSum;
+//            ProgressTrendType k = ProgressTrendType.NEUTRAL;
+//            if (delta.compareTo(0d) != 0) {
+//                k = (delta.compareTo(0d) > 0) ? ProgressTrendType.POSITIVE : ProgressTrendType.NEGATIVE;
+//            }
+//            k.setK(delta); // store delta
+//            _progressingTypeMap.put(feelingType, k);
+//            _intensityResultMap.put(feelingType, sum);
+//            calculatedIntensityList.clear();
+//        }
         return _intensityResultMap;
     }
 
@@ -96,25 +112,25 @@ public class Reactor {
         return result; // return remaining active feelings after cleanup!
     }
 
-    private Double calculateIntensity(Feeling feeling, long timeNow) throws ReactorException {
+    private Double calculateIntensity(Feeling feeling, long timeNow) {
         Double result = null;
-        Double amplitude = feeling.getAmplitude();
-        long initialTime = feeling.getInitialTime();
+        long entryTime = feeling.getInitialTime();
         long duration = feeling.getDuration();
-        long endTime = (initialTime + duration);
-        long t = (timeNow - initialTime);
-        if (_config.isUseSyncTimeInReactor()) {
-            long shaveValue = t % 1000;
-            t -= shaveValue; // Shave off surplus time that eventually will drift away!
+        long expirationTime = (entryTime + duration);
+
+        if (timeNow >= expirationTime || timeNow < entryTime) {
+            return 0d;
         }
-        if (timeNow <= endTime) {
-            if (duration == 0 || amplitude == 0) {
-                return 0d;
-            } else if (timeNow > endTime) {
-                return result; // End of life
-            }
-            result = amplitude * Math.sin((Math.PI / duration) * t);
+
+        long deltaTimeNow = (timeNow - entryTime);
+        Double amplitude = feeling.getAmplitude();
+        if (duration == 0 || amplitude == 0) {
+            return 0d;
+        } else if (timeNow > expirationTime) {
+            return result; // End of life
         }
+        result = amplitude * Math.sin((Math.PI / duration) * deltaTimeNow);
+
         return result;
     }
 

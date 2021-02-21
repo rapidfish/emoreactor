@@ -2,64 +2,66 @@ package se.osbe.emoreactor.brain.demo;
 
 import se.osbe.emoreactor.brain.Brain;
 import se.osbe.emoreactor.brain.config.BrainConfig;
-import se.osbe.emoreactor.brain.config.BrainConfigTurnBasedTickerImpl;
+import se.osbe.emoreactor.brain.config.BrainConfigTimeBasedImpl;
 import se.osbe.emoreactor.brain.emotions.EmotionBuilder;
 import se.osbe.emoreactor.brain.emotions.feelings.FeelingType;
 import se.osbe.emoreactor.brain.perception.Perception;
 import se.osbe.emoreactor.brain.perception.SightPerception;
 import se.osbe.emoreactor.brain.personality.Personality;
 import se.osbe.emoreactor.brain.reactor.ReactorException;
-import se.osbe.emoreactor.helper.BrainHelper;
 import se.osbe.emoreactor.helper.DiceHelper;
 
 import java.util.Map;
 
 public class Demo {
-    private Brain _brain; // null = default configuration
-    private DiceHelper _dice;
-    private BrainHelper _brainhelper;
-    private EmotionBuilder _eb;
-    private Map<FeelingType, Double> _emoNow;
+
+    private Brain brain; // null = default configuration
+
+    private EmotionBuilder emotionBuilder; // Builder to create input stimula for the reactor and the brain
+    private DiceHelper dice; // use help from randomizer to produce input, until "real" input values can be fed into the process
 
     public Demo() throws InterruptedException {
         try {
-            Personality personality = new Personality(); // default, balance is 50% for all personality params
-            BrainConfig brainConfig = new BrainConfigTurnBasedTickerImpl(personality);
-            _brain = new Brain(brainConfig); // default, if set to null
-            _brain.setPerceptionAwarenessPercentage(70);
-            _dice = _brain.getBrainConfig().getDiceHelper();
-            _brainhelper = _brain.getBrainConfig().getBrainHelper();
-            _eb = _brain.getBrainConfig().getEmotionBuilder();
+            Personality personality = new Personality(); // no arg constructor gives default where all personality param pairs is in perfect balance (50%/50%)
+            BrainConfig brainConfig = new BrainConfigTimeBasedImpl(personality);
+            brain = new Brain(brainConfig); // default, if set to null
+            brain.setPerceptionAwarenessPercentage(10);
+            dice = brain.getBrainConfig().getDiceHelper();
+            emotionBuilder = brain.getBrainConfig().getEmotionBuilder();
         } catch (ReactorException e) {
             e.printStackTrace();
         }
+        System.out.println("Starting EmoReactor for John Doe, with personality:");
+        System.out.println(brain.getPersonality().toString() + "\n");
+    }
 
-        System.out.println("Starting Demo with Joe Smith, having a personality like this... ");
-        System.out.println(_brain.getPersonality().toString() + "\n");
-        Thread.sleep(3000);
+    public static void main(String[] args) throws Exception {
+        Demo demo = new Demo();
+        Map<FeelingType, Double> emotionNow;
 
-        try {
-            while (true) {
-                Thread.sleep(1000);
-                nextValue();
+        while (true) {
+            int intensity = demo.dice.getRandomDoubleBetween(1d, 5d).intValue(); // 1 - 10
+            int duration = 10; //demo.dice.getRandomDoubleBetween(5d, 350d).intValue(); // 2s - 5min
+
+            demo.brain.setPerceptionAwarenessPercentage(100); // awareness %
+//            demo.brain.setPerceptionAwarenessPercentage(demo.dice.getRandomDoubleBetween(30d, 60d).intValue());
+            System.out.println(String.format("|%d| - Awareness: %s", demo.brain.getTickCounter(), demo.brain.getPerceptionAwarenessPercentage()) + "%");
+
+            // Perception perception = new SightPerception(demo.emotionBuilder.addFeelings("ang=" + intensity + "," + duration + "s; Pos=3,3;").build(null));
+            Perception perception = new SightPerception(demo.emotionBuilder.addFeelings("*=" + intensity + "," + duration + "s;").build(null));
+
+            if (demo.brain.addInboundPerception(perception)) {
+                System.err.println("Perception detected: " + perception.getPerceptionType().getDescription() + perception.toString());
+            } else {
+                // System.out.println(perception.getPerceptionType().getDescription() + " - Perception passed undetected");
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+
+            emotionNow = demo.brain.tic();
+            System.out.println(emotionNow.toString());
+
+            System.out.println(FeelingType.ANGER.toString() + ": " + demo.brain.getProgressType(FeelingType.ANGER));
+            System.out.println();
+            Thread.sleep(1000);
         }
-    }
-
-    public static void main(String[] args) throws InterruptedException {
-        new Demo();
-    }
-
-    private void nextValue() throws NumberFormatException, ReactorException {
-//        if (_brain.isReactorDry()) {
-        int intensity = _dice.getRandomDoubleBetween(3d, 15d).intValue();
-        int duration = _dice.getRandomDoubleBetween(3d, 60d).intValue();
-        Perception perception = new SightPerception(_eb.addFeelings("ang=" + intensity + "," + duration + "s; Pos=3,3;").build(null));
-        _brain.addInboundPerception(perception);
-//        }
-        _emoNow = _brain.tic();
-        System.out.println(_emoNow.toString() + "\n");
     }
 }

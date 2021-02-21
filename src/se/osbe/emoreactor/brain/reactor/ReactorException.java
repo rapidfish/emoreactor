@@ -16,4 +16,11 @@ public class ReactorException extends Exception {
 	public String getMessage() {
 		return getDescription();
 	}
+
+	@Override
+	public String toString() {
+		return "ReactorException{" +
+				"_description='" + _description + '\'' +
+				'}';
+	}
 }

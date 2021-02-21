@@ -3,7 +3,6 @@ package se.osbe.emoreactor.brain.emotions;
 import se.osbe.emoreactor.brain.emotions.feelings.*;
 import se.osbe.emoreactor.brain.reactor.ReactorException;
 import se.osbe.emoreactor.helper.BrainHelper;
-import se.osbe.emoreactor.helper.BrainHelperImpl;
 import se.osbe.emoreactor.helper.DiceHelper;
 
 import java.util.ArrayList;
@@ -13,13 +12,11 @@ import java.util.List;
 
 public class EmotionBuilder {
 
-    private final BrainHelper _brainHelper;
     private final DiceHelper _diceHelper;
     private List<Feeling> _feelings;
 
     public EmotionBuilder() {
         _feelings = new LinkedList<Feeling>();
-        _brainHelper = new BrainHelperImpl();
         _diceHelper = new DiceHelper();
     }
 
@@ -36,12 +33,14 @@ public class EmotionBuilder {
         Emotion emotion2 = eb.build(null);
 
         // System.out.println(emotionBuilder);
+        System.out.println("Emotion1:");
         System.out.println(emotion1);
         emotion1.getFeelings().forEach(f -> {
             System.out.println("feeling: " + f.getFeelingType() + ", max amplitude: " + f.getAmplitude() + ", initial time: " + f.getInitialTime() + ", duration: " + f.getDuration() + "ms");
         });
         ;
         System.out.println();
+        System.out.println("Emotion2:");
         System.out.println(emotion2);
         emotion2.getFeelings().forEach(f -> {
             System.out.println("feeling: " + f.getFeelingType() + ", max amplitude: " + f.getAmplitude() + ", initial time: " + f.getInitialTime() + ", duration: " + f.getDuration() + "ms");
@@ -183,7 +182,7 @@ public class EmotionBuilder {
                 Double rnd = _diceHelper.getRandomDoubleBetween(0d, ((double) FeelingType.values().length));
                 feelingType = FeelingType.values()[rnd.intValue()];
             } else {
-                feelingType = new BrainHelperImpl().getEmotionEnumForPattern(parts[0]);
+                feelingType = BrainHelper.getEmotionEnumForPattern(parts[0]);
             }
             Double intensity = null;
             String durationString = null;
@@ -222,6 +221,10 @@ public class EmotionBuilder {
             }
         });
         return this;
+    }
+
+    public Emotion build() throws ReactorException {
+        return build(null);
     }
 
     public Emotion build(Long initialTime) throws ReactorException {

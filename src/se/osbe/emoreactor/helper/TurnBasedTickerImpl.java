@@ -1,14 +1,14 @@
 package se.osbe.emoreactor.helper;
 
 public class TurnBasedTickerImpl implements Ticker {
-	private long _ticker;
+	private long ticker;
 
 	public TurnBasedTickerImpl() {
-		_ticker = 0;
+		ticker = 0;
 	}
 
 	public long getTicTimeNow() {
-		_ticker++;
-		return _ticker;
+		ticker++;
+		return ticker;
 	}
 }
