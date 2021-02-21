@@ -18,11 +18,11 @@ import java.util.Queue;
 
 public class Brain {
 
-    private final BrainConfig _brainConfig;
-    private long _ticCounter;
-    private Queue<Emotion> _perceptionQueue;
-    private Reactor _reactor;
-    private DiceHelper _dice;
+    private final BrainConfig brainConfig;
+    private long ticCounter;
+    private Queue<Emotion> perceptionQueue;
+    private Reactor reactor;
+    private DiceHelper diceHelper;
 
     @SuppressWarnings("unused")
     private Brain() throws ReactorException {
@@ -31,11 +31,11 @@ public class Brain {
     }
 
     public Brain(BrainConfig config) throws ReactorException {
-        _ticCounter = 0;
-        _brainConfig = config == null ? new BrainConfigTimeBasedImpl(new Personality()) : config;
-        _perceptionQueue = new LinkedList<Emotion>();
-        _reactor = new Reactor(getBrainConfig());
-        _dice = getBrainConfig().getDiceHelper();
+        ticCounter = 0;
+        brainConfig = config == null ? new BrainConfigTimeBasedImpl(new Personality()) : config;
+        perceptionQueue = new LinkedList<Emotion>();
+        reactor = new Reactor(getBrainConfig());
+        diceHelper = getBrainConfig().getDiceHelper();
     }
 
     // Add only if within brains attention span
@@ -43,8 +43,8 @@ public class Brain {
         PerceptionType perceptionType = perception.getPerceptionType();
         Emotion perceptionEmoCandidate = perception.getEmotionCandidate();
         boolean isAccepted = false;
-        if (_dice.getRandomPercentage() <= getBrainConfig().getPerceptionAwareness()) {
-            isAccepted = _perceptionQueue.offer(perceptionEmoCandidate);
+        if (diceHelper.getRandomPercentage() <= getBrainConfig().getPerceptionAwareness()) {
+            isAccepted = perceptionQueue.offer(perceptionEmoCandidate);
             if (!isAccepted) {
                 System.err.println("WARNING! EMOTION QUEUE IS OVERLOADED!!! " + perception);
             }
@@ -70,14 +70,14 @@ public class Brain {
      */
     public Map<FeelingType, Double> tic() throws ReactorException {
         // Poll perception from queue!
-        Emotion inboundEmotion = _perceptionQueue.poll();
+        Emotion inboundEmotion = perceptionQueue.poll();
         if (inboundEmotion != null) {
-            _reactor.addEmotion(inboundEmotion);
+            reactor.addEmotion(inboundEmotion);
         }
 
         // Delegate one unit of processing (time) emotions to the reactor
-        Map<FeelingType, Double> emotionNow = _reactor.ticTac();
-        _ticCounter++;
+        Map<FeelingType, Double> emotionNow = reactor.ticTac();
+        ticCounter++;
         return emotionNow;
     }
 
@@ -90,19 +90,19 @@ public class Brain {
     }
 
     public long getTickCounter() {
-        return _ticCounter;
+        return ticCounter;
     }
 
     public boolean isReactorDry() {
-        return _reactor.isRegistryEmpty();
+        return reactor.isRegistryEmpty();
     }
 
     public ProgressTrendType getProgressType(FeelingType type) {
-        return _reactor.getProgressForFeeling(type);
+        return reactor.getProgressForFeeling(type);
     }
 
     public String getProgressSign(FeelingType type) {
-        ProgressTrendType pt = _reactor.getProgressForFeeling(type);
+        ProgressTrendType pt = reactor.getProgressForFeeling(type);
         String result = null;
         String k = String.format("%.2f", pt.getK());
         if (pt == ProgressTrendType.NEUTRAL) {
@@ -116,6 +116,6 @@ public class Brain {
     }
 
     public BrainConfig getBrainConfig() {
-        return _brainConfig;
+        return brainConfig;
     }
 }
