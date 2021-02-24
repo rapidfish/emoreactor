@@ -1,6 +1,6 @@
-package se.osbe.emoreactor.brain.emotions;
+package se.osbe.emoreactor.brain.feelings;
 
-import se.osbe.emoreactor.brain.emotions.feelings.*;
+import se.osbe.emoreactor.brain.emotions.*;
 import se.osbe.emoreactor.brain.reactor.ReactorException;
 import se.osbe.emoreactor.helper.BrainHelper;
 import se.osbe.emoreactor.helper.DiceHelper;
@@ -10,128 +10,101 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-public class EmotionBuilder {
+public class FeelingBuilder {
 
     private final DiceHelper _diceHelper;
-    private List<Feeling> _feelings;
+    private List<Emotion> _emotions;
 
-    public EmotionBuilder() {
-        _feelings = new LinkedList<Feeling>();
+    public FeelingBuilder() {
+        _emotions = new LinkedList<>();
         _diceHelper = new DiceHelper();
     }
 
-    public static void main(String[] args) throws Exception {
-        EmotionBuilder eb = new EmotionBuilder();
-        eb.addFeeling(new RelaxedFeeling(3d, 0, 60000));
-        eb.addFeeling(new LovingFeeling(40d, 0, 5 * 60 * 1000));
-        eb.addFeelings("*=10,40s;");
-        Emotion emotion1 = eb.build(null);
 
-        eb.addFeeling(new RelaxedFeeling(3d, 0, 60000));
-        eb.addFeeling(new LovingFeeling(40d, 0, 5 * 60 * 1000));
-        eb.addFeelings("*=10,40s;");
-        Emotion emotion2 = eb.build(null);
-
-        // System.out.println(emotionBuilder);
-        System.out.println("Emotion1:");
-        System.out.println(emotion1);
-        emotion1.getFeelings().forEach(f -> {
-            System.out.println("feeling: " + f.getFeelingType() + ", max amplitude: " + f.getAmplitude() + ", initial time: " + f.getInitialTime() + ", duration: " + f.getDuration() + "ms");
-        });
-        ;
-        System.out.println();
-        System.out.println("Emotion2:");
-        System.out.println(emotion2);
-        emotion2.getFeelings().forEach(f -> {
-            System.out.println("feeling: " + f.getFeelingType() + ", max amplitude: " + f.getAmplitude() + ", initial time: " + f.getInitialTime() + ", duration: " + f.getDuration() + "ms");
-        });
-        ;
-    }
-
-    public EmotionBuilder addEmotion(Emotion emo) {
-        emo.getFeelings();
+    public FeelingBuilder addEmotion(Feeling feeling) {
+        feeling.getEmotions();
         return this;
     }
 
-    public EmotionBuilder addFeeling(FeelingType emotionEnum, Double intensity, long initialTime, long duration)
+    public FeelingBuilder addFeeling(EmotionType emotionEnum, Double intensity, long initialTime, long duration)
             throws ReactorException {
-        Feeling feeling;
+        Emotion emotion;
         switch (emotionEnum) {
             case AGONY:
-                feeling = (AbstractFeeling) new AgonyFeeling(intensity, initialTime, duration);
+                emotion = (AbstractEmotion) new AgonyEmotion(intensity, initialTime, duration);
                 break;
             case AFRAID:
-                feeling = (AbstractFeeling) new AfraidFeeling(intensity, initialTime, duration);
+                emotion = (AbstractEmotion) new AfraidEmotion(intensity, initialTime, duration);
                 break;
             case ALIVE:
-                feeling = (AbstractFeeling) new AliveFeeling(intensity, initialTime, duration);
+                emotion = (AbstractEmotion) new AliveEmotion(intensity, initialTime, duration);
                 break;
             case ANGER:
-                feeling = (AbstractFeeling) new AngerFeeling(intensity, initialTime, duration);
+                emotion = (AbstractEmotion) new AngerEmotion(intensity, initialTime, duration);
                 break;
             case CONFUSED:
-                feeling = (AbstractFeeling) new ConfusedFeeling(intensity, initialTime, duration);
+                emotion = (AbstractEmotion) new ConfusedEmotion(intensity, initialTime, duration);
                 break;
             case DEPRESSED:
-                feeling = (AbstractFeeling) new DepressedFeeling(intensity, initialTime, duration);
+                emotion = (AbstractEmotion) new DepressedEmotion(intensity, initialTime, duration);
                 break;
             case HAPPY:
-                feeling = (AbstractFeeling) new HappyFeeling(intensity, initialTime, duration);
+                emotion = (AbstractEmotion) new HappyEmotion(intensity, initialTime, duration);
                 break;
             case HELPLESS:
-                feeling = (AbstractFeeling) new HelplessFeeling(intensity, initialTime, duration);
+                emotion = (AbstractEmotion) new HelplessEmotion(intensity, initialTime, duration);
                 break;
             case HURT:
-                feeling = (AbstractFeeling) new HurtFeeling(intensity, initialTime, duration);
+                emotion = (AbstractEmotion) new HurtEmotion(intensity, initialTime, duration);
                 break;
             case INDIFFERENT:
-                feeling = (AbstractFeeling) new IndifferentFeeling(intensity, initialTime, duration);
+                emotion = (AbstractEmotion) new IndifferentEmotion(intensity, initialTime, duration);
                 break;
             case INTERESTED:
-                feeling = (AbstractFeeling) new InterestedFeeling(intensity, initialTime, duration);
+                emotion = (AbstractEmotion) new InterestedEmotion(intensity, initialTime, duration);
                 break;
             case JUDGEMENTAL:
-                feeling = (AbstractFeeling) new JudgementalFeeling(intensity, initialTime, duration);
+                emotion = (AbstractEmotion) new JudgementalEmotion(intensity, initialTime, duration);
                 break;
             case LOVING:
-                feeling = (AbstractFeeling) new LovingFeeling(intensity, initialTime, duration);
+                emotion = (AbstractEmotion) new LovingEmotion(intensity, initialTime, duration);
                 break;
             case OPEN:
-                feeling = (AbstractFeeling) new OpenFeeling(intensity, initialTime, duration);
+                emotion = (AbstractEmotion) new OpenEmotion(intensity, initialTime, duration);
                 break;
             case PEACEFUL:
-                feeling = (AbstractFeeling) new PeacefulFeeling(intensity, initialTime, duration);
+                emotion = (AbstractEmotion) new PeacefulEmotion(intensity, initialTime, duration);
                 break;
             case POSITIVE:
-                feeling = (AbstractFeeling) new PositiveFeeling(intensity, initialTime, duration);
+                emotion = (AbstractEmotion) new PositiveEmotion(intensity, initialTime, duration);
                 break;
             case RELAXED:
-                feeling = (AbstractFeeling) new RelaxedFeeling(intensity, initialTime, duration);
+                emotion = (AbstractEmotion) new RelaxedEmotion(intensity, initialTime, duration);
                 break;
             case SADNESS:
-                feeling = (AbstractFeeling) new SadFeeling(intensity, initialTime, duration);
+                emotion = (AbstractEmotion) new SadEmotion(intensity, initialTime, duration);
                 break;
             case STRONG:
-                feeling = (AbstractFeeling) new StrongFeeling(intensity, initialTime, duration);
+                emotion = (AbstractEmotion) new StrongEmotion(intensity, initialTime, duration);
                 break;
             case RELIEF:
-                feeling = (AbstractFeeling) new ReliefFeeling(intensity, initialTime, duration);
+                emotion = (AbstractEmotion) new ReliefEmotion(intensity, initialTime, duration);
                 break;
             default:
                 throw new ReactorException("Missing enum for constructor");
         }
-        _feelings.add(feeling);
+        _emotions.add(emotion);
         return this;
     }
 
-    public EmotionBuilder addFeeling(Feeling feeling) {
-        _feelings.add(feeling);
+    public FeelingBuilder addFeeling(Emotion emotion) {
+        _emotions.add(emotion);
         return this;
     }
 
-    public EmotionBuilder addFeelings(Feeling... feelings) {
-        for (Feeling feeling : feelings) {
-            _feelings.add(feeling);
+    public FeelingBuilder addFeelings(Emotion... emotions) {
+        for (Emotion emotion : emotions) {
+            _emotions.add(emotion);
         }
         return this;
     }
@@ -167,7 +140,7 @@ public class EmotionBuilder {
      * @throws NumberFormatException
      * @throws ReactorException
      */
-    public EmotionBuilder addFeelings(String script) throws NumberFormatException, ReactorException {
+    public FeelingBuilder addFeelings(String script) throws NumberFormatException, ReactorException {
         if (script == null || script.length() == 0 || !script.contains(";")) {
             throw new ReactorException(
                     "Error, no script to process due to null or zero length or missing ';' termination");
@@ -177,12 +150,12 @@ public class EmotionBuilder {
 
             // split into parts for each operand: operand=4,10[s|m|h]
             String parts[] = statement.split("=");
-            FeelingType feelingType = null;
+            EmotionType emotionType = null;
             if (parts[0].contains("*")) {
-                Double rnd = _diceHelper.getRandomDoubleBetween(0d, ((double) FeelingType.values().length));
-                feelingType = FeelingType.values()[rnd.intValue()];
+                Double rnd = _diceHelper.getRandomDoubleBetween(0d, ((double) EmotionType.values().length));
+                emotionType = EmotionType.values()[rnd.intValue()];
             } else {
-                feelingType = BrainHelper.getEmotionEnumForPattern(parts[0]);
+                emotionType = BrainHelper.getEmotionEnumForPattern(parts[0]);
             }
             Double intensity = null;
             String durationString = null;
@@ -215,7 +188,7 @@ public class EmotionBuilder {
                 duration = 1000 * _diceHelper.getRandomDoubleBetween(1d, 60d).longValue();
             }
             try {
-                addFeeling(feelingType, intensity, 0, duration);
+                addFeeling(emotionType, intensity, 0, duration);
             } catch (ReactorException e) {
                 e.printStackTrace();
             }
@@ -223,28 +196,56 @@ public class EmotionBuilder {
         return this;
     }
 
-    public Emotion build() throws ReactorException {
+    public Feeling build() throws ReactorException {
         return build(null);
     }
 
-    public Emotion build(Long initialTime) throws ReactorException {
-        if (_feelings == null) {
+    public Feeling build(Long initialTime) throws ReactorException {
+        if (_emotions == null) {
             throw new ReactorException("EmotiongBuilder has no feelings to build up on!");
         }
         if (initialTime == null) {
             long now = System.currentTimeMillis();
-            _feelings.forEach(feeling -> {
-                feeling.setInitialTime(now);
+            _emotions.forEach(emotion -> {
+                emotion.setInitialTime(now);
             });
         }
-        Emotion emotion = new Emotion();
-        emotion.storeFeelings(_feelings);
+        Feeling feeling = new Feeling();
+        feeling.storeFeelings(_emotions);
         reset();
-        return emotion;
+        return feeling;
     }
 
-    public EmotionBuilder reset() {
-        _feelings.clear();
+    public FeelingBuilder reset() {
+        _emotions.clear();
         return this;
     }
+
+//    public static void main(String[] args) throws Exception {
+//        FeelingBuilder eb = new FeelingBuilder();
+//        eb.addFeeling(new RelaxedEmotion(3d, 0, 60000));
+//        eb.addFeeling(new LovingEmotion(40d, 0, 5 * 60 * 1000));
+//        eb.addFeelings("*=10,40s;");
+//        Feeling feeling1 = eb.build(null);
+//
+//        eb.addFeeling(new RelaxedEmotion(3d, 0, 60000));
+//        eb.addFeeling(new LovingEmotion(40d, 0, 5 * 60 * 1000));
+//        eb.addFeelings("*=10,40s;");
+//        Feeling feeling2 = eb.build(null);
+//
+//        // System.out.println(emotionBuilder);
+//        System.out.println("Emotion1:");
+//        System.out.println(feeling1);
+//        feeling1.getFeelings().forEach(f -> {
+//            System.out.println("feeling: " + f.getFeelingType() + ", max amplitude: " + f.getAmplitude() + ", initial time: " + f.getInitialTime() + ", duration: " + f.getDuration() + "ms");
+//        });
+//        ;
+//        System.out.println();
+//        System.out.println("Emotion2:");
+//        System.out.println(feeling2);
+//        feeling2.getFeelings().forEach(f -> {
+//            System.out.println("feeling: " + f.getFeelingType() + ", max amplitude: " + f.getAmplitude() + ", initial time: " + f.getInitialTime() + ", duration: " + f.getDuration() + "ms");
+//        });
+//        ;
+//    }
 }

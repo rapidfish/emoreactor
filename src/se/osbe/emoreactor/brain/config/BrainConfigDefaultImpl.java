@@ -1,27 +1,21 @@
 package se.osbe.emoreactor.brain.config;
 
-import se.osbe.emoreactor.brain.emotions.Emotion;
-import se.osbe.emoreactor.brain.emotions.EmotionBuilder;
+import se.osbe.emoreactor.brain.feelings.FeelingBuilder;
 import se.osbe.emoreactor.brain.personality.PersonalityBaseline;
 import se.osbe.emoreactor.helper.DiceHelper;
-
-import java.util.LinkedList;
-import java.util.Queue;
 
 public class BrainConfigDefaultImpl implements BrainConfig {
 
     private final DiceHelper diceHelper;
     private final PersonalityBaseline personalityBaseline;
-    private final Queue<Emotion> perceptionQueue;
+    private final FeelingBuilder feelingBuilder;
     private Integer perceptionAwareness;
-    private EmotionBuilder emotionBuilder;
 
     public BrainConfigDefaultImpl(PersonalityBaseline personalityBaseline) {
-        perceptionQueue = new LinkedList();
         diceHelper = new DiceHelper();
         perceptionAwareness = 0;
         this.personalityBaseline = personalityBaseline;
-        emotionBuilder = new EmotionBuilder();
+        feelingBuilder = new FeelingBuilder();
     }
 
     @Override
@@ -45,8 +39,8 @@ public class BrainConfigDefaultImpl implements BrainConfig {
     }
 
     @Override
-    public EmotionBuilder getEmotionBuilder() {
-        return emotionBuilder;
+    public FeelingBuilder getFeelingBuilder() {
+        return feelingBuilder;
     }
 
 }

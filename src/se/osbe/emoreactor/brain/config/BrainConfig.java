@@ -1,6 +1,6 @@
 package se.osbe.emoreactor.brain.config;
 
-import se.osbe.emoreactor.brain.emotions.EmotionBuilder;
+import se.osbe.emoreactor.brain.feelings.FeelingBuilder;
 import se.osbe.emoreactor.brain.personality.PersonalityBaseline;
 import se.osbe.emoreactor.helper.DiceHelper;
 
@@ -14,6 +14,6 @@ public interface BrainConfig {
 
     PersonalityBaseline getPersonality();
 
-    EmotionBuilder getEmotionBuilder();
+    FeelingBuilder getFeelingBuilder();
 
 }

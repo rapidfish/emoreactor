@@ -1,6 +1,6 @@
-package se.osbe.emoreactor.brain.emotions.feelings;
+package se.osbe.emoreactor.brain.emotions;
 
-public enum FeelingType {
+public enum EmotionType {
 
     AGONY("Agony", "AGNY"),
     ANGER("Anger", "ANGR"),
@@ -27,7 +27,7 @@ public enum FeelingType {
     private String _description;
     private String _mnmonic;
 
-    private FeelingType(String description, String mnmonic) {
+    private EmotionType(String description, String mnmonic) {
         _description = description;
         _mnmonic = mnmonic;
     }

@@ -1,4 +1,4 @@
-package se.osbe.emoreactor.brain.emotions.feelings;
+package se.osbe.emoreactor.brain.emotions;
 
 import se.osbe.emoreactor.brain.reactor.ReactorException;
 import se.osbe.emoreactor.helper.BrainHelper;
@@ -10,28 +10,28 @@ import se.osbe.emoreactor.helper.BrainHelper;
  *
  * @author Oskar Bergstrom <rapidfish@me.com>
  */
-public abstract class AbstractFeeling implements Feeling {
+public abstract class AbstractEmotion implements Emotion {
 
     private final static String ERROR_PARAM_IS_NULL = "One or more parameter(s) is set to null";
 
-    private final FeelingType _feelingType;
+    private final EmotionType _emotionType;
     private final Double _amplitude;
     private final long _duration;
     private long _initialTime;
 
     @SuppressWarnings("unused")
-    private AbstractFeeling() throws ReactorException {
+    private AbstractEmotion() throws ReactorException {
         this(null, 0d, 0, 0);
     }
 
-    protected AbstractFeeling(FeelingType feeling, Double amplitude, long initialTime, long duration)
+    protected AbstractEmotion(EmotionType feeling, Double amplitude, long initialTime, long duration)
             throws ReactorException {
 
         if (feeling == null) {
             throw new ReactorException(ERROR_PARAM_IS_NULL);
         }
 
-        _feelingType = feeling;
+        _emotionType = feeling;
         _amplitude = amplitude;
         _duration = duration;
         if (initialTime >= 0) {
@@ -41,8 +41,8 @@ public abstract class AbstractFeeling implements Feeling {
         }
     }
 
-    public FeelingType getFeelingType() {
-        return _feelingType;
+    public EmotionType getFeelingType() {
+        return _emotionType;
     }
 
     public Double getAmplitude() {
@@ -67,7 +67,7 @@ public abstract class AbstractFeeling implements Feeling {
         int result = 1;
         result = prime * result + ((_amplitude == null) ? 0 : _amplitude.hashCode());
         result = prime * result + (int) (_duration ^ (_duration >>> 32));
-        result = prime * result + ((_feelingType == null) ? 0 : _feelingType.hashCode());
+        result = prime * result + ((_emotionType == null) ? 0 : _emotionType.hashCode());
         return result;
     }
 
@@ -79,7 +79,7 @@ public abstract class AbstractFeeling implements Feeling {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        AbstractFeeling other = (AbstractFeeling) obj;
+        AbstractEmotion other = (AbstractEmotion) obj;
         if (_amplitude == null) {
             if (other._amplitude != null)
                 return false;
@@ -87,7 +87,7 @@ public abstract class AbstractFeeling implements Feeling {
             return false;
         if (_duration != other._duration)
             return false;
-        if (_feelingType != other._feelingType)
+        if (_emotionType != other._emotionType)
             return false;
         return true;
     }
@@ -97,7 +97,7 @@ public abstract class AbstractFeeling implements Feeling {
         StringBuilder sb = new StringBuilder();
         if (getAmplitude() != null) {
             String duration = BrainHelper.getFormattedWithPrefix(getDuration());
-            sb.append(_feelingType.name()).append("(amplitude=").append(getAmplitude().intValue()).append(", duration=")
+            sb.append(_emotionType.name()).append("(amplitude=").append(getAmplitude().intValue()).append(", duration=")
                     .append(duration).append(")");
         }
         return sb.toString();

@@ -1,45 +1,46 @@
-package se.osbe.emoreactor.brain.emotions.feelings;
+package se.osbe.emoreactor.brain.feelings.emotions;
 
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import se.osbe.emoreactor.brain.emotions.*;
 import se.osbe.emoreactor.brain.reactor.ReactorException;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class EmotionTest {
+public class FeelingTest {
 
-    private List<AbstractFeeling> _emotionList;
+    private List<AbstractEmotion> _emotionList;
 
     @Before
     public void setUp() throws Exception {
-        _emotionList = new ArrayList<AbstractFeeling>();
+        _emotionList = new ArrayList<>();
         Double amplitude = 100.0;
         long initialTime = 1;
         long duration = 100;
 
-        AbstractFeeling emo0 = new AfraidFeeling(amplitude, initialTime, duration);
-        AbstractFeeling emo1 = new AgonyFeeling(amplitude, initialTime, duration);
-        AbstractFeeling emo2 = new AliveFeeling(amplitude, initialTime, duration);
-        AbstractFeeling emo3 = new AngerFeeling(amplitude, initialTime, duration);
-        AbstractFeeling emo4 = new ConfusedFeeling(amplitude, initialTime, duration);
-        AbstractFeeling emo5 = new DepressedFeeling(amplitude, initialTime, duration);
-        AbstractFeeling emo6 = new HappyFeeling(amplitude, initialTime, duration);
-        AbstractFeeling emo7 = new HelplessFeeling(amplitude, initialTime, duration);
-        AbstractFeeling emo8 = new HurtFeeling(amplitude, initialTime, duration);
-        AbstractFeeling emo9 = new IndifferentFeeling(amplitude, initialTime, duration);
-        AbstractFeeling emo10 = new InterestedFeeling(amplitude, initialTime, duration);
-        AbstractFeeling emo11 = new JudgementalFeeling(amplitude, initialTime, duration);
-        AbstractFeeling emo12 = new LovingFeeling(amplitude, initialTime, duration);
-        AbstractFeeling emo13 = new OpenFeeling(amplitude, initialTime, duration);
-        AbstractFeeling emo14 = new PeacefulFeeling(amplitude, initialTime, duration);
-        AbstractFeeling emo15 = new PositiveFeeling(amplitude, initialTime, duration);
-        AbstractFeeling emo16 = new RelaxedFeeling(amplitude, initialTime, duration);
-        AbstractFeeling emo17 = new SadFeeling(amplitude, initialTime, duration);
-        AbstractFeeling emo18 = new StrongFeeling(amplitude, initialTime, duration);
-        AbstractFeeling emo19 = new ReliefFeeling(amplitude, initialTime, duration);
+        AbstractEmotion emo0 = new AfraidEmotion(amplitude, initialTime, duration);
+        AbstractEmotion emo1 = new AgonyEmotion(amplitude, initialTime, duration);
+        AbstractEmotion emo2 = new AliveEmotion(amplitude, initialTime, duration);
+        AbstractEmotion emo3 = new AngerEmotion(amplitude, initialTime, duration);
+        AbstractEmotion emo4 = new ConfusedEmotion(amplitude, initialTime, duration);
+        AbstractEmotion emo5 = new DepressedEmotion(amplitude, initialTime, duration);
+        AbstractEmotion emo6 = new HappyEmotion(amplitude, initialTime, duration);
+        AbstractEmotion emo7 = new HelplessEmotion(amplitude, initialTime, duration);
+        AbstractEmotion emo8 = new HurtEmotion(amplitude, initialTime, duration);
+        AbstractEmotion emo9 = new IndifferentEmotion(amplitude, initialTime, duration);
+        AbstractEmotion emo10 = new InterestedEmotion(amplitude, initialTime, duration);
+        AbstractEmotion emo11 = new JudgementalEmotion(amplitude, initialTime, duration);
+        AbstractEmotion emo12 = new LovingEmotion(amplitude, initialTime, duration);
+        AbstractEmotion emo13 = new OpenEmotion(amplitude, initialTime, duration);
+        AbstractEmotion emo14 = new PeacefulEmotion(amplitude, initialTime, duration);
+        AbstractEmotion emo15 = new PositiveEmotion(amplitude, initialTime, duration);
+        AbstractEmotion emo16 = new RelaxedEmotion(amplitude, initialTime, duration);
+        AbstractEmotion emo17 = new SadEmotion(amplitude, initialTime, duration);
+        AbstractEmotion emo18 = new StrongEmotion(amplitude, initialTime, duration);
+        AbstractEmotion emo19 = new ReliefEmotion(amplitude, initialTime, duration);
 
         _emotionList.add(emo0);
         _emotionList.add(emo1);

@@ -33,7 +33,7 @@ public class PersonalityBaseline {
 	 * @throws ReactorException
 	 */
 	public PersonalityBaseline(Double introvertVsExtrovert, Double intuitionVsSensing, Double feelingVsThinking, Double percievingVsJudging) throws ReactorException {
-		_properties = new HashMap<PersonalityType, Double>(8);
+		_properties = new HashMap<>(8);
 		setIntrovertVsExtravert(introvertVsExtrovert, (100 - introvertVsExtrovert));
 		setIntuitionVsSensing(intuitionVsSensing, (100 - intuitionVsSensing));
 		setFeelingVsThinking(feelingVsThinking, (100 - feelingVsThinking));

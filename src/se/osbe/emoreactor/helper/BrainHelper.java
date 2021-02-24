@@ -2,15 +2,15 @@ package se.osbe.emoreactor.helper;
 
 import java.util.UUID;
 
-import se.osbe.emoreactor.brain.emotions.feelings.FeelingType;
+import se.osbe.emoreactor.brain.emotions.EmotionType;
 
 public class BrainHelper {
 
-	public static FeelingType getEmotionEnumForPattern(String str) {
-		FeelingType result = null;
+	public static EmotionType getEmotionEnumForPattern(String str) {
+		EmotionType result = null;
 		String candidate = str.toLowerCase() + ".*";
-		FeelingType[] types = FeelingType.values();
-		for (FeelingType type : types) {
+		EmotionType[] types = EmotionType.values();
+		for (EmotionType type : types) {
 			String name = type.name().toLowerCase();
 			String description = type.description().toLowerCase();
 			if (name.matches(candidate) || description.matches(candidate)) {
@@ -46,7 +46,7 @@ public class BrainHelper {
 	}
 	
 	public static void main(String[] args) {
-		FeelingType emoEnum = null;
+		EmotionType emoEnum = null;
 		String matchThis = "hap";
 		emoEnum = BrainHelper.getEmotionEnumForPattern(matchThis);
 		System.out.println("Found a matching emotion for pattern: '" + matchThis + "' to --> " + emoEnum);
