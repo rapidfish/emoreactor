@@ -108,7 +108,7 @@ public class EmotionBuilder {
             case RELAXED:
                 feeling = (AbstractFeeling) new RelaxedFeeling(intensity, initialTime, duration);
                 break;
-            case SAD:
+            case SADNESS:
                 feeling = (AbstractFeeling) new SadFeeling(intensity, initialTime, duration);
                 break;
             case STRONG:

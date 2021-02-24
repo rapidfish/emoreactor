@@ -1,12 +1,10 @@
 package se.osbe.emoreactor.brain;
 
 import se.osbe.emoreactor.brain.config.BrainConfig;
-import se.osbe.emoreactor.brain.config.BrainConfigTimeBasedImpl;
+import se.osbe.emoreactor.brain.config.BrainConfigDefaultImpl;
 import se.osbe.emoreactor.brain.emotions.Emotion;
 import se.osbe.emoreactor.brain.emotions.feelings.FeelingType;
-import se.osbe.emoreactor.brain.perception.Perception;
-import se.osbe.emoreactor.brain.perception.PerceptionType;
-import se.osbe.emoreactor.brain.personality.Personality;
+import se.osbe.emoreactor.brain.personality.PersonalityBaseline;
 import se.osbe.emoreactor.brain.reactor.Reactor;
 import se.osbe.emoreactor.brain.reactor.Reactor.ProgressTrendType;
 import se.osbe.emoreactor.brain.reactor.ReactorException;
@@ -16,6 +14,14 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 
+/**
+ * Emotions vs Feelings
+ *
+ * Emotions are associated with bodily reactions that are activated through neurotransmitters and hormones
+ * released by the brain, feelings are the conscious experience of emotional reactions.
+ *
+ * source: https://imotions.com/blog/difference-feelings-emotions/#emotions
+ */
 public class Brain {
 
     private final BrainConfig brainConfig;
@@ -32,28 +38,27 @@ public class Brain {
 
     public Brain(BrainConfig config) throws ReactorException {
         ticCounter = 0;
-        brainConfig = config == null ? new BrainConfigTimeBasedImpl(new Personality()) : config;
+        brainConfig = config == null ? new BrainConfigDefaultImpl(new PersonalityBaseline()) : config;
         perceptionQueue = new LinkedList<Emotion>();
         reactor = new Reactor(getBrainConfig());
+        // Each brain config has its own (unique seed value) instance of a dice helper
         diceHelper = getBrainConfig().getDiceHelper();
     }
 
     // Add only if within brains attention span
-    public boolean addInboundPerception(Perception perception) {
-        PerceptionType perceptionType = perception.getPerceptionType();
-        Emotion perceptionEmoCandidate = perception.getEmotionCandidate();
+    public boolean addInboundPerception(Emotion emoCandidate) {
         boolean isAccepted = false;
         if (diceHelper.getRandomPercentage() <= getBrainConfig().getPerceptionAwareness()) {
-            isAccepted = perceptionQueue.offer(perceptionEmoCandidate);
+            isAccepted = perceptionQueue.offer(emoCandidate);
             if (!isAccepted) {
-                System.err.println("WARNING! EMOTION QUEUE IS OVERLOADED!!! " + perception);
+                System.err.println("WARNING! EMOTION QUEUE IS OVERLOADED!!! " + emoCandidate);
             }
             return true;
         }
         return false;
     }
 
-    public Personality getPersonality() {
+    public PersonalityBaseline getPersonality() {
         return getBrainConfig().getPersonality();
     }
 
@@ -75,7 +80,7 @@ public class Brain {
             reactor.addEmotion(inboundEmotion);
         }
 
-        // Delegate one unit of processing (time) emotions to the reactor
+        // Delegate one unit of processing to the reactor
         Map<FeelingType, Double> emotionNow = reactor.ticTac();
         ticCounter++;
         return emotionNow;
@@ -85,8 +90,25 @@ public class Brain {
         return getBrainConfig().getPerceptionAwareness();
     }
 
+    /**
+     * Sets the value of how likely the brain will react to any stimuli being fed to it.
+     * This is a way to simulate the fact all messages/stimula needs to get above a certain 'threshold level' to be
+     * noticed by the brain. Once a 'message' like this is getting noticed, an input can no longer be ignored, hence
+     * a reaction will take place.<br><br>
+     *
+     * E.g If set to 25 (25%), it will statistically react on every fourth stimuli it is being fed.<br>
+     *
+     * NOTE: When setting a pecentage value below 0, or above 100, it will only result in being set to 0%, and 100% respectively.
+     * @param percentage perception awareness as an Integer (representing a value between 0% and 100%)
+     */
     public void setPerceptionAwarenessPercentage(Integer percentage) {
-        getBrainConfig().setPerceptionAwareness(percentage);
+        if(percentage < 0) {
+            getBrainConfig().setPerceptionAwareness(0);
+        } else if(percentage > 100) {
+            getBrainConfig().setPerceptionAwareness(100);
+        } else {
+            getBrainConfig().setPerceptionAwareness(percentage);
+        }
     }
 
     public long getTickCounter() {
@@ -99,20 +121,6 @@ public class Brain {
 
     public ProgressTrendType getProgressType(FeelingType type) {
         return reactor.getProgressForFeeling(type);
-    }
-
-    public String getProgressSign(FeelingType type) {
-        ProgressTrendType pt = reactor.getProgressForFeeling(type);
-        String result = null;
-        String k = String.format("%.2f", pt.getCoefficient());
-        if (pt == ProgressTrendType.NEUTRAL) {
-            result = k;
-        } else if (pt == ProgressTrendType.POSITIVE) {
-            result = "+" + k;
-        } else if (pt == ProgressTrendType.NEGATIVE) {
-            result = k;
-        }
-        return result;
     }
 
     public BrainConfig getBrainConfig() {

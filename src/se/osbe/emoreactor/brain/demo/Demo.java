@@ -2,16 +2,16 @@ package se.osbe.emoreactor.brain.demo;
 
 import se.osbe.emoreactor.brain.Brain;
 import se.osbe.emoreactor.brain.config.BrainConfig;
-import se.osbe.emoreactor.brain.config.BrainConfigTimeBasedImpl;
+import se.osbe.emoreactor.brain.config.BrainConfigDefaultImpl;
+import se.osbe.emoreactor.brain.emotions.Emotion;
 import se.osbe.emoreactor.brain.emotions.EmotionBuilder;
 import se.osbe.emoreactor.brain.emotions.feelings.FeelingType;
-import se.osbe.emoreactor.brain.perception.Perception;
-import se.osbe.emoreactor.brain.perception.SightPerception;
-import se.osbe.emoreactor.brain.personality.Personality;
+import se.osbe.emoreactor.brain.personality.PersonalityBaseline;
 import se.osbe.emoreactor.brain.reactor.ReactorException;
 import se.osbe.emoreactor.helper.DiceHelper;
 
 import java.util.Map;
+import java.util.stream.Stream;
 
 public class Demo {
 
@@ -22,10 +22,11 @@ public class Demo {
 
     public Demo() throws InterruptedException {
         try {
-            Personality personality = new Personality(); // no arg constructor gives default where all personality param pairs is in perfect balance (50%/50%)
-            BrainConfig brainConfig = new BrainConfigTimeBasedImpl(personality);
-            brain = new Brain(brainConfig); // default, if set to null
-            brain.setPerceptionAwarenessPercentage(10);
+            PersonalityBaseline personality = new PersonalityBaseline(); // no arg constructor gives default where all personality param pairs is in perfect balance (50%/50%)
+            BrainConfig brainConfig = new BrainConfigDefaultImpl(personality);
+            brainConfig.setPerceptionAwareness(25); // This is 0% by default, so we need to set it.
+            brain = new Brain(brainConfig); // gives default brain config when set to null
+            brain.setPerceptionAwarenessPercentage(5);
             dice = brain.getBrainConfig().getDiceHelper();
             emotionBuilder = brain.getBrainConfig().getEmotionBuilder();
         } catch (ReactorException e) {
@@ -42,27 +43,26 @@ public class Demo {
 
         while (true) {
             int intensity = demo.dice.getRandomDoubleBetween(1d, 5d).intValue(); // 1 - 10
-            int duration = 10; //demo.dice.getRandomDoubleBetween(5d, 350d).intValue(); // 2s - 5min
+            int duration = demo.dice.getRandomDoubleBetween(5d, 30d).intValue(); // 2s - 5min
 
-            demo.brain.setPerceptionAwarenessPercentage(15); // awareness %
 //            demo.brain.setPerceptionAwarenessPercentage(demo.dice.getRandomDoubleBetween(30d, 60d).intValue());
-            System.out.println(String.format("|%d|", demo.brain.getTickCounter()));
+            System.out.println(String.format("Time unit |%d|", demo.brain.getTickCounter()));
 
             // Perception perception = new SightPerception(demo.emotionBuilder.addFeelings("ang=" + intensity + "," + duration + "s; Pos=3,3;").build(null));
-            Perception perception = new SightPerception(demo.emotionBuilder.addFeelings("*=" + intensity + "," + duration + "s;").build(null));
+            Emotion emotion = demo.emotionBuilder.addFeelings("dep=" + intensity + "," + duration + "s;").build(null);
 
-            if (demo.brain.addInboundPerception(perception)) {
-                System.err.println("Perception detected: " + perception.toString());
+            if (demo.brain.addInboundPerception(emotion)) {
+                System.err.println("Detected change: " + emotion.toString());
             } else {
-                // System.out.println(perception.getPerceptionType().getDescription() + " - Perception passed undetected");
+                // System.out.println("No change...");
             }
 
-            System.out.println(demo.brain.tic());
+            Stream.of(demo.brain.tic()).filter(i -> i.get(FeelingType.DEPRESSED).intValue() > 0).forEach(System.out::println);
 
 //            Stream.of(FeelingType.values()).map(t -> t.description() + ": " + demo.brain.getProgressType(t) + ", ").forEach(System.out::print);
 //            System.out.println();
 
-            Thread.sleep(1000);
+            Thread.sleep(200);
         }
     }
 }

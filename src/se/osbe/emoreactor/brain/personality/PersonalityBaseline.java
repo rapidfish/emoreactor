@@ -12,7 +12,7 @@ import se.osbe.emoreactor.helper.DiceHelper;
  * @author Oskar Bergström
  *
  */
-public class Personality {
+public class PersonalityBaseline {
 
 	private final Map<PersonalityType, Double> _properties;
 
@@ -20,7 +20,7 @@ public class Personality {
 	 * Default personality having all values set to 50% (introvertVsExtrovert, intuitionVsSensing, feelingVsThinking, percievingVsJudging)
 	 * @throws ReactorException
 	 */
-	public Personality() throws ReactorException {
+	public PersonalityBaseline() throws ReactorException {
 		this(50d, 50d, 50d, 50d); // Percentage in pair
 	}
 
@@ -32,7 +32,7 @@ public class Personality {
 	 * @param percievingVsJudging
 	 * @throws ReactorException
 	 */
-	public Personality(Double introvertVsExtrovert, Double intuitionVsSensing, Double feelingVsThinking, Double percievingVsJudging) throws ReactorException {
+	public PersonalityBaseline(Double introvertVsExtrovert, Double intuitionVsSensing, Double feelingVsThinking, Double percievingVsJudging) throws ReactorException {
 		_properties = new HashMap<PersonalityType, Double>(8);
 		setIntrovertVsExtravert(introvertVsExtrovert, (100 - introvertVsExtrovert));
 		setIntuitionVsSensing(intuitionVsSensing, (100 - intuitionVsSensing));
@@ -185,25 +185,25 @@ public class Personality {
 		return (param >= 0 || param <= 100);
 	}
 
-	private Personality setIntrovertVsExtravert(Double introvert, Double extrovert) {
+	private PersonalityBaseline setIntrovertVsExtravert(Double introvert, Double extrovert) {
 		this.setIntecity(PersonalityType.INTROVERT, introvert);
 		this.setIntecity(PersonalityType.EXTROVERT, extrovert);
 		return this;
 	}
 
-	private Personality setIntuitionVsSensing(Double intuition, Double sensing) {
+	private PersonalityBaseline setIntuitionVsSensing(Double intuition, Double sensing) {
 		this.setIntecity(PersonalityType.INTUITION, intuition);
 		this.setIntecity(PersonalityType.SENSING, sensing);
 		return this;
 	}
 
-	private Personality setFeelingVsThinking(Double feeling, Double thinking) {
+	private PersonalityBaseline setFeelingVsThinking(Double feeling, Double thinking) {
 		this.setIntecity(PersonalityType.FEELING, feeling);
 		this.setIntecity(PersonalityType.THINKING, thinking);
 		return this;
 	}
 
-	private Personality setPerceivingVsJudging(Double percieving, Double judging) {
+	private PersonalityBaseline setPerceivingVsJudging(Double percieving, Double judging) {
 		this.setIntecity(PersonalityType.PERCIEVING, percieving);
 		this.setIntecity(PersonalityType.JUDGING, judging);
 		return this;
@@ -213,21 +213,9 @@ public class Personality {
 		_properties.put(type, intecity);
 	}
 	
-	public Personality getRandomPersonality() throws ReactorException{
+	public PersonalityBaseline getRandomPersonality() throws ReactorException{
 		DiceHelper dice = new DiceHelper();
-		Personality p = new Personality(dice.getRandomPercentage(), dice.getRandomPercentage(), dice.getRandomPercentage(), dice.getRandomPercentage());
+		PersonalityBaseline p = new PersonalityBaseline(dice.getRandomPercentage(), dice.getRandomPercentage(), dice.getRandomPercentage(), dice.getRandomPercentage());
 		return p;
-	}
-
-	public static void main(String[] args) throws ReactorException {
-//		DiceHelper dice = new DiceHelper();
-//		Personality p = new Personality(dice.getRandomPercentage(), dice.getRandomPercentage(), dice.getRandomPercentage(), dice.getRandomPercentage());
-//		System.out.print(p.getIntrovertOrExtrovert() + "(" + p.getIntensityForType(p.getIntrovertOrExtrovert()) +"%) <--> ");
-//		System.out.print(p.getIntuitionVsSensing() + "(" + p.getIntensityForType(p.getIntuitionVsSensing()) +"%) <--> ");
-//		System.out.print(p.getFeelingVsThinking() + "(" + p.getIntensityForType(p.getFeelingVsThinking()) +"%) <--> ");
-//		System.out.println(p.getPercievingVsJudging() + "(" + p.getIntensityForType(p.getPercievingVsJudging()) +"%)");
-//		System.out.println();
-//		System.out.println(p);
-		System.out.println(new Personality());
 	}
 }

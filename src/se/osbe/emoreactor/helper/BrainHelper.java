@@ -3,7 +3,6 @@ package se.osbe.emoreactor.helper;
 import java.util.UUID;
 
 import se.osbe.emoreactor.brain.emotions.feelings.FeelingType;
-import se.osbe.emoreactor.brain.perception.PerceptionType;
 
 public class BrainHelper {
 
@@ -18,25 +17,6 @@ public class BrainHelper {
 				result = type;
 				break;
 			}
-		}
-		return result;
-	}
-
-	public static PerceptionType getPerceptionTypeForPattern(String str) {
-		PerceptionType result = null;
-		String candidate = str.toLowerCase() + ".*";
-		PerceptionType[] types = PerceptionType.values();
-		boolean match = false;
-		for (PerceptionType type : types) {
-			String name = type.name().toLowerCase();
-			String description = type.getDescription().toLowerCase();
-			if (name.matches(candidate) || description.matches(candidate)) {
-				match = true;
-				result = type;
-			}
-		}
-		if(!match){
-			System.out.println("No match!!!");
 		}
 		return result;
 	}
