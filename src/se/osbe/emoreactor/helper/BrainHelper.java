@@ -53,8 +53,8 @@ public class BrainHelper {
 		System.out.println("createUUID: " + createUUID());
 		System.out.println();
 		DiceHelper dh = new DiceHelper();
-		Double x=5d;
-		Double y=10d;
+		Float x=5f;
+		Float y=10f;
 		System.out.println("Chans: " + x + " av " + y + ": " + dh.isLucky(x, y));
 	}
 }

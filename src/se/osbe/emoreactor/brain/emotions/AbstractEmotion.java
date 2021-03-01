@@ -15,16 +15,16 @@ public abstract class AbstractEmotion implements Emotion {
     private final static String ERROR_PARAM_IS_NULL = "One or more parameter(s) is set to null";
 
     private final EmotionType _emotionType;
-    private final Double _amplitude;
+    private final Float _amplitude;
     private final long _duration;
     private long _initialTime;
 
     @SuppressWarnings("unused")
     private AbstractEmotion() throws ReactorException {
-        this(null, 0d, 0, 0);
+        this(null, 0f, 0, 0);
     }
 
-    protected AbstractEmotion(EmotionType feeling, Double amplitude, long initialTime, long duration)
+    protected AbstractEmotion(EmotionType feeling, Float amplitude, long initialTime, long duration)
             throws ReactorException {
 
         if (feeling == null) {
@@ -45,7 +45,7 @@ public abstract class AbstractEmotion implements Emotion {
         return _emotionType;
     }
 
-    public Double getAmplitude() {
+    public Float getAmplitude() {
         return _amplitude;
     }
 

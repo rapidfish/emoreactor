@@ -12,9 +12,10 @@ import java.util.stream.IntStream;
 public class Reactor {
 
     private final Map<EmotionType, List<Emotion>> _registry;
-    private final Map<EmotionType, Double> _intensityResultMap;
+    private final Map<EmotionType, Float> _intensityResultMap;
     private final Map<EmotionType, ProgressTrendType> _progressingTypeMap;
     private final BrainConfig _config;
+    private List<ReactionTrigger> _reactionRegistry;
 
     public Reactor(BrainConfig config) {
         _config = config;
@@ -31,22 +32,22 @@ public class Reactor {
     }
 
     public boolean isRegistryEmpty() {
-        return _registry.values().isEmpty();
-//        for (int i = 0; i < EmotionType.values().length; i++) {
-//            if (!_registry.get(EmotionType.values()[i]).isEmpty()) {
-//                return false;
-//            }
-//        }
-//        return true;
+        // return _registry.entrySet().stream().filter(e -> !e.getValue().isEmpty()).count() == 0;
+        for (int i = 0; i < EmotionType.values().length; i++) {
+            if (!_registry.get(EmotionType.values()[i]).isEmpty()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public ProgressTrendType getProgressForFeeling(EmotionType type) {
         return _progressingTypeMap.get(type);
     }
 
-    public Map<EmotionType, Double> tic() {
+    public Map<EmotionType, Float> tic() {
         long now = System.currentTimeMillis(); // Read only once per tic
-        List<Double> calculatedIntensityList = new ArrayList<>();
+        List<Float> calculatedIntensityList = new ArrayList<>();
 
         IntStream.range(0, EmotionType.values().length).forEach(i -> {
             EmotionType emotionType = EmotionType.values()[i];
@@ -60,13 +61,13 @@ public class Reactor {
             listOfSameEmotions.forEach(emotion -> calculatedIntensityList.add(
                     calculateIntensity(emotion, now))
             );
-            Double sum = calculatedIntensityList.stream().reduce(0d, Double::sum);
-            Double oldSum = _intensityResultMap.get(emotionType);
-            oldSum = (oldSum != null) ? oldSum : (double) 0;
-            Double delta = (sum - oldSum);
+            Float sum = calculatedIntensityList.stream().reduce(0f, Float::sum);
+            Float oldSum = _intensityResultMap.get(emotionType);
+            oldSum = (oldSum != null) ? oldSum : (float) 0;
+            Float delta = (sum - oldSum);
             ProgressTrendType trend = ProgressTrendType.NEUTRAL;
-            if (delta.compareTo(0d) != 0) {
-                trend = (delta.compareTo(0d) > 0) ? ProgressTrendType.POSITIVE : ProgressTrendType.NEGATIVE;
+            if (delta.compareTo(0f) != 0) {
+                trend = (delta.compareTo(0f) > 0) ? ProgressTrendType.POSITIVE : ProgressTrendType.NEGATIVE;
             }
             trend.setCoefficient(delta); // store delta
             _progressingTypeMap.put(emotionType, trend);
@@ -82,18 +83,18 @@ public class Reactor {
                 .collect(Collectors.toList()); // return remaining active emotions after cleanup!
     }
 
-    private Double calculateIntensity(Emotion emotion, long now) {
-        Double result = null;
+    private Float calculateIntensity(Emotion emotion, long now) {
+        Float result = null;
         long initialTime = emotion.getInitialTime();
         long duration = emotion.getDuration();
         if (now >= (initialTime + duration) || now < initialTime) {
-            return 0d;
+            return 0f;
         }
-        Double amplitude = emotion.getAmplitude();
+        Float amplitude = emotion.getAmplitude();
         if (duration == 0 || amplitude == 0) {
-            return 0d;
+            return 0f;
         }
-        return amplitude * Math.sin((Math.PI / duration) * (now - initialTime));
+        return amplitude * ((float) Math.sin((Math.PI / duration)) * (now - initialTime));
     }
 
     public BrainConfig getConfig() {
@@ -102,24 +103,24 @@ public class Reactor {
 
     public enum ProgressTrendType {
         NEUTRAL, POSITIVE, NEGATIVE;
-        private Double coefficient;
+        private Float coefficient;
 
         ProgressTrendType() {
-            coefficient = (double) 0;
+            coefficient = Float.valueOf(0);
         }
 
-        public Double getCoefficient() {
+        public Float getCoefficient() {
             return coefficient;
         }
 
-        public void setCoefficient(Double k) {
+        public void setCoefficient(Float k) {
             coefficient = k;
         }
 
-        public ProgressTrendType getTypeForVal(Double d) {
-            if (d.compareTo(0d) == 0) {
+        public ProgressTrendType getTypeForVal(Float d) {
+            if (d.compareTo(0f) == 0) {
                 return ProgressTrendType.NEUTRAL;
-            } else if (d.compareTo(0d) > 0) {
+            } else if (d.compareTo(0f) > 0) {
                 return ProgressTrendType.POSITIVE;
             } else {
                 return ProgressTrendType.NEGATIVE;

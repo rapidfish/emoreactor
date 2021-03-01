@@ -34,7 +34,7 @@ public class BrainTest {
 
     @Test
     public void brainSmokeTest() throws Exception {
-        Map<EmotionType, Double> emotionNow;
+        Map<EmotionType, Float> emotionNow;
 
         int intensity = 5;
         int duration = 10; //demo.dice.getRandomDoubleBetween(5d, 350d).intValue(); // 2s - 5min
@@ -44,7 +44,7 @@ public class BrainTest {
                 .addFeelings("anger=" + intensity + "," + duration + "s;")
                 .build();
 
-        Assert.assertTrue(brain.addInboundPerception(feeling));
+        Assert.assertTrue(brain.offerInboundFeeling(feeling));
         emotionNow = brain.tic();
 
         Assert.assertNotNull(emotionNow);

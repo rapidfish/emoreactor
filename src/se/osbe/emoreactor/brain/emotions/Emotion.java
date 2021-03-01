@@ -4,7 +4,7 @@ public interface Emotion {
 
 	EmotionType getFeelingType();
 
-	Double getAmplitude();
+	Float getAmplitude();
 	
 	long getInitialTime();
 	

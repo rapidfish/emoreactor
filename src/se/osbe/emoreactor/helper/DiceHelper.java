@@ -13,12 +13,12 @@ public class DiceHelper {
 		return DiceHelper._rnd.nextBoolean();
 	}
 
-	public boolean isNotLucky(Double chance, Double dice) {
+	public boolean isNotLucky(Float chance, Float dice) {
 		return !isLucky(chance, dice);
 	}
 
-	public boolean isLucky(Double chance, Double dice) {
-		Double result = getRandomDoubleBetween(1d, dice);
+	public boolean isLucky(Float chance, Float dice) {
+		Float result = getRandomFloatBetween(1f, dice);
 		return (result.compareTo(chance) <= 0);
 	}
 
@@ -28,28 +28,28 @@ public class DiceHelper {
 		} else if(percentage == 100) {
 			return true;
 		}
-		return getRandomDoubleBetween(0d, 100d).compareTo((double) (percentage % 100)) < 0;
+		return getRandomFloatBetween(0f, 100f).compareTo((float) (percentage % 100)) < 0;
 	}
 
-	public Double getRandomPercentage() {
-		return getRandomDoubleBetween(0d, 100d);
+	public Float getRandomPercentage() {
+		return getRandomFloatBetween(0f, 100f);
 	}
 
-	public Double getRandomDoubleBetween(Double min, Double max) {
+	public Float getRandomFloatBetween(Float min, Float max) {
 		if (min.compareTo(max) == 0) {
 			return min;
 		}
-		Double lowest = getLowestDouble(min, max);
-		Double diff = getHighestDouble(min, max) - lowest;
-		Double num = diff * DiceHelper._rnd.nextDouble(); // (offset + 1);
+		Float lowest = getLowestFloat(min, max);
+		Float diff = getHighestFloat(min, max) - lowest;
+		Float num = diff * DiceHelper._rnd.nextFloat(); // (offset + 1);
 		return (lowest + num);
 	}
 
-	private Double getLowestDouble(Double t1, Double t2) {
+	private Float getLowestFloat(Float t1, Float t2) {
 		return (t1.compareTo(t2) < 0) ? t1 : t2;
 	}
 
-	private Double getHighestDouble(Double t1, Double t2) {
+	private Float getHighestFloat(Float t1, Float t2) {
 		return (t1.compareTo(t2) < 0) ? t2 : t1;
 	}
 

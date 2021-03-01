@@ -26,7 +26,7 @@ public class FeelingBuilder {
         return this;
     }
 
-    public FeelingBuilder addFeeling(EmotionType emotionEnum, Double intensity, long initialTime, long duration)
+    public FeelingBuilder addFeeling(EmotionType emotionEnum, Float intensity, long initialTime, long duration)
             throws ReactorException {
         Emotion emotion;
         switch (emotionEnum) {
@@ -152,19 +152,19 @@ public class FeelingBuilder {
             String parts[] = statement.split("=");
             EmotionType emotionType = null;
             if (parts[0].contains("*")) {
-                Double rnd = _diceHelper.getRandomDoubleBetween(0d, ((double) EmotionType.values().length));
+                Float rnd = _diceHelper.getRandomFloatBetween(0f, ((float) EmotionType.values().length));
                 emotionType = EmotionType.values()[rnd.intValue()];
             } else {
                 emotionType = BrainHelper.getEmotionEnumForPattern(parts[0]);
             }
-            Double intensity = null;
+            Float intensity = null;
             String durationString = null;
             String prefix = null;
             long duration = 0;
             // split params to operand
             String params[] = parts[1].split(",");
             if (params.length > 0) {
-                intensity = Double.parseDouble(params[0]);
+                intensity = Float.parseFloat(params[0]);
                 durationString = new String(params[1]);
                 if (durationString.contains("*")) {
                     duration = _diceHelper.getRandomPercentage().longValue();
@@ -184,8 +184,8 @@ public class FeelingBuilder {
                     duration *= 604800000;
                 }
             } else {
-                intensity = _diceHelper.getRandomDoubleBetween(1d, 100d);
-                duration = 1000 * _diceHelper.getRandomDoubleBetween(1d, 60d).longValue();
+                intensity = _diceHelper.getRandomFloatBetween(1f, 100f);
+                duration = 1000 * _diceHelper.getRandomFloatBetween(1f, 60f).longValue();
             }
             try {
                 addFeeling(emotionType, intensity, 0, duration);

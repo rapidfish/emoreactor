@@ -25,10 +25,10 @@ import java.util.Queue;
 public class Brain {
 
     private final BrainConfig brainConfig;
-    private long ticCounter;
     private final Queue<Feeling> perceptionQueue;
     private final Reactor reactor;
     private final DiceHelper diceHelper;
+    private long ticCounter;
 
     @SuppressWarnings("unused")
     private Brain() throws ReactorException {
@@ -46,16 +46,14 @@ public class Brain {
     }
 
     // Add only if within brains attention span
-    public boolean addInboundPerception(Feeling feelingCandidate) {
-        boolean isAccepted;
+    public boolean offerInboundFeeling(Feeling feeling) {
         if (diceHelper.getRandomPercentage() <= getBrainConfig().getPerceptionAwareness()) {
-            isAccepted = perceptionQueue.offer(feelingCandidate);
-            if (!isAccepted) {
-                System.err.println("WARNING! EMOTION QUEUE IS OVERLOADED!!! " + feelingCandidate);
+            if (!perceptionQueue.offer(feeling)) {
+                System.err.println("WARNING! EMOTION QUEUE IS OVERLOADED!!! " + feeling);
+                return false;
             }
-            return true;
         }
-        return false;
+        return true;
     }
 
     public PersonalityBaseline getPersonality() {
@@ -72,7 +70,7 @@ public class Brain {
      * reflecting latest emotional changes inside the brain since last
      * unit of time has past.
      */
-    public Map<EmotionType, Double> tic()  {
+    public Map<EmotionType, Float> tic() {
         // Poll perception from queue!
         Feeling inboundFeeling = perceptionQueue.poll();
         if (inboundFeeling != null) {
@@ -80,7 +78,7 @@ public class Brain {
         }
 
         // Delegate one unit of processing to the reactor
-        Map<EmotionType, Double> emotionNow = reactor.tic();
+        Map<EmotionType, Float> emotionNow = reactor.tic();
         ticCounter++;
         return emotionNow;
     }
@@ -104,11 +102,12 @@ public class Brain {
     public void setPerceptionAwarenessPercentage(Integer percentage) {
         if (percentage < 0) {
             getBrainConfig().setPerceptionAwareness(0);
+            return;
         } else if (percentage > 100) {
             getBrainConfig().setPerceptionAwareness(100);
-        } else {
-            getBrainConfig().setPerceptionAwareness(percentage);
+            return;
         }
+        getBrainConfig().setPerceptionAwareness(percentage);
     }
 
     public long getTickCounter() {
