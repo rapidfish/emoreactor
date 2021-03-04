@@ -13,7 +13,7 @@ public class Reactor {
 
     private final Map<EmotionType, List<Emotion>> _registry;
     private final Map<EmotionType, Float> _intensityResultMap;
-    private final Map<EmotionType, ProgressTrendType> _progressingTypeMap;
+    private final Map<EmotionType, InclinationType> _progressingTypeMap;
     private final BrainConfig _config;
     private List<ReactionTrigger> _reactionRegistry;
 
@@ -41,7 +41,7 @@ public class Reactor {
         return true;
     }
 
-    public ProgressTrendType getProgressForFeeling(EmotionType type) {
+    public InclinationType getProgressForFeeling(EmotionType type) {
         return _progressingTypeMap.get(type);
     }
 
@@ -65,9 +65,9 @@ public class Reactor {
             Float oldSum = _intensityResultMap.get(emotionType);
             oldSum = (oldSum != null) ? oldSum : (float) 0;
             Float delta = (sum - oldSum);
-            ProgressTrendType trend = ProgressTrendType.NEUTRAL;
+            InclinationType trend = InclinationType.NEUTRAL;
             if (delta.compareTo(0f) != 0) {
-                trend = (delta.compareTo(0f) > 0) ? ProgressTrendType.POSITIVE : ProgressTrendType.NEGATIVE;
+                trend = (delta.compareTo(0f) > 0) ? InclinationType.POSITIVE : InclinationType.NEGATIVE;
             }
             trend.setCoefficient(delta); // store delta
             _progressingTypeMap.put(emotionType, trend);
@@ -101,11 +101,11 @@ public class Reactor {
         return _config;
     }
 
-    public enum ProgressTrendType {
+    public enum InclinationType {
         NEUTRAL, POSITIVE, NEGATIVE;
         private Float coefficient;
 
-        ProgressTrendType() {
+        InclinationType() {
             coefficient = Float.valueOf(0);
         }
 
@@ -117,13 +117,13 @@ public class Reactor {
             coefficient = k;
         }
 
-        public ProgressTrendType getTypeForVal(Float d) {
+        public InclinationType getTypeForVal(Float d) {
             if (d.compareTo(0f) == 0) {
-                return ProgressTrendType.NEUTRAL;
+                return InclinationType.NEUTRAL;
             } else if (d.compareTo(0f) > 0) {
-                return ProgressTrendType.POSITIVE;
+                return InclinationType.POSITIVE;
             } else {
-                return ProgressTrendType.NEGATIVE;
+                return InclinationType.NEGATIVE;
             }
         }
     }

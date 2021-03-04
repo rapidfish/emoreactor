@@ -39,24 +39,27 @@ public class Demo {
 
         Demo demo = new Demo();
         // Builder to create input stimuli for the reactor and the brain
-        var feelingBuilder = demo.brain.getBrainConfig().getFeelingBuilder();
+        var feelingBuilder = demo.brain.getBrainConfiguration().getFeelingBuilder();
 
         // A dice helper to produce random numbers as we don not (yet) have 'real world' stimuli input
-        final DiceHelper dice = demo.brain.getBrainConfig().getDiceHelper();
+        final DiceHelper dice = demo.brain.getBrainConfiguration().getDiceHelper();
 
         Map<EmotionType, Float> feelingNow;
+        boolean isGo = true;
         while (true) {
             int intensity = dice.getRandomFloatBetween(5f, 20f).intValue(); // 1 - 10
-            int duration = dice.getRandomFloatBetween(30f, 60f).intValue(); // 2s - 5min
-            int awareness = dice.getRandomFloatBetween(25f, 50f).intValue();
+            int duration = dice.getRandomFloatBetween(5f, 60f).intValue(); // 2s - 5min
+//            int awareness = dice.getRandomFloatBetween(5f, 15f).intValue();
+            int awareness = 100;
             demo.brain.setPerceptionAwarenessPercentage(awareness);
-            System.out.println(String.format("Time unit |%d|, Awareness: %d", demo.brain.getTickCounter(), awareness) + "%");
+            System.out.println(String.format("Time unit |%d|, Awareness: %d", demo.brain.getTickerCounter(), awareness) + "%");
             // Perception perception = new SightPerception(demo.emoBuilder.addFeelings("ang=" + intensity + "," + duration + "s; Pos=3,3;").build(null));
-            Feeling feeling = feelingBuilder.addFeelings("*=" + intensity + "," + duration + "s;").build(null);
+            Feeling feeling = isGo ? feelingBuilder.addFeelings("agony=" + intensity + "," + duration + "s;").build(null) : null;
             if (demo.brain.offerInboundFeeling(feeling)) {
-                System.err.println("Detected inbound feeling: " + feeling.toString());
+                isGo = false;
+                System.out.println("Detected inbound feeling: " + feeling.toString());
             } else {
-                // System.out.println("No change...");
+                System.out.println("No change...");
             }
             feelingNow = demo.brain.tic();
             if (!demo.brain.isReactorDry()) {
@@ -66,39 +69,12 @@ public class Demo {
                                 .map(e -> e.toString())
                                 .collect(Collectors.joining(DELIMITER)));
 
-                if (
-                        feelingNow.get(EmotionType.AGONY).intValue() > 5 &&
-                        feelingNow.get(EmotionType.AFRAID).intValue() > 5
-                ) {
-                    System.out.println("------------------------------------------------> I'm scared for real!!!");
-                } else if (
-                        feelingNow.get(EmotionType.AGONY).intValue() > 4 &&
-                                feelingNow.get(EmotionType.AFRAID).intValue() > 2
-                ) {
-                    System.out.println("------------------------------------------------> I'm REALLY worried!");
-                } else if (
-                        feelingNow.get(EmotionType.AGONY).intValue() > 3 &&
-                                feelingNow.get(EmotionType.AFRAID).intValue() > 2
-                ) {
-                    System.out.println("------------------------------------------------> I'm worried!");
-                } else if (
-                        feelingNow.get(EmotionType.AGONY).intValue() > 2 &&
-                                feelingNow.get(EmotionType.AFRAID).intValue() > 2
-                ) {
-                    System.out.println("------------------------------------------------> I'm a bit worried!");
-                } else if (
-                        feelingNow.get(EmotionType.AGONY).intValue() > 1 &&
-                        feelingNow.get(EmotionType.AFRAID).intValue() > 1
-                ) {
-                    System.out.println("------------------------------------------------> I'm concerned!");
-                    demo.brain.offerInboundFeeling(feelingBuilder.addFeelings("relief=30, 20s;").build(null));
-                }
-
-                if (feelingNow.get(EmotionType.RELIEF).intValue() > 20) {
-                    System.out.println("------------------------------------------------> I'm SOO RELIEVED! it feels good again!");
-                    System.exit(0);
-                }
-
+//                if (
+//                        feelingNow.get(EmotionType.AGONY).intValue() > 5 &&
+//                        feelingNow.get(EmotionType.AFRAID).intValue() > 5
+//                ) {
+//                    System.out.println("------------------------------------------------> I'm scared for real!!!");
+//                }
 
             } else {
                 System.out.println("I feel nothing!");

@@ -28,8 +28,8 @@ public class BrainTest {
         BrainConfig brainConfig = new BrainConfigDefaultImpl(personalityBaseline);
         brain = new Brain(brainConfig); // default, if set to null
         brain.setPerceptionAwarenessPercentage(10);
-        dice = brain.getBrainConfig().getDiceHelper();
-        feelingBuilder = brain.getBrainConfig().getFeelingBuilder();
+        dice = brain.getBrainConfiguration().getDiceHelper();
+        feelingBuilder = brain.getBrainConfiguration().getFeelingBuilder();
     }
 
     @Test
@@ -50,6 +50,6 @@ public class BrainTest {
         Assert.assertNotNull(emotionNow);
         brain.tic();
 
-        Assert.assertEquals(Reactor.ProgressTrendType.POSITIVE, brain.getProgressType(EmotionType.ANGER));
+        Assert.assertEquals(Reactor.InclinationType.POSITIVE, brain.readReactorInclinationForEmotion(EmotionType.ANGER));
     }
 }

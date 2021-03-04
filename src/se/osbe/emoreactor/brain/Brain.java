@@ -6,12 +6,13 @@ import se.osbe.emoreactor.brain.emotions.EmotionType;
 import se.osbe.emoreactor.brain.feelings.Feeling;
 import se.osbe.emoreactor.brain.personality.PersonalityBaseline;
 import se.osbe.emoreactor.brain.reactor.Reactor;
-import se.osbe.emoreactor.brain.reactor.Reactor.ProgressTrendType;
+import se.osbe.emoreactor.brain.reactor.Reactor.InclinationType;
 import se.osbe.emoreactor.brain.reactor.ReactorException;
 import se.osbe.emoreactor.helper.DiceHelper;
 
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Queue;
 
 /**
@@ -24,11 +25,11 @@ import java.util.Queue;
  */
 public class Brain {
 
-    private final BrainConfig brainConfig;
+    private final BrainConfig brainConfiguration;
     private final Queue<Feeling> perceptionQueue;
     private final Reactor reactor;
     private final DiceHelper diceHelper;
-    private long ticCounter;
+    private long tickerCounter;
 
     @SuppressWarnings("unused")
     private Brain() throws ReactorException {
@@ -36,28 +37,30 @@ public class Brain {
         this(null);
     }
 
-    public Brain(BrainConfig config) throws ReactorException {
-        ticCounter = 0;
-        brainConfig = (config == null) ? new BrainConfigDefaultImpl(new PersonalityBaseline()) : config;
+    public Brain(BrainConfig configuration) throws ReactorException {
+        tickerCounter = 0;
+        brainConfiguration = (configuration == null) ? new BrainConfigDefaultImpl(new PersonalityBaseline()) : configuration;
         perceptionQueue = new LinkedList<>();
-        reactor = new Reactor(getBrainConfig());
-        // Each brain config has its own (unique seed value) instance of a dice helper
-        diceHelper = getBrainConfig().getDiceHelper();
+        reactor = new Reactor(getBrainConfiguration());
+        diceHelper = getBrainConfiguration().getDiceHelper();
     }
 
-    // Add only if within brains attention span
     public boolean offerInboundFeeling(Feeling feeling) {
-        if (diceHelper.getRandomPercentage() <= getBrainConfig().getPerceptionAwareness()) {
+        if (feeling == null) {
+            return false;
+        }
+        boolean result = diceHelper.getRandomPercentage() <= getBrainConfiguration().getPerceptionAwareness();
+        if (result) {
             if (!perceptionQueue.offer(feeling)) {
                 System.err.println("WARNING! EMOTION QUEUE IS OVERLOADED!!! " + feeling);
                 return false;
             }
         }
-        return true;
+        return result;
     }
 
     public PersonalityBaseline getPersonality() {
-        return getBrainConfig().getPersonality();
+        return getBrainConfiguration().getPersonality();
     }
 
     /**
@@ -72,19 +75,19 @@ public class Brain {
      */
     public Map<EmotionType, Float> tic() {
         // Poll perception from queue!
-        Feeling inboundFeeling = perceptionQueue.poll();
-        if (inboundFeeling != null) {
-            reactor.addEmotion(inboundFeeling);
+        Optional<Feeling> inboundFeeling = Optional.ofNullable(perceptionQueue.poll());
+        if (inboundFeeling.isPresent()) {
+            reactor.addEmotion(inboundFeeling.get());
         }
 
         // Delegate one unit of processing to the reactor
         Map<EmotionType, Float> emotionNow = reactor.tic();
-        ticCounter++;
+        tickerCounter++;
         return emotionNow;
     }
 
     public Integer getPerceptionAwarenessPercentage() {
-        return getBrainConfig().getPerceptionAwareness();
+        return getBrainConfiguration().getPerceptionAwareness();
     }
 
     /**
@@ -101,28 +104,28 @@ public class Brain {
      */
     public void setPerceptionAwarenessPercentage(Integer percentage) {
         if (percentage < 0) {
-            getBrainConfig().setPerceptionAwareness(0);
+            getBrainConfiguration().setPerceptionAwareness(0);
             return;
         } else if (percentage > 100) {
-            getBrainConfig().setPerceptionAwareness(100);
+            getBrainConfiguration().setPerceptionAwareness(100);
             return;
         }
-        getBrainConfig().setPerceptionAwareness(percentage);
+        getBrainConfiguration().setPerceptionAwareness(percentage);
     }
 
-    public long getTickCounter() {
-        return ticCounter;
+    public long getTickerCounter() {
+        return tickerCounter;
     }
 
     public boolean isReactorDry() {
         return reactor.isRegistryEmpty();
     }
 
-    public ProgressTrendType getProgressType(EmotionType type) {
+    public InclinationType readReactorInclinationForEmotion(EmotionType type) {
         return reactor.getProgressForFeeling(type);
     }
 
-    public BrainConfig getBrainConfig() {
-        return brainConfig;
+    public BrainConfig getBrainConfiguration() {
+        return brainConfiguration;
     }
 }
