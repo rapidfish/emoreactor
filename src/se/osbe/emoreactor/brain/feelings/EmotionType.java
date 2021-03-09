@@ -1,7 +1,6 @@
-package se.osbe.emoreactor.brain.emotions;
+package se.osbe.emoreactor.brain.feelings;
 
 public enum EmotionType {
-
     AGONY("Agony", "AGNY"),
     ANGER("Anger", "ANGR"),
     DEPRESSED("Depressed", "DEPR"),
@@ -21,23 +20,21 @@ public enum EmotionType {
     PEACEFUL("Peaceful", "PCFL"),
     STRONG("Strong", "STRO"),
     RELAXED("Relaxed", "RELX"),
-    RELIEF("Relieved", "RELV"),
-    ;
+    RELIEF("Relieved", "RELV");
 
-    private String _description;
-    private String _mnmonic;
+    private String emotionName;
+    private String mnmonic;
 
-    private EmotionType(String description, String mnmonic) {
-        _description = description;
-        _mnmonic = mnmonic;
+    EmotionType(String emotionName, String mnmonic) {
+        this.emotionName = emotionName;
+        this.mnmonic = mnmonic;
     }
 
-    public String description() {
-        return _description;
+    public String getEmotionName() {
+        return emotionName;
     }
 
-    @Override
-    public String toString() {
-        return _mnmonic;
+    public String getMnmonic() {
+        return mnmonic;
     }
 }

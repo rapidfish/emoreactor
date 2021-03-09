@@ -1,85 +1,90 @@
 package se.osbe.emoreactor.brain.feelings;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import se.osbe.emoreactor.brain.emotions.Emotion;
-import se.osbe.emoreactor.brain.emotions.EmotionType;
+import java.util.*;
 
 public class Feeling implements Cloneable {
 
-	private final Map<EmotionType, Emotion> _feelingMap;
+    private final long timestamp;
+    private final List<Emotion> emotions;
+    private float amplitudeLevel;
 
-	protected Feeling() {
-		_feelingMap = new HashMap<>();
-	}
+    // closed
+    private Feeling() {
+        this(null, null);
+    }
 
-	public void storeFeelings(List<Emotion> emotions) {
-		for (Emotion emotion : emotions) {
-			storeFeeling(emotion);
-		}
-	}
+    Feeling(List<Emotion> emotions, Long timestamp) {
+        this.timestamp = Objects.nonNull(timestamp) ? timestamp : new Date().getTime();
+        this.emotions = Objects.nonNull(emotions) ? emotions : new LinkedList<>();
+        amplitudeLevel = 0;
+    }
 
-	public void storeFeeling(Emotion emotion) {
-		EmotionType type = emotion.getFeelingType();
-		_feelingMap.put(type, emotion);
-	}
-	
-	public boolean removeFeeling(EmotionType type) {
-		if (_feelingMap.containsKey(type)) {
-			_feelingMap.remove(type);
-		}
-		return false;
-	}
+    public static FeelingBuilder builder() {
+        return new FeelingBuilder();
+    }
 
-	public boolean hasEmotion(EmotionType type) {
-		return _feelingMap.containsKey(type);
-	}
+    public float getTimestamp() {
+        return timestamp;
+    }
 
-	public Emotion getEmotion(EmotionType type) {
-		return _feelingMap.get(type);
-	}
+    public List<Emotion> getEmotions() {
+        return emotions;
+    }
 
-	public List<Emotion> getEmotions() {
-		return new LinkedList<Emotion>(_feelingMap.values());
-	}
+    public static class FeelingBuilder {
+        private long timestamp;
+        private List<Emotion> emotions;
 
-	@Override
-	protected Object clone() throws CloneNotSupportedException {
-		return super.clone();
-	}
+        private float amplitude = 100;
+        private int attack = 10; // % of time to reach 100% amp
+        private int decay = 10; // % of time to reach sustain level
+        private float sustain = 60;
+        private int release = 20;
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((_feelingMap == null) ? 0 : _feelingMap.hashCode());
-		return result;
-	}
+        FeelingBuilder() {
+            emotions = new ArrayList<>();
+        }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Feeling other = (Feeling) obj;
-		if (_feelingMap == null) {
-			if (other._feelingMap != null)
-				return false;
-		} else if (!_feelingMap.equals(other._feelingMap))
-			return false;
-		return true;
-	}
+        public FeelingBuilder emotion(Emotion emotion) {
+            this.emotions.add(emotion);
+            return this;
+        }
 
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append(_feelingMap.values());
-		return sb.toString();
-	}
+        public FeelingBuilder amplitude(float amplitude) {
+            this.amplitude = amplitude;
+            return this;
+        }
+
+        public FeelingBuilder adsr(int attack, int decay, float sustain, int release) {
+            this.attack = attack;
+            this.decay = decay;
+            this.sustain = sustain;
+            this.release = release;
+            return this;
+        }
+
+        public FeelingBuilder decay(int decay) {
+            this.decay = decay;
+            return this;
+        }
+
+        public FeelingBuilder sustain(float sustain) {
+            this.sustain = sustain;
+            return this;
+        }
+
+        public FeelingBuilder release(int release) {
+            this.release = release;
+            return this;
+        }
+
+        public FeelingBuilder emotions(List<Emotion> emotions) {
+            this.emotions.addAll(emotions);
+            return this;
+        }
+
+        public Feeling build() {
+            return new Feeling(emotions, timestamp);
+        }
+    }
 }

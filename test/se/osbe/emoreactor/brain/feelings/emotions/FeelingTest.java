@@ -1,77 +1,73 @@
 package se.osbe.emoreactor.brain.feelings.emotions;
 
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
-import se.osbe.emoreactor.brain.emotions.*;
-import se.osbe.emoreactor.brain.reactor.ReactorException;
+import se.osbe.emoreactor.brain.feelings.Emotion;
+import se.osbe.emoreactor.brain.feelings.EmotionType;
 
 import java.util.Arrays;
-import java.util.List;
 
 public class FeelingTest {
 
-    private List<AbstractEmotion> _emotionList;
-
-    @Before
-    public void setUp() throws Exception {
-        Float amplitude = 100.0f;
-        long initialTime = 1;
-        long duration = 100;
-        _emotionList = Arrays.asList(
-                new AfraidEmotion(amplitude, initialTime, duration),
-                new AgonyEmotion(amplitude, initialTime, duration),
-                new AliveEmotion(amplitude, initialTime, duration),
-                new AngerEmotion(amplitude, initialTime, duration),
-                new ConfusedEmotion(amplitude, initialTime, duration),
-                new DepressedEmotion(amplitude, initialTime, duration),
-                new HappyEmotion(amplitude, initialTime, duration),
-                new HelplessEmotion(amplitude, initialTime, duration),
-                new HurtEmotion(amplitude, initialTime, duration),
-                new IndifferentEmotion(amplitude, initialTime, duration),
-                new InterestedEmotion(amplitude, initialTime, duration),
-                new JudgementalEmotion(amplitude, initialTime, duration),
-                new LovingEmotion(amplitude, initialTime, duration),
-                new OpenEmotion(amplitude, initialTime, duration),
-                new PeacefulEmotion(amplitude, initialTime, duration),
-                new PositiveEmotion(amplitude, initialTime, duration),
-                new RelaxedEmotion(amplitude, initialTime, duration),
-                new SadEmotion(amplitude, initialTime, duration),
-                new StrongEmotion(amplitude, initialTime, duration),
-                new ReliefEmotion(amplitude, initialTime, duration)
-        );
-    }
 
     @Test
-    public void emoAmplitudeTest() throws ReactorException {
-        final Float amplitude = 100.0f;
-        _emotionList.forEach(emo -> {
-            Assert.assertEquals(amplitude, emo.getAmplitude());
+    public void emoConstructorTest() {
+        Arrays.asList(
+                new Emotion(EmotionType.AGONY, 1, 2, 3, 4),
+                new Emotion(EmotionType.ALIVE, 1, 2, 3, 4),
+                new Emotion(EmotionType.ANGER, 1, 2, 3, 4),
+                new Emotion(EmotionType.CONFUSED, 1, 2, 3, 4),
+                new Emotion(EmotionType.DEPRESSED, 1, 2, 3, 4),
+                new Emotion(EmotionType.HAPPY, 1, 2, 3, 4),
+                new Emotion(EmotionType.HELPLESS, 1, 2, 3, 4),
+                new Emotion(EmotionType.HURT, 1, 2, 3, 4),
+                new Emotion(EmotionType.INDIFFERENT, 1, 2, 3, 4),
+                new Emotion(EmotionType.INTERESTED, 1, 2, 3, 4),
+                new Emotion(EmotionType.JUDGEMENTAL, 1, 2, 3, 4),
+                new Emotion(EmotionType.LOVING, 1, 2, 3, 4),
+                new Emotion(EmotionType.OPEN, 1, 2, 3, 4),
+                new Emotion(EmotionType.PEACEFUL, 1, 2, 3, 4),
+                new Emotion(EmotionType.POSITIVE, 1, 2, 3, 4),
+                new Emotion(EmotionType.RELAXED, 1, 2, 3, 4),
+                new Emotion(EmotionType.SADNESS, 1, 2, 3, 4),
+                new Emotion(EmotionType.STRONG, 1, 2, 3, 4),
+                new Emotion(EmotionType.RELIEF, 1, 2, 3, 4)
+        ).forEach(emo -> {
+            Assert.assertEquals(1, emo.getAttack());
+            Assert.assertEquals(2, emo.getDecay());
+            Assert.assertEquals(3, emo.getSustain());
+            Assert.assertEquals(4, emo.getRelease());
         });
     }
 
     @Test
-    public void emoInitialTimeTest() throws ReactorException {
-        final long initialTime = 1;
-        _emotionList.forEach(emo -> {
-            Assert.assertEquals(initialTime, emo.getInitialTime());
+    public void emoBuilderTest() {
+        Arrays.asList(
+                Emotion.builder().emotionType(EmotionType.AFRAID).attack(1).decay(2).sustain(3).release(4).build(),
+                Emotion.builder().emotionType(EmotionType.AGONY).attack(1).decay(2).sustain(3).release(4).build(),
+                Emotion.builder().emotionType(EmotionType.ALIVE).attack(1).decay(2).sustain(3).release(4).build(),
+                Emotion.builder().emotionType(EmotionType.ANGER).attack(1).decay(2).sustain(3).release(4).build(),
+                Emotion.builder().emotionType(EmotionType.CONFUSED).attack(1).decay(2).sustain(3).release(4).build(),
+                Emotion.builder().emotionType(EmotionType.DEPRESSED).attack(1).decay(2).sustain(3).release(4).build(),
+                Emotion.builder().emotionType(EmotionType.HAPPY).attack(1).decay(2).sustain(3).release(4).build(),
+                Emotion.builder().emotionType(EmotionType.HELPLESS).attack(1).decay(2).sustain(3).release(4).build(),
+                Emotion.builder().emotionType(EmotionType.HURT).attack(1).decay(2).sustain(3).release(4).build(),
+                Emotion.builder().emotionType(EmotionType.INDIFFERENT).attack(1).decay(2).sustain(3).release(4).build(),
+                Emotion.builder().emotionType(EmotionType.INTERESTED).attack(1).decay(2).sustain(3).release(4).build(),
+                Emotion.builder().emotionType(EmotionType.JUDGEMENTAL).attack(1).decay(2).sustain(3).release(4).build(),
+                Emotion.builder().emotionType(EmotionType.LOVING).attack(1).decay(2).sustain(3).release(4).build(),
+                Emotion.builder().emotionType(EmotionType.OPEN).attack(1).decay(2).sustain(3).release(4).build(),
+                Emotion.builder().emotionType(EmotionType.PEACEFUL).attack(1).decay(2).sustain(3).release(4).build(),
+                Emotion.builder().emotionType(EmotionType.POSITIVE).attack(1).decay(2).sustain(3).release(4).build(),
+                Emotion.builder().emotionType(EmotionType.RELAXED).attack(1).decay(2).sustain(3).release(4).build(),
+                Emotion.builder().emotionType(EmotionType.SADNESS).attack(1).decay(2).sustain(3).release(4).build(),
+                Emotion.builder().emotionType(EmotionType.STRONG).attack(1).decay(2).sustain(3).release(4).build(),
+                Emotion.builder().emotionType(EmotionType.RELIEF).attack(1).decay(2).sustain(3).release(4).build()
+        ).forEach(emo -> {
+            Assert.assertEquals(1, emo.getAttack());
+            Assert.assertEquals(2, emo.getDecay());
+            Assert.assertEquals(3, emo.getSustain());
+            Assert.assertEquals(4, emo.getRelease());
         });
-    }
-
-    @Test
-    public void emoDurationValueTest() throws ReactorException {
-        final long duration = 100;
-        _emotionList.forEach(emo -> Assert.assertEquals(duration, emo.getDuration()));
-    }
-
-    @Test
-    public void emoFeelingTypeTest() throws ReactorException {
-        _emotionList.forEach(emo -> Assert.assertNotNull(emo.getFeelingType()));
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        _emotionList = null; // gc
     }
 }
