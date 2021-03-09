@@ -1,19 +1,11 @@
 package se.osbe.emoreactor.brain;
 
-import se.osbe.emoreactor.brain.config.BrainConfig;
-import se.osbe.emoreactor.brain.config.BrainConfigDefaultImpl;
-import se.osbe.emoreactor.brain.emotions.EmotionType;
+import se.osbe.emoreactor.brain.feelings.EmotionType;
 import se.osbe.emoreactor.brain.feelings.Feeling;
-import se.osbe.emoreactor.brain.personality.PersonalityBaseline;
-import se.osbe.emoreactor.brain.reactor.Reactor;
-import se.osbe.emoreactor.brain.reactor.Reactor.InclinationType;
-import se.osbe.emoreactor.brain.reactor.ReactorException;
+import se.osbe.emoreactor.helper.BrainHelper;
 import se.osbe.emoreactor.helper.DiceHelper;
 
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Queue;
+import java.util.*;
 
 /**
  * Emotions vs Feelings
@@ -24,70 +16,75 @@ import java.util.Queue;
  * source: https://imotions.com/blog/difference-feelings-emotions/#emotions
  */
 public class Brain {
-
-    private final BrainConfig brainConfiguration;
-    private final Queue<Feeling> perceptionQueue;
-    private final Reactor reactor;
     private final DiceHelper diceHelper;
-    private long tickerCounter;
+    private final PersonalityCharacteristics personalityBaseline;
+    private final List<Feeling> feelings;
+    private final Map<EmotionType, Float> previousFeelingRegistry;
+    private final Map<EmotionType, Float> currentFeelingRegistry;
+    private String id;
+    private String brainName;
+    private long turnCounter;
+    private Integer perceptionAwareness;
 
-    @SuppressWarnings("unused")
-    private Brain() throws ReactorException {
-        // protected from being instantiated
-        this(null);
+    private Brain() {
+        this(null, null);
     }
 
-    public Brain(BrainConfig configuration) throws ReactorException {
-        tickerCounter = 0;
-        brainConfiguration = (configuration == null) ? new BrainConfigDefaultImpl(new PersonalityBaseline()) : configuration;
-        perceptionQueue = new LinkedList<>();
-        reactor = new Reactor(getBrainConfiguration());
-        diceHelper = getBrainConfiguration().getDiceHelper();
+    public Brain(String name, PersonalityCharacteristics baseline) {
+        Objects.requireNonNull(baseline);
+        id = BrainHelper.createUUID();
+        brainName = name;
+        turnCounter = 0;
+        perceptionAwareness = 0;
+        diceHelper = new DiceHelper();
+        personalityBaseline = baseline;
+        feelings = new LinkedList<>();
+        final int registrySize = EmotionType.values().length;
+        previousFeelingRegistry = new HashMap<>(registrySize);
+        currentFeelingRegistry = new HashMap<>(registrySize);
+    }
+
+    public static void main(String[] args) {
+        System.out.println(new Brain("John Doe", new PersonalityCharacteristics()));
+    }
+
+    public Map<EmotionType, Float> getCurrentFeeling() {
+        return currentFeelingRegistry;
+    }
+
+    public Map<EmotionType, Float> getPreviousFeeling() {
+        return previousFeelingRegistry;
     }
 
     public boolean offerInboundFeeling(Feeling feeling) {
-        if (feeling == null) {
-            return false;
+        Objects.requireNonNull(feeling);
+        Float randomPercentage = diceHelper.getRandomPercentage();
+        Float intencity = perceptionAwareness != 0 ? (randomPercentage / perceptionAwareness) : 0;
+        if (intencity > 0 && randomPercentage <= perceptionAwareness) {
+            return feelings.add(feeling);
         }
-        boolean result = diceHelper.getRandomPercentage() <= getBrainConfiguration().getPerceptionAwareness();
-        if (result) {
-            if (!perceptionQueue.offer(feeling)) {
-                System.err.println("WARNING! EMOTION QUEUE IS OVERLOADED!!! " + feeling);
-                return false;
-            }
-        }
-        return result;
+        return false;
     }
 
-    public PersonalityBaseline getPersonality() {
-        return getBrainConfiguration().getPersonality();
-    }
+    // Getters
 
-    /**
-     * Process all inbound emotions supplied by the perception queue. Then
-     * it does internal calculations to summarize changes inside its emotion
-     * registry. And at last it returns its current emotion (list of feelings
-     * and their magnitude right now)
-     *
-     * @return What emotion the brain is feeling right now! The result is
-     * reflecting latest emotional changes inside the brain since last
-     * unit of time has past.
-     */
-    public Map<EmotionType, Float> tic() {
-        // Poll perception from queue!
-        Optional<Feeling> inboundFeeling = Optional.ofNullable(perceptionQueue.poll());
-        if (inboundFeeling.isPresent()) {
-            reactor.addEmotion(inboundFeeling.get());
+    public Map<EmotionType, Float> nextTurn() {
+
+        // return amplitude * ((float) Math.sin((Math.PI / duration)) * (now - initialTime));
+
+        // save currentRecistry to previe
+        previousFeelingRegistry.putAll(currentFeelingRegistry);
+        currentFeelingRegistry.clear();
+
+        long now = System.currentTimeMillis(); // Read only once per tic
+        if (!feelings.isEmpty()) {
+            feelings.stream().forEach(feeling -> {
+                // behandla nya feelings...
+            });
         }
-
-        // Delegate one unit of processing to the reactor
-        Map<EmotionType, Float> emotionNow = reactor.tic();
-        tickerCounter++;
-        return emotionNow;
-    }
-
-    public Integer getPerceptionAwarenessPercentage() {
-        return getBrainConfiguration().getPerceptionAwareness();
+        feelings.clear();
+        turnCounter++;
+        return currentFeelingRegistry;
     }
 
     /**
@@ -98,34 +95,48 @@ public class Brain {
      * <p>
      * E.g If set to 25 (25%), it will statistically react on every fourth stimuli it is being fed.<br>
      * <p>
-     * NOTE: When setting a percentage value below 0, or above 100, it will only result in being set to 0%, and 100% respectively.
+     * NOTE: When setting a percentage value below 0%, or above 100%, it will only result in being set to 0%, and 100% respectively.
      *
-     * @param percentage perception awareness as an Integer (representing a value between 0% and 100%)
+     * @param awareness perception awareness (a value between 0% and 100%)
      */
-    public void setPerceptionAwarenessPercentage(Integer percentage) {
-        if (percentage < 0) {
-            getBrainConfiguration().setPerceptionAwareness(0);
+    public void setAwarenessPercentage(Integer awareness) {
+        if (awareness < 0) {
+            perceptionAwareness = 0;
             return;
-        } else if (percentage > 100) {
-            getBrainConfiguration().setPerceptionAwareness(100);
+        } else if (awareness > 100) {
+            perceptionAwareness = 100;
             return;
         }
-        getBrainConfiguration().setPerceptionAwareness(percentage);
+        perceptionAwareness = awareness;
     }
 
-    public long getTickerCounter() {
-        return tickerCounter;
+    public long getTurnCounter() {
+        return turnCounter;
     }
 
-    public boolean isReactorDry() {
-        return reactor.isRegistryEmpty();
+    public String getUUID() {
+        return id;
     }
 
-    public InclinationType readReactorInclinationForEmotion(EmotionType type) {
-        return reactor.getProgressForFeeling(type);
+    public String getName() {
+        return brainName;
     }
 
-    public BrainConfig getBrainConfiguration() {
-        return brainConfiguration;
+    public DiceHelper getDiceHelper() {
+        return diceHelper;
+    }
+
+    public PersonalityCharacteristics getPersonalityBaseline() {
+        return personalityBaseline;
+    }
+
+    @Override
+    public String toString() {
+        return "Brain {\n" +
+                "id='" + id + "\'\n" +
+                "brainName='" + brainName + "\'\n" +
+                "turnCounter=" + turnCounter + "\n" +
+                "perceptionAwareness=" + perceptionAwareness + "\n" +
+                personalityBaseline + "\n}";
     }
 }
