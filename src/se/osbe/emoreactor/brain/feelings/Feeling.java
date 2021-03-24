@@ -4,87 +4,73 @@ import java.util.*;
 
 public class Feeling implements Cloneable {
 
-    private final long timestamp;
-    private final List<Emotion> emotions;
-    private float amplitudeLevel;
 
-    // closed
+    private final String uuid;
+    private final long initialTimeStamp;
+    private final List<Emotion> emotions;
+
     private Feeling() {
-        this(null, null);
+        // closed
+        this.uuid = UUID.randomUUID().toString().split("-")[0];
+        this.initialTimeStamp = new Date().getTime();
+        this.emotions = Collections.emptyList();
     }
 
-    Feeling(List<Emotion> emotions, Long timestamp) {
-        this.timestamp = Objects.nonNull(timestamp) ? timestamp : new Date().getTime();
+    public Feeling(List<Emotion> emotions) {
+        this.uuid = UUID.randomUUID().toString().split("-")[0];
+        this.initialTimeStamp = new Date().getTime();
         this.emotions = Objects.nonNull(emotions) ? emotions : new LinkedList<>();
-        amplitudeLevel = 0;
+    }
+
+    public Feeling(String name, List<Emotion> emotions) {
+        this.uuid = UUID.randomUUID().toString().split("-")[0];
+        this.initialTimeStamp = new Date().getTime();
+        this.emotions = Objects.nonNull(emotions) ? emotions : new LinkedList<>();
     }
 
     public static FeelingBuilder builder() {
         return new FeelingBuilder();
     }
 
-    public float getTimestamp() {
-        return timestamp;
+    public long getInitialTimeStamp() {
+        return initialTimeStamp;
     }
 
     public List<Emotion> getEmotions() {
         return emotions;
     }
 
-    public static class FeelingBuilder {
-        private long timestamp;
-        private List<Emotion> emotions;
+    public String getUID() {
+        return uuid;
+    }
 
-        private float amplitude = 100;
-        private int attack = 10; // % of time to reach 100% amp
-        private int decay = 10; // % of time to reach sustain level
-        private float sustain = 60;
-        private int release = 20;
+    public String toString() {
+        return "Feeling [" + this.uuid + "] -> " + this.getEmotions() + "]";
+    }
+
+    public boolean isExpired() {
+        return emotions.size() == 0 || emotions.size() == emotions.stream().filter(e -> e.isExpired()).count();
+    }
+
+    public static class FeelingBuilder {
+        private List<Emotion> emotions;
 
         FeelingBuilder() {
             emotions = new ArrayList<>();
         }
 
-        public FeelingBuilder emotion(Emotion emotion) {
+        public FeelingBuilder addEmotion(Emotion emotion) {
             this.emotions.add(emotion);
             return this;
         }
 
-        public FeelingBuilder amplitude(float amplitude) {
-            this.amplitude = amplitude;
-            return this;
-        }
-
-        public FeelingBuilder adsr(int attack, int decay, float sustain, int release) {
-            this.attack = attack;
-            this.decay = decay;
-            this.sustain = sustain;
-            this.release = release;
-            return this;
-        }
-
-        public FeelingBuilder decay(int decay) {
-            this.decay = decay;
-            return this;
-        }
-
-        public FeelingBuilder sustain(float sustain) {
-            this.sustain = sustain;
-            return this;
-        }
-
-        public FeelingBuilder release(int release) {
-            this.release = release;
-            return this;
-        }
-
-        public FeelingBuilder emotions(List<Emotion> emotions) {
+        public FeelingBuilder addEmotions(List<Emotion> emotions) {
             this.emotions.addAll(emotions);
             return this;
         }
 
         public Feeling build() {
-            return new Feeling(emotions, timestamp);
+            return new Feeling(emotions);
         }
     }
 }

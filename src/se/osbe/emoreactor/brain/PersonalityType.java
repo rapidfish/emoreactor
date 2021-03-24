@@ -14,13 +14,14 @@ public enum PersonalityType {
     THINKING("Thinking: Making decisions impersonally. In Jung's typology, thinking is a rational function. Thinking's opposite is Emotion."),
     PERCIEVING("Perceiving. For the E (extraverted) types, it's simple enough - P means that the dominant function is a Perceiving function (iNtuition or Sensing). P types display the more open-ended perceiving, data-collecting function"),
     JUDGING("Judging. The dominant function is a deciding or Judging function. J types show the world their decision-making Judging function");
+
     private String description;
 
-    private PersonalityType(String description) {
-    	description = description;
+    PersonalityType(String description) {
+        this.description = description;
     }
 
-    public String getDescription() {
+    public String description() {
         return description;
     }
 
