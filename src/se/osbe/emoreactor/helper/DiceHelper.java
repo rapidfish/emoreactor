@@ -1,5 +1,7 @@
 package se.osbe.emoreactor.helper;
 
+import se.osbe.emoreactor.brain.feelings.EmotionType;
+
 import java.util.Random;
 
 public class DiceHelper {
@@ -75,7 +77,11 @@ public class DiceHelper {
 		System.out.println("---");
 		for(int i = 0; i < 10; i++) {
 			System.out.println(dice.getRandomFibonacci(10));
+			System.out.println(dice.randomEmotionType());
 		}
 	}
 
+    public EmotionType randomEmotionType() {
+		return EmotionType.values()[getRandomFloatBetween(0f, Float.valueOf(EmotionType.values().length)).intValue()];
+    }
 }

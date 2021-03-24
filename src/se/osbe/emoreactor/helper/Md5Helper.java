@@ -3,7 +3,7 @@ package se.osbe.emoreactor.helper;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-public class MD5Helper {
+public class Md5Helper {
     /**
      * Method to digest a string using MD5 (Message Digest 5) algorithm.
      *

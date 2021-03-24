@@ -26,21 +26,21 @@ public class BrainHelper {
         return uuid.split("-")[0];
     }
 
-    public static String getFormattedWithPrefix(long millis) {
+    public static String getTimeAsString(long millis) {
         StringBuilder sb = new StringBuilder();
         if (millis <= 1000) {
             sb.append(millis).append("ms");
         } else if (millis < 60000) {
-            sb.append(millis / 1000).append("sec");
+            sb.append(millis / 1000).append("s");
         } else if (millis < 3600000) {
-            sb.append(millis / 60000).append("min");
+            sb.append(millis / 60000).append("m");
         } else if (millis < 8640000) {
             sb.append(millis / 3600000).append("h");
         } else if (millis < 604800000) {
-            sb.append(millis / 8640000).append("days");
+            sb.append(millis / 8640000).append("d");
         } else {
             long tmp = millis / 604800000;
-            sb.append(tmp).append(tmp > 1 ? "weeks" : "week");
+            sb.append("w");
         }
         return sb.toString();
     }
