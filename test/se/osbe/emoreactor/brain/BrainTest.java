@@ -20,8 +20,8 @@ public class BrainTest {
     @Before
     public void before() throws Exception {
         // Starting EmoReactor for John Doe, with default personalityBaseline
-        PersonalityCharacteristics personalityBaseline = new PersonalityCharacteristics(); // no arg constructor gives default where all personalityBaseline param pairs is in perfect balance (50%/50%)
-        PersonalityCharacteristics baseline = new PersonalityCharacteristics();
+        Personality personalityBaseline = new Personality(); // no arg constructor gives default where all personalityBaseline param pairs is in perfect balance (50%/50%)
+        Personality baseline = new Personality();
         brain = new Brain("Average Joe", baseline); // default, if set to null
         brain.setAwarenessPercentage(100);
         dice = brain.getDiceHelper();
@@ -47,7 +47,7 @@ public class BrainTest {
         Thread.sleep(1000);
         brain.offerInboundFeeling(feeling);
         int timeUnit = 0;
-        Map<EmotionType, Integer> emotionNow = null;
+        Map<EmotionType, Float> emotionNow = null;
         do {
             System.out.println("Feelings in progress: " + brain.getFeelings());
             emotionNow = brain.nextTurn();
@@ -80,50 +80,50 @@ public class BrainTest {
                 .release(5000)
                 .build();
 
-        Assert.assertEquals(Integer.valueOf(0), brain.calculateAmplitude(emo, -1));
-        Assert.assertEquals(Integer.valueOf(0), brain.calculateAmplitude(emo, 0));
+        Assert.assertEquals(Float.valueOf(0), Float.valueOf(brain.calculateAmplitude(emo, -1)));
+        Assert.assertEquals(Float.valueOf(0), Float.valueOf(brain.calculateAmplitude(emo, 0)));
 
         // Start of duration
-        Assert.assertEquals(Integer.valueOf(2), brain.calculateAmplitude(emo, 49));
-        Assert.assertEquals(Integer.valueOf(3), brain.calculateAmplitude(emo, 50));
+        Assert.assertEquals(Float.valueOf(2), Float.valueOf(brain.calculateAmplitude(emo, 49)));
+        Assert.assertEquals(Float.valueOf(3), Float.valueOf(brain.calculateAmplitude(emo, 50)));
 
         // Attack
-        Assert.assertEquals(Integer.valueOf(25), brain.calculateAmplitude(emo, 500));
-        Assert.assertEquals(Integer.valueOf(50), brain.calculateAmplitude(emo, 1000));
-        Assert.assertEquals(Integer.valueOf(100), brain.calculateAmplitude(emo, 2000));
+        Assert.assertEquals(Float.valueOf(25), Float.valueOf(brain.calculateAmplitude(emo, 500)));
+        Assert.assertEquals(Float.valueOf(50), Float.valueOf(brain.calculateAmplitude(emo, 1000)));
+        Assert.assertEquals(Float.valueOf(100), Float.valueOf(brain.calculateAmplitude(emo, 2000)));
 
         // Decay, 5000 ms
-        Assert.assertEquals(Integer.valueOf(99), brain.calculateAmplitude(emo, 3000));
+        Assert.assertEquals(Float.valueOf(75), Float.valueOf(brain.calculateAmplitude(emo, 3000)));
 
-        Assert.assertEquals(Integer.valueOf(90), brain.calculateAmplitude(emo, 6000));
-        Assert.assertEquals(Integer.valueOf(80), brain.calculateAmplitude(emo, 7000));
-        Assert.assertEquals(Integer.valueOf(70), brain.calculateAmplitude(emo, 8000));
-        Assert.assertEquals(Integer.valueOf(60), brain.calculateAmplitude(emo, 9000));
-        Assert.assertEquals(Integer.valueOf(51), brain.calculateAmplitude(emo, 9900));
-        Assert.assertEquals(Integer.valueOf(50), brain.calculateAmplitude(emo, 10000));
+        Assert.assertEquals(Float.valueOf(50), Float.valueOf(brain.calculateAmplitude(emo, 6000)));
+        Assert.assertEquals(Float.valueOf(50), Float.valueOf(brain.calculateAmplitude(emo, 7000)));
+        Assert.assertEquals(Float.valueOf(50), Float.valueOf(brain.calculateAmplitude(emo, 8000)));
+        Assert.assertEquals(Float.valueOf(50), Float.valueOf(brain.calculateAmplitude(emo, 9000)));
+        Assert.assertEquals(Float.valueOf(50), Float.valueOf(brain.calculateAmplitude(emo, 9900)));
+        Assert.assertEquals(Float.valueOf(50), Float.valueOf(brain.calculateAmplitude(emo, 10000)));
 
         // Sustain, 10000 ms
-        Assert.assertEquals(Integer.valueOf(50), brain.calculateAmplitude(emo, 10001));
+        Assert.assertEquals(Float.valueOf(75), Float.valueOf(brain.calculateAmplitude(emo, 10001)));
 
-        Assert.assertEquals(Integer.valueOf(50), brain.calculateAmplitude(emo, 11000));
-        Assert.assertEquals(Integer.valueOf(50), brain.calculateAmplitude(emo, 12000));
-        Assert.assertEquals(Integer.valueOf(50), brain.calculateAmplitude(emo, 13000));
-        Assert.assertEquals(Integer.valueOf(50), brain.calculateAmplitude(emo, 14000));
-        Assert.assertEquals(Integer.valueOf(50), brain.calculateAmplitude(emo, 15000));
-        Assert.assertEquals(Integer.valueOf(50), brain.calculateAmplitude(emo, 16000));
-        Assert.assertEquals(Integer.valueOf(50), brain.calculateAmplitude(emo, 17000));
-        Assert.assertEquals(Integer.valueOf(50), brain.calculateAmplitude(emo, 18000));
-        Assert.assertEquals(Integer.valueOf(50), brain.calculateAmplitude(emo, 19000));
-        Assert.assertEquals(Integer.valueOf(50), brain.calculateAmplitude(emo, 20000));
+        Assert.assertEquals(Float.valueOf(50), Float.valueOf(brain.calculateAmplitude(emo, 11000)));
+        Assert.assertEquals(Float.valueOf(50), Float.valueOf(brain.calculateAmplitude(emo, 12000)));
+        Assert.assertEquals(Float.valueOf(50), Float.valueOf(brain.calculateAmplitude(emo, 13000)));
+        Assert.assertEquals(Float.valueOf(50), Float.valueOf(brain.calculateAmplitude(emo, 14000)));
+        Assert.assertEquals(Float.valueOf(50), Float.valueOf(brain.calculateAmplitude(emo, 15000)));
+        Assert.assertEquals(Float.valueOf(50), Float.valueOf(brain.calculateAmplitude(emo, 16000)));
+        Assert.assertEquals(Float.valueOf(50), Float.valueOf(brain.calculateAmplitude(emo, 17000)));
+        Assert.assertEquals(Float.valueOf(50), Float.valueOf(brain.calculateAmplitude(emo, 18000)));
+        Assert.assertEquals(Float.valueOf(50), Float.valueOf(brain.calculateAmplitude(emo, 19000)));
+        Assert.assertEquals(Float.valueOf(50), Float.valueOf(brain.calculateAmplitude(emo, 20000)));
 
         // Release, 5000 ms
-        Assert.assertEquals(Integer.valueOf(49), brain.calculateAmplitude(emo, 20001));
-        Assert.assertEquals(Integer.valueOf(40), brain.calculateAmplitude(emo, 21000));
-        Assert.assertEquals(Integer.valueOf(30), brain.calculateAmplitude(emo, 22000));
-        Assert.assertEquals(Integer.valueOf(20), brain.calculateAmplitude(emo, 23000));
-        Assert.assertEquals(Integer.valueOf(10), brain.calculateAmplitude(emo, 24000));
-        Assert.assertEquals(Integer.valueOf(0), brain.calculateAmplitude(emo, 25000));
+        Assert.assertEquals(Float.valueOf(49), Float.valueOf(brain.calculateAmplitude(emo, 20001)));
+        Assert.assertEquals(Float.valueOf(40), Float.valueOf(brain.calculateAmplitude(emo, 21000)));
+        Assert.assertEquals(Float.valueOf(30), Float.valueOf(brain.calculateAmplitude(emo, 22000)));
+        Assert.assertEquals(Float.valueOf(20), Float.valueOf(brain.calculateAmplitude(emo, 23000)));
+        Assert.assertEquals(Float.valueOf(10), Float.valueOf(brain.calculateAmplitude(emo, 24000)));
+        Assert.assertEquals(Float.valueOf(0), Float.valueOf(brain.calculateAmplitude(emo, 25000)));
 
-        Assert.assertEquals(Integer.valueOf(-1), brain.calculateAmplitude(emo, 25001));
+        Assert.assertEquals(Float.valueOf(-1), Float.valueOf(brain.calculateAmplitude(emo, 25001)));
     }
 }

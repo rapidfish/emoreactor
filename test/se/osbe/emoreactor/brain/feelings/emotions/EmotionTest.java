@@ -32,12 +32,12 @@ public class EmotionTest {
                 new Emotion(EmotionType.STRONG, 60000, 10, 5, 1, 2, 3, 4),
                 new Emotion(EmotionType.RELIEF, 60000, 10, 5, 1, 2, 3, 4)
         ).forEach(emo -> {
-            Assert.assertEquals(10, emo.getAmplitudePeak());
-            Assert.assertEquals(5, emo.getAmplitudeSustain());
-            Assert.assertEquals(1, emo.getAttack());
-            Assert.assertEquals(2, emo.getDecay());
-            Assert.assertEquals(3, emo.getSustain());
-            Assert.assertEquals(4, emo.getRelease());
+            Assert.assertEquals(Float.valueOf(10), Float.valueOf(emo.getAmplitudePeak()));
+            Assert.assertEquals(Float.valueOf(5), Float.valueOf(emo.getAmplitudeSustain()));
+            Assert.assertEquals(Float.valueOf(1), Float.valueOf(emo.getAttack()));
+            Assert.assertEquals(Float.valueOf(2), Float.valueOf(emo.getDecay()));
+            Assert.assertEquals(Float.valueOf(3), Float.valueOf(emo.getSustain()));
+            Assert.assertEquals(Float.valueOf(4), Float.valueOf(emo.getRelease()));
         });
     }
 
@@ -65,12 +65,12 @@ public class EmotionTest {
                 Emotion.builder().emotionType(EmotionType.STRONG).amplitudePeak(10).amplitudeSustain(5).attack(1).decay(2).sustain(3).release(4).build(),
                 Emotion.builder().emotionType(EmotionType.RELIEF).amplitudePeak(10).amplitudeSustain(5).attack(1).decay(2).sustain(3).release(4).build()
         ).forEach(emo -> {
-            Assert.assertEquals(10, emo.getAmplitudePeak());
-            Assert.assertEquals(5, emo.getAmplitudeSustain());
-            Assert.assertEquals(1, emo.getAttack());
-            Assert.assertEquals(2, emo.getDecay());
-            Assert.assertEquals(3, emo.getSustain());
-            Assert.assertEquals(4, emo.getRelease());
+            Assert.assertEquals(Float.valueOf(10), Float.valueOf(emo.getAmplitudePeak()));
+            Assert.assertEquals(Float.valueOf(5), Float.valueOf(emo.getAmplitudeSustain()));
+            Assert.assertEquals(Float.valueOf(1), Float.valueOf(emo.getAttack()));
+            Assert.assertEquals(Float.valueOf(2), Float.valueOf(emo.getDecay()));
+            Assert.assertEquals(Float.valueOf(3), Float.valueOf(emo.getSustain()));
+            Assert.assertEquals(Float.valueOf(4), Float.valueOf(emo.getRelease()));
         });
     }
 }

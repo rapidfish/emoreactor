@@ -1,5 +1,8 @@
 package se.osbe.emoreactor.brain;
 
+import org.apache.commons.lang3.StringUtils;
+import se.osbe.emoreactor.brain.config.BasicBrainConfig;
+import se.osbe.emoreactor.brain.config.BrainConfig;
 import se.osbe.emoreactor.brain.feelings.Emotion;
 import se.osbe.emoreactor.brain.feelings.EmotionType;
 import se.osbe.emoreactor.brain.feelings.Feeling;
@@ -7,7 +10,8 @@ import se.osbe.emoreactor.helper.BrainHelper;
 import se.osbe.emoreactor.helper.DiceHelper;
 
 import java.util.*;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * Emotions vs Feelings
@@ -21,30 +25,49 @@ public class Brain {
     private static final Float PI = (float) Math.PI;
     private static final boolean IS_DEBUG = Boolean.FALSE;
 
-    private final DiceHelper dice;
-    private final PersonalityCharacteristics personalityBaseline;
+    private BrainConfig brainConfig;
+    private Personality personalityBaseline;
+    private DiceHelper dice;
+    private Map<EmotionType, Float> previousRegistry;
+    private Map<EmotionType, Float> currentRegistry;
     private List<Feeling> feelings;
-    private final Map<EmotionType, Integer> previousRegistry;
-    private final Map<EmotionType, Integer> currentRegistry;
+    // private Map<EmotionType, Integer> inclinationRegistry;
     private String id;
     private String brainName;
     private long turnCounter;
-    private Integer perceptionAwareness;
+    private float perceptionAwareness;
     private long now = 0;
 
-    private Brain() {
-        this(null, null);
+    public Brain() {
+        this(null, null, null);
     }
 
-    public Brain(String name, PersonalityCharacteristics baseline) {
-        Objects.requireNonNull(baseline);
+    public Brain(String name) {
+        this(name, null, null);
+    }
+
+    public Brain(BrainConfig config) {
+        this(null, null, config);
+    }
+    public Brain(String name, BrainConfig config) {
+        this(name, null, config);
+    }
+
+    public Brain(String name, Personality baseline) {
+        this(name, baseline, null);
+    }
+
+    public Brain(String name, Personality baseline, BrainConfig config) {
         id = BrainHelper.createUUID();
-        brainName = name;
-        turnCounter = 0;
-        perceptionAwareness = 0;
         dice = new DiceHelper();
-        personalityBaseline = baseline;
+        turnCounter = 0;
+
+        brainConfig = Objects.nonNull(config) ? config : new BasicBrainConfig();
+        perceptionAwareness = brainConfig.getDefaultAwareness();
+        brainName = StringUtils.isNotBlank(name) ? name : brainConfig.getDefaultBrainName();
+        personalityBaseline = Objects.nonNull(baseline) ? baseline : brainConfig.getDefaultPersonality();
         feelings = new LinkedList<>();
+        // inclinationRegistry = Arrays.stream(EmotionType.values()).collect(toMap(k -> EmotionType.AGONY, v -> Integer.valueOf(0)));
         final int registrySize = EmotionType.values().length;
         previousRegistry = new HashMap<>(registrySize);
         currentRegistry = new HashMap<>(registrySize);
@@ -52,14 +75,14 @@ public class Brain {
     }
 
     public static void main(String[] args) {
-        System.out.println(new Brain("John Doe", new PersonalityCharacteristics()));
+        System.out.println(new Brain("John Doe", new Personality()));
     }
 
     public void doReaction(Map<EmotionType, Integer> feelingRegistry) {
         // reaction
     }
 
-    public Map<EmotionType, Integer> getCurrentFeeling() {
+    public Map<EmotionType, Float> getCurrentFeeling() {
         return currentRegistry;
     }
 
@@ -68,27 +91,26 @@ public class Brain {
     public boolean offerInboundFeeling(Feeling feeling) {
         Objects.requireNonNull(feeling);
         Float randomPercentage = dice.getRandomPercentage();
-        Float intencity = perceptionAwareness != 0 ? (randomPercentage / perceptionAwareness) : 0;
-        if (intencity > 0 && randomPercentage <= perceptionAwareness) {
+        if (randomPercentage <= perceptionAwareness) {
             return feelings.add(feeling);
         }
         return false;
     }
 
-    public Map<EmotionType, Integer> nextTurn() {
+    public Map<EmotionType, Float> nextTurn() {
         previousRegistry.clear();
         previousRegistry.putAll(currentRegistry);
         // Cleanup old expired feelings
-        feelings = feelings.stream().filter(f -> !f.isExpired()).collect(Collectors.toList());
+        feelings = feelings.stream().filter(f -> !f.isExpired()).collect(toList());
         if (!feelings.isEmpty()) {
             currentRegistry.clear();
             now = System.currentTimeMillis();
             feelings.stream().forEach(feeling -> {
                 feeling.getEmotions().forEach(emo -> {
                     if (now - feeling.getInitialTimeStamp() <= emo.getDurationTime()) {
-                        int amp = calculateAmplitude(emo, (now - feeling.getInitialTimeStamp()));
+                        float amp = calculateAmplitude(emo, (now - feeling.getInitialTimeStamp()));
                         if (amp >= 0) {
-                            Integer v = currentRegistry.get(emo.getEmotionType());
+                            Float v = currentRegistry.get(emo.getEmotionType());
                             currentRegistry.put(emo.getEmotionType(), (Objects.nonNull(v) ? v : 0) + amp);
                         } else {
                             currentRegistry.remove(emo.getEmotionType());
@@ -104,7 +126,7 @@ public class Brain {
     }
 
     // https://www.geogebra.org/graphing?lang=en
-    Integer calculateAmplitude(Emotion emo, long elapsedTime) {
+    float calculateAmplitude(Emotion emo, long elapsedTime) {
 
         long attackTimeLimit = (long) (emo.getDurationTime() * (emo.getAttackPercent() / 100f));
 
@@ -114,7 +136,7 @@ public class Brain {
             if (IS_DEBUG) {
                 System.out.println(emo.getEmotionType().getMnmonic() + " [attack(" + emo.getAttackPercent() + "%)]: " + result);
             }
-            return Math.round(result);
+            return result;
         }
 
         long decayTimeLimit = (long) (emo.getDurationTime() * (emo.getDecayPercent() / 100f));
@@ -124,7 +146,7 @@ public class Brain {
             if (IS_DEBUG) {
                 System.out.println(emo.getEmotionType().getMnmonic() + " [decay(" + emo.getDecayPercent() + "%)]: " + result);
             }
-            return Math.round(result);
+            return result;
         }
 
         long sustainTimeLimit = (long) (emo.getDurationTime() * (emo.getSustainPercent() / 100f));
@@ -150,8 +172,17 @@ public class Brain {
         return 0;
     }
 
-    public Integer getPerceptionAwareness() {
-        return this.perceptionAwareness != null ? this.perceptionAwareness : Integer.valueOf(0);
+    public float getPerceptionAwareness() {
+        return this.perceptionAwareness;
+    }
+
+    /**
+     * Overloaded ( See setAwarenessPercentage(float awareness) )
+     *
+     * @param awareness perception awareness (a value between 0% and 100%)
+     */
+    public void setAwarenessPercentage(int awareness) {
+        setAwarenessPercentage(Float.valueOf(awareness));
     }
 
     /**
@@ -165,16 +196,18 @@ public class Brain {
      * NOTE: When setting a percentage value below 0%, or above 100%, it will only result in being set to 0%, and 100% respectively.
      *
      * @param awareness perception awareness (a value between 0% and 100%)
+     * @return old value for awareness, before setting it
      */
-    public void setAwarenessPercentage(Integer awareness) {
+    public float setAwarenessPercentage(float awareness) {
+        float oldValue = perceptionAwareness;
         if (awareness < 0) {
             perceptionAwareness = 0;
-            return;
         } else if (awareness > 100) {
             perceptionAwareness = 100;
-            return;
+        } else {
+            perceptionAwareness = awareness;
         }
-        perceptionAwareness = awareness;
+        return oldValue;
     }
 
     public long getTurnCounter() {
@@ -193,14 +226,9 @@ public class Brain {
         return dice;
     }
 
-    public PersonalityCharacteristics getPersonalityBaseline() {
+    public Personality getPersonalityBaseline() {
         return personalityBaseline;
     }
-
-
-//    private long elapsedTime(long initialTime) {
-//        return (now - initialTime);
-//    }
 
     private float calculateAttackAmplitude(float maxAmplitude, long attackDuration, long elapsedTime) {
         if (attackDuration <= 0) {
@@ -240,6 +268,7 @@ public class Brain {
 
     /**
      * Gets a unmodifiable list of all feelings residing in the brain this moment (now)!
+     *
      * @return Unmodifiable list of feelings in the brain
      */
     public List<Feeling> getFeelings() {

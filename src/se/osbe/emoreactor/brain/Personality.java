@@ -3,13 +3,22 @@ package se.osbe.emoreactor.brain;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Stream;
 
-public class PersonalityCharacteristics {
+/**
+ * Holds the personality characteristics of the "person".
+ * The total balance (100 %) is divided between each sets of pair...
+ * (introvert vs extrovert)
+ * (intuition vs sensing)
+ * (feeling vs thinking)
+ * (percieving vs judging)
+ */
+public class Personality {
 
     private final Map<PersonalityType, Float> properties;
 
 
-    public PersonalityCharacteristics() {
+    public Personality() {
         // Default personality having all values set to 50%
         this(50f, 50f, 50f, 50f, 50f, 50f, 50f, 50f); // Percentage in pair
     }
@@ -24,7 +33,12 @@ public class PersonalityCharacteristics {
      * @param feeling    Value for feeling, sets its counter part Thinking implicitly (100 minus the value entered for introvert) making the total sum of both values 100%, always!
      * @param percieving Value for percieving, sets its counter part Judging implicitly (100 minus the value entered for introvert) making the total sum of both values 100%, always!
      */
-    public PersonalityCharacteristics(float introvert, float extrovert, float intuition, float sensing, float feeling, float thinking, float percieving, float judging) {
+    Personality(float introvert, float extrovert, float intuition, float sensing, float feeling, float thinking, float percieving, float judging) {
+        if (Stream.of(introvert, extrovert, intuition, sensing, feeling, thinking, percieving, judging)
+                .filter(v -> v.compareTo(0f) < 0)
+                .count() > 0) {
+            throw new RuntimeException("Only positive values possible in constructor");
+        }
         properties = new HashMap<>(8);
         setIntrovertVsExtravert(introvert, extrovert);
         setIntuitionVsSensing(intuition, sensing);
@@ -44,9 +58,9 @@ public class PersonalityCharacteristics {
         }
     }
 
-    private static boolean isValueWithinValidRange(float param) {
+    private static boolean isPositive(Float param) {
         Objects.requireNonNull(param);
-        return (param >= 0 && param <= 100f);
+        return param >= 0;
     }
 
     public float getCharacteristics(PersonalityType type) {
@@ -101,36 +115,36 @@ public class PersonalityCharacteristics {
         return sb.toString();
     }
 
-    private PersonalityCharacteristics setIntrovertVsExtravert(float introvert, float extrovert) {
-        float i = isValueWithinValidRange(introvert) ? introvert : 50f;
-        float e = isValueWithinValidRange(extrovert) ? extrovert : 50f;
+    private Personality setIntrovertVsExtravert(float introvert, float extrovert) {
+        float i = isPositive(introvert) ? introvert : 0f;
+        float e = isPositive(extrovert) ? extrovert : 0f;
         float tot = calcTotal(introvert, extrovert);
         this.setPercentage(PersonalityType.INTROVERT, calcPercentage(i, tot));
         this.setPercentage(PersonalityType.EXTROVERT, calcPercentage(e, tot));
         return this;
     }
 
-    private PersonalityCharacteristics setIntuitionVsSensing(float intuition, float sensing) {
-        float i = isValueWithinValidRange(intuition) ? intuition : 50f;
-        float s = isValueWithinValidRange(sensing) ? sensing : 50f;
+    private Personality setIntuitionVsSensing(float intuition, float sensing) {
+        float i = isPositive(intuition) ? intuition : 0f;
+        float s = isPositive(sensing) ? sensing : 0f;
         float tot = calcTotal(intuition, sensing);
         this.setPercentage(PersonalityType.INTUITION, calcPercentage(i, tot));
         this.setPercentage(PersonalityType.SENSING, calcPercentage(s, tot));
         return this;
     }
 
-    private PersonalityCharacteristics setFeelingVsThinking(float feeling, float thinking) {
-        float f = isValueWithinValidRange(feeling) ? feeling : 50f;
-        float t = isValueWithinValidRange(thinking) ? thinking : 50f;
+    private Personality setFeelingVsThinking(float feeling, float thinking) {
+        float f = isPositive(feeling) ? feeling : 0f;
+        float t = isPositive(thinking) ? thinking : 0f;
         float tot = calcTotal(feeling, thinking);
         this.setPercentage(PersonalityType.FEELING, calcPercentage(f, tot));
         this.setPercentage(PersonalityType.THINKING, calcPercentage(t, tot));
         return this;
     }
 
-    private PersonalityCharacteristics setPerceivingVsJudging(float percieving, float judging) {
-        float p = isValueWithinValidRange(percieving) ? percieving : 50f;
-        float j = isValueWithinValidRange(judging) ? judging : 50f;
+    private Personality setPerceivingVsJudging(float percieving, float judging) {
+        float p = isPositive(percieving) ? percieving : 0f;
+        float j = isPositive(judging) ? judging : 0f;
         float tot = calcTotal(percieving, judging);
         this.setPercentage(PersonalityType.PERCIEVING, calcPercentage(p, tot));
         this.setPercentage(PersonalityType.JUDGING, calcPercentage(j, tot));

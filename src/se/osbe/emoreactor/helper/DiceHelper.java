@@ -20,7 +20,7 @@ public class DiceHelper {
 	}
 
 	public boolean isLucky(Float chance, Float dice) {
-		Float result = getRandomFloatBetween(1f, dice);
+		Float result = getRandomFloatBetween(0f, dice);
 		return (result.compareTo(chance) <= 0);
 	}
 
@@ -37,14 +37,14 @@ public class DiceHelper {
 		return getRandomFloatBetween(0f, 100f);
 	}
 
-	public Float getRandomFloatBetween(Float min, Float max) {
-		if (min.compareTo(max) == 0) {
+	public Float getRandomFloatBetween(float min, float max) {
+		if (min == max) {
 			return min;
 		}
-		Float lowest = getLowestFloat(min, max);
-		Float diff = getHighestFloat(min, max) - lowest;
-		Float num = diff * DiceHelper._rnd.nextFloat(); // (offset + 1);
-		return (lowest + num);
+		float lowest = getLowestFloat(min, max);
+		float diff = getHighestFloat(min, max) - lowest;
+		float num = diff * DiceHelper._rnd.nextFloat(); // (offset + 1);
+		return Float.valueOf(lowest + num);
 	}
 
 	private Float getLowestFloat(Float t1, Float t2) {

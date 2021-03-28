@@ -1,7 +1,8 @@
 package se.osbe.emoreactor.brain.demo;
 
 import se.osbe.emoreactor.brain.Brain;
-import se.osbe.emoreactor.brain.PersonalityCharacteristics;
+import se.osbe.emoreactor.brain.Personality;
+import se.osbe.emoreactor.brain.config.CustomBrainConfig;
 import se.osbe.emoreactor.brain.feelings.Emotion;
 import se.osbe.emoreactor.brain.feelings.EmotionType;
 import se.osbe.emoreactor.brain.feelings.Feeling;
@@ -11,28 +12,28 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class Demo {
+public class EmoReactorDemo {
 
     private static final String DELIMITER = ", ";
     private static final DiceHelper dice = new DiceHelper();
 
     public static void main(String[] args) throws Exception {
-        // Zeh Braine, ja!
-        final Brain brain = new Brain("John Doe", new PersonalityCharacteristics());
-        Map<EmotionType, Integer> feelingNow;
-        brain.setAwarenessPercentage(100); // This is 0% by default, so we need to set it.
+        // Zeh Braine, jah!
+        final Brain brain = new Brain(CustomBrainConfig.builder()
+                .defaultAwareness(50)
+                .defaultPersonality(new Personality())
+                .defaultBrainName("Brian Brane")
+                .build());
+        //brain.setAwarenessPercentage(100); // This is 0% by default, so we need to set it.
 
-        System.out.println("Starting EmoReactor with John Doe, having personality baseline:");
+        System.out.println("Starting EmoReactor with " + brain.getName() + ", having personality baseline:");
         System.out.println(brain.getPersonalityBaseline().toString() + "\n");
-        System.out.println(String.format("Awareness: %s", brain.getPerceptionAwareness()) + "%\n");
+        System.out.println(String.format("Awareness: %s", Math.round(brain.getPerceptionAwareness())) + "%\n");
 
         // Builder to create input stimuli for the reactor and the brain
         // A dice helper to produce random numbers as we don not (yet) have 'real world' stimuli input
         while (true) {
-//          int awareness = dice.getRandomFloatBetween(5f, 15f).intValue();
-//          int intensity = dice.getRandomFloatBetween(5f, 20f).intValue(); // 1 - 10
-//          int duration = dice.getRandomFloatBetween(5f, 60f).intValue(); // 2s - 5min
-            System.out.println(String.format("Time unit |%d|, Awareness: %d", brain.getTurnCounter(), brain.getPerceptionAwareness()) + "%");
+            System.out.println(String.format("Brain sample |%d|, Awareness: %d", brain.getTurnCounter(), Math.round(brain.getPerceptionAwareness())) + "%");
             // feelingBuilder.addFeelings("agony=" + intensity + "," + duration + "s;").build(null) : null;
             Feeling feeling = generateRandomFeeling();
             if (brain.offerInboundFeeling(feeling)) {
@@ -40,14 +41,23 @@ public class Demo {
             } else {
                 System.out.println("No new feeling detected...");
             }
-            feelingNow = brain.nextTurn();
-            Thread.sleep(100); // 1000 = 1s
-            System.out.println("Emotions -> " +
+            Map<EmotionType, Float> feelingNow = brain.nextTurn();
+
+            String emotionsStr = "Emotions -> " +
                     feelingNow.entrySet().stream()
                             .filter(emo -> emo.getValue() >= 0f)
                             .map(e -> e.toString())
-                            .collect(Collectors.joining(DELIMITER)));
-            System.out.println();
+                            .collect(Collectors.joining(DELIMITER));
+            System.out.println(emotionsStr);
+
+            String inclinationStr = "Inclinations -> " + brain.getInclinations()
+                    .entrySet()
+                    .stream()
+                    .map(e -> {
+                        return "[" + e.getKey().getMnmonic() + ": " + ((e.getValue().compareTo(0f) > 0) ? "+" : "") + e.getValue() + "]";
+                    }).collect(Collectors.joining(DELIMITER));
+            System.out.println(inclinationStr);
+
             if (feelingNow.entrySet().stream().filter(e -> e.getValue() >= 100).count() > 0) {
                 System.out.println(brain.getName() + " has passed out from emotional trauma!");
                 System.out.println("He was overwelmed by the emotion(s): " + feelingNow.entrySet().stream().filter(e -> e.getValue() >= 90).collect(Collectors.toList()));
@@ -55,8 +65,9 @@ public class Demo {
             }
             if (feelingNow.entrySet().stream().filter(e -> e.getValue() > 0).count() == 0) {
                 System.out.println(brain.getName() + " is emotionally dead inside - he/she has no feelings left what so ever!!!");
-                break;
             }
+            System.out.println();
+            Thread.sleep(1000); // 1000 = 1s
         }
     }
 
@@ -90,9 +101,9 @@ public class Demo {
 
     private static Feeling generateRandomFeeling() {
         EmotionType emotionType = dice.randomEmotionType();
-        Integer amplitudePeak = dice.getRandomFibonacci(7);
-        Integer amplitudeSustain = dice.getRandomFibonacci(5);
-        long duration = dice.getRandomFloatBetween(5000f, 60000f).longValue();
+        Integer amplitudePeak = dice.getRandomFibonacci(10);
+        Integer amplitudeSustain = dice.getRandomFibonacci(10);
+        Integer duration = Math.round(dice.getRandomFloatBetween(5000, 60000));
         Feeling feeling = Feeling.builder()
                 .addEmotions(Arrays.asList(
                         Emotion.builder()

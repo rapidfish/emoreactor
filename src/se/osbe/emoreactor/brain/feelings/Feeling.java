@@ -22,11 +22,11 @@ public class Feeling implements Cloneable {
         this.emotions = Objects.nonNull(emotions) ? emotions : new LinkedList<>();
     }
 
-    public Feeling(String name, List<Emotion> emotions) {
-        this.uuid = UUID.randomUUID().toString().split("-")[0];
-        this.initialTimeStamp = new Date().getTime();
-        this.emotions = Objects.nonNull(emotions) ? emotions : new LinkedList<>();
-    }
+//    public Feeling(String name, List<Emotion> emotions) {
+//        this.uuid = UUID.randomUUID().toString().split("-")[0];
+//        this.initialTimeStamp = new Date().getTime();
+//        this.emotions = Objects.nonNull(emotions) ? emotions : new LinkedList<>();
+//    }
 
     public static FeelingBuilder builder() {
         return new FeelingBuilder();

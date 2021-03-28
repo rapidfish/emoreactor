@@ -13,15 +13,15 @@ import java.util.Objects;
  */
 @Getter
 public class Emotion {
-
+    private static final boolean IS_USE_ROUND = Boolean.FALSE;
     private EmotionType emotionType = EmotionType.AGONY;
 
     // ADSR - Attack time, Decay time, Sustain level, Release time
     // See: https://en.wikipedia.org/wiki/Envelope_(music)
     private long durationTime = 60000; // highest amplitude
 
-    private int amplitudePeak = 100; // highest amplitude
-    private int amplitudeSustain = 50; // sustain amplitude
+    private float amplitudePeak = 100; // highest amplitude
+    private float amplitudeSustain = 50; // sustain amplitude
 
     private int attack = 20; // % default
     private int decay = 20; // % default
@@ -32,11 +32,11 @@ public class Emotion {
 
     private boolean isExpired = false;
 
-    public Emotion(EmotionType emotionType, long durationTime, int amplitudePeak, int amplitudeSustain, int attack, int decay, int sustain, int release) {
+    public Emotion(EmotionType emotionType, long durationTime, float amplitudePeak, float amplitudeSustain, int attack, int decay, int sustain, int release) {
         this(emotionType, durationTime, amplitudePeak, amplitudeSustain, attack, decay, sustain, release, -1);
     }
 
-    public Emotion(EmotionType emotionType, long durationTime, int amplitudePeak, int amplitudeSustain, int attack, int decay, int sustain, int release, int sumADSR) {
+    public Emotion(EmotionType emotionType, long durationTime, float amplitudePeak, float amplitudeSustain, int attack, int decay, int sustain, int release, int sumADSR) {
         this.emotionType = emotionType;
         this.durationTime = durationTime;
         this.amplitudePeak = amplitudePeak;
@@ -89,7 +89,28 @@ public class Emotion {
     }
 
     public String toString() {
-        return "Emotion(type=" + this.getEmotionType() + ", amplitudePeak=" + this.getAmplitudePeak() + ", amplitudeSustain=" + this.getAmplitudeSustain() + ", duration=" + this.durationTime + ", attack=" + this.getAttackPercent() + "%, decay=" + this.getDecayPercent() + "%, sustain=" + this.getSustainPercent() + "%, release=" + this.getReleasePercent() + "%)";
+        return new StringBuilder(200)
+                .append("Emotion(type=")
+                .append(this.getEmotionType())
+                .append(", amplitudePeak=")
+                .append(round(this.getAmplitudePeak()))
+                .append(", amplitudeSustain=")
+                .append(round(this.getAmplitudeSustain()))
+                .append(", duration=")
+                .append(round(this.durationTime))
+                .append(", attack=")
+                .append(round(this.getAttackPercent()))
+                .append("%, decay=")
+                .append(round(this.getDecayPercent()))
+                .append("%, sustain=")
+                .append(round(this.getSustainPercent()))
+                .append("%, release=")
+                .append(round(this.getReleasePercent()))
+                .append("%)").toString();
+    }
+
+    private String round(float f) {
+        return String.valueOf(IS_USE_ROUND ? Math.round(f) : f);
     }
 
     public boolean isExpired() {
