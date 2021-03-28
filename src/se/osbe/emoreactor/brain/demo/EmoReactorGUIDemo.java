@@ -10,14 +10,18 @@ import se.osbe.emoreactor.helper.DiceHelper;
 import javax.swing.*;
 import java.awt.*;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class EmoReactorGUIDemo extends JFrame {
 
     private static final String DELIMITER = ", ";
     private static final DiceHelper dice = new DiceHelper();
+
     private static final Font MAIN_FONT = new Font("Sans serif", Font.PLAIN, 14);
+    private static final Font MINI_FONT = new Font("Sans serif", Font.PLAIN, 10);
     private JTextField feelingInputTextField = new JTextField("HAP(30000,20,5,10,20,50,20)");
     private JTextField awarenessLabel = new JTextField();
     private JLabel timeSampleLabel = new JLabel();
@@ -63,7 +67,7 @@ public class EmoReactorGUIDemo extends JFrame {
         );
         innerWindow.add(feelingInputTextField);
 
-        awarenessLabel.setBackground(Color.GREEN);
+        awarenessLabel.setBackground(Color.WHITE);
         awarenessLabel.addActionListener((e) -> {
             brain.setAwarenessPercentage(Integer.valueOf(awarenessLabel.getText()));
         });
@@ -79,7 +83,6 @@ public class EmoReactorGUIDemo extends JFrame {
         textArea1.setBackground(Color.WHITE);
         textArea1.setFont(MAIN_FONT);
         textArea1.setLineWrap(true);
-        textArea1.setText("brain...");
         textArea1scrollPane = new JScrollPane(textArea1);
 
         textArea2.setBackground(Color.LIGHT_GRAY);
@@ -102,7 +105,7 @@ public class EmoReactorGUIDemo extends JFrame {
         textArea2scrollPane.setPreferredSize(new Dimension(250, 200));
 
         textArea3.setBackground(Color.LIGHT_GRAY);
-        textArea3.setFont(MAIN_FONT);
+        textArea3.setFont(MINI_FONT);
         textArea3.setLineWrap(true);
         textArea3.setEditable(false);
         textArea3scrollPane = new JScrollPane(textArea3);
@@ -139,30 +142,56 @@ public class EmoReactorGUIDemo extends JFrame {
             // window.getBrain().offerInboundFeeling(feeling);
 
             Map<EmotionType, Float> feelingNow = window.getBrain().nextTurn();
+            Map<EmotionType, Float> inclinations = window.getBrain().getInclinations();
 
             // window.setAwarenessLabel("Awareness: " + Math.round(window.getBrain().getPerceptionAwareness()) + " %");
 
-            String emotionsStr = "\nEmotions     -> " +
-                    feelingNow.entrySet().stream()
-                            .filter(emo -> emo.getValue() >= 0f)
-                            .map(e -> "[" + e.toString() + "]")
-                            .collect(Collectors.joining(" "));
-            window.appendTextArea1(emotionsStr);
-
-            String inclinationStr = "\nInclinations -> " + window.getBrain().getInclinations()
-                    .entrySet()
-                    .stream()
-                    .map(e -> {
-                        return "[" + e.getKey().getMnmonic() + " " + ((e.getValue().compareTo(0f) > 0) ? "+" : "") + e.getValue() + "]";
-                    }).collect(Collectors.joining(" "));
-            window.appendTextArea1(inclinationStr);
+            window.appendTextArea1(
+                    "Emotion Now\n\n" +
+                            feelingNow.entrySet().stream()
+                                    .filter(emo -> emo.getValue() >= 0f)
+                                    .map(e -> {
+                                        Float incl = inclinations.get(e.getKey());
+                                        return e.getKey() + " [ " + Math.round(e.getValue()) + " ]    "
+                                                + ((incl != null && incl.compareTo(0f) > 0) ? "+" : "") + incl;
+                                    })
+                                    .sorted()
+                                    .collect(Collectors.joining("\n"))
+            );
 
             window.setTextArea3(
-                    new StringBuilder()
-                            .append(window.brain.getFeelings().stream()
-                                    .map(f -> f.toString() + "\n\n")
-                                    .collect(Collectors.joining()))
-                            .toString()
+                    // .filter(f -> !f.isExpired())
+                    window.brain.getFeelings().stream().map(f -> {
+                        long timeLeft = (f.getDuration() - (new Date().getTime() - f.getInitialTimeStamp()));
+                        return new StringBuilder()
+                                .append("Feeling-ID  : ").append(f.getUID()).append("\n")
+                                .append("Created-TS  : ").append(f.getInitialTimeStamp()).append("\n")
+                                .append("Duration: ").append(BrainHelper.getTimeAsString(timeLeft >= 0L ? timeLeft : 0))
+                                .append(" / ").append(BrainHelper.getTimeAsString(f.getDuration())).append("\n")
+                                .append(
+                                        f.getEmotions().stream()
+                                                .map(e -> {
+                                                    return new StringBuilder()
+                                                            .append("  " + e.getEmotionType().getEmotionName()).append(" [")
+                                                            .append(BrainHelper.getTimeAsString(e.getDurationTime())).append(", ")
+                                                            .append(Math.round(e.getAmplitudePeak())).append(", ")
+                                                            .append(Math.round(e.getAmplitudeSustain())).append(", ")
+                                                            .append(Math.round(e.getAttackPercent())).append(", ")
+                                                            .append(Math.round(e.getDecayPercent())).append(", ")
+                                                            .append(Math.round(e.getSustainPercent())).append(", ")
+                                                            .append(Math.round(e.getReleasePercent())).append("]")
+                                                            .append("\n")
+                                                            .toString();
+                                                }).collect(Collectors.joining())
+                                )
+                                .append("\n")
+                                .toString();
+                    }).collect(Collectors.joining())
+//                    new StringBuilder()
+//                            .append(window.brain.getFeelings().stream()
+//                                    .map(f -> f.toString() + "\n\n")
+//                                    .collect(Collectors.joining()))
+//                            .toString()
             );
 
             if (feelingNow.entrySet().stream().filter(e -> e.getValue() >= 100).count() > 0) {
@@ -170,9 +199,9 @@ public class EmoReactorGUIDemo extends JFrame {
                 window.appendTextArea1("He was overwelmed by the emotion(s): " + feelingNow.entrySet().stream().filter(e -> e.getValue() >= 90).collect(Collectors.toList()));
                 break;
             }
-            if (feelingNow.entrySet().stream().filter(e -> e.getValue() > 0).count() == 0) {
-                window.appendTextArea1("\n" + window.getBrain().getName() + " is feeling nothing at the moment!");
-            }
+//            if (feelingNow.entrySet().stream().filter(e -> e.getValue() > 0).count() == 0) {
+//                window.appendTextArea1("\n" + window.getBrain().getName() + " is feeling nothing at the moment!");
+//            }
             window.appendTextArea1("\n");
             //window.updateGui();
             Thread.sleep(1000);
@@ -180,24 +209,26 @@ public class EmoReactorGUIDemo extends JFrame {
         }
     }
 
-
     // brain demo stuff
     private static Feeling generateRandomFeeling() {
-        EmotionType emotionType = dice.randomEmotionType();
-        Integer amplitudePeak = dice.getRandomFibonacci(10);
-        Integer amplitudeSustain = dice.getRandomFibonacci(10);
-        Integer duration = Math.round(dice.getRandomFloatBetween(5000, 60000));
-        Feeling feeling = Feeling.builder()
-                .addEmotions(Arrays.asList(
-                        Emotion.builder()
-                                .emotionType(emotionType)
-                                .amplitudePeak(amplitudePeak).amplitudeSustain(amplitudeSustain)
-                                .durationTime(duration)
-                                .attack(10).decay(30).sustain(50).release(10)
-                                .build()
-                        )
-                ).build();
-        return feeling;
+        int noOfEmo = dice.getRandomFloatBetween(1f, 10f).intValue();
+        Feeling.FeelingBuilder feeling = Feeling.builder();
+        IntStream.range(0, noOfEmo).forEach(i -> {
+            EmotionType emotionType = dice.randomEmotionType();
+            Integer amplitudePeak = dice.getRandomFibonacci(10);
+            Integer amplitudeSustain = dice.getRandomFibonacci(10);
+            Integer duration = Math.round(dice.getRandomFloatBetween(5000, 60000));
+            feeling.addEmotions(Arrays.asList(
+                    Emotion.builder()
+                            .emotionType(emotionType)
+                            .amplitudePeak(amplitudePeak).amplitudeSustain(amplitudeSustain)
+                            .durationTime(duration)
+                            .attack(10).decay(30).sustain(50).release(10)
+                            .build()
+                    )
+            );
+        });
+        return feeling.build();
     }
 
     public void wipeTextArea1() {
