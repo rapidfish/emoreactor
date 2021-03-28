@@ -107,10 +107,14 @@ public class Personality {
         for (int i = 0; i < typeLen; i++) {
             PersonalityType type = PersonalityType.values()[i];
             percentage = properties.get(type);
-            sb.append(type.name().toLowerCase())
-                    .append(" (%): ")
+            sb.append("    ")
+                    .append(type.name().toLowerCase())
+                    .append(": ")
                     .append(percentage)
-                    .append((i < (typeLen - 1)) ? "\n" : "");
+                    .append((i < (typeLen - 1)) ? " %\n" : "%");
+            if((i+1) % 2 == 0){
+                sb.append("\n");
+            }
         }
         return sb.toString();
     }
