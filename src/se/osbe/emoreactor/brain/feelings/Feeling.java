@@ -32,6 +32,10 @@ public class Feeling implements Cloneable {
         return new FeelingBuilder();
     }
 
+    public String getUID() {
+        return uuid;
+    }
+
     public long getInitialTimeStamp() {
         return initialTimeStamp;
     }
@@ -40,8 +44,8 @@ public class Feeling implements Cloneable {
         return emotions;
     }
 
-    public String getUID() {
-        return uuid;
+    public Long getDuration() {
+        return emotions.stream().map(e -> e.getDurationTime()).max(Comparator.naturalOrder()).orElse(0L);
     }
 
     public String toString() {
