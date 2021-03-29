@@ -3,6 +3,7 @@ package se.osbe.emoreactor.brain.feelings;
 import lombok.Getter;
 
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Difference between feelings and emotions
@@ -23,9 +24,9 @@ public class Emotion {
     private float amplitudePeak = 100; // highest amplitude
     private float amplitudeSustain = 50; // sustain amplitude
 
-    private int attack = 20; // % default
+    private int attack = 10; // % default
     private int decay = 20; // % default
-    private int sustain = 40; // % default
+    private int sustain = 50; // % default
     private int release = 20; // % default
 
     private int sumADSR = (-1);
@@ -69,10 +70,33 @@ public class Emotion {
     }
 
     private int totalADSR() {
-        if (sumADSR == -1) {
+        if (sumADSR < 0) {
             sumADSR = Math.abs(attack) + Math.abs(decay) + Math.abs(sustain) + Math.abs(release);
         }
         return sumADSR;
+    }
+
+    public Optional<Phase> getPhase(long elapsedTime) {
+        if(sumADSR <= 0) {
+            return Optional.empty();
+        }
+        float attackTime = ((1f * attack / sumADSR) * elapsedTime);
+        if(elapsedTime <= attackTime) {
+            return Optional.of(Phase.ATTACK);
+        }
+        float decayTime = ((1f * decay / sumADSR) * elapsedTime);
+        if(elapsedTime <= attackTime) {
+            return Optional.of(Phase.ATTACK);
+        }
+        float sustainTime = ((1f * sustain / sumADSR) * elapsedTime);
+        if(elapsedTime <= attackTime) {
+            return Optional.of(Phase.ATTACK);
+        }
+        float releaseTime = ((1f * release / sumADSR) * elapsedTime);
+        if(elapsedTime <= attackTime) {
+            return Optional.of(Phase.ATTACK);
+        }
+        return Optional.empty();
     }
 
     @Override

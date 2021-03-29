@@ -56,6 +56,10 @@ public class Feeling implements Cloneable {
         return emotions.size() == 0 || emotions.size() == emotions.stream().filter(e -> e.isExpired()).count();
     }
 
+    public long getElapsedTime() {
+        return new Date().getTime() - initialTimeStamp;
+    }
+
     public static class FeelingBuilder {
         private List<Emotion> emotions;
 

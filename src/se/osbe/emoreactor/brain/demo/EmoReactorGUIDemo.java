@@ -1,5 +1,6 @@
 package se.osbe.emoreactor.brain.demo;
 
+import org.apache.commons.lang3.StringUtils;
 import se.osbe.emoreactor.brain.Brain;
 import se.osbe.emoreactor.brain.feelings.Emotion;
 import se.osbe.emoreactor.brain.feelings.EmotionType;
@@ -20,6 +21,16 @@ public class EmoReactorGUIDemo extends JFrame {
     private static final String DELIMITER = ", ";
     private static final DiceHelper dice = new DiceHelper();
 
+    // https://www.canva.com/colors/color-palettes/speckled-eggs/
+    private static final Color COLOR_NAVY_BLUE = new Color(0x003B73);
+    private static final Color COLOR_ROYAL_BLUE = new Color(0x0074B7);
+    private static final Color COLOR_BLUE_GROTTO = new Color(0x60A3D9);
+    private static final Color COLOR_BABY_BLUE = new Color(0xBFD7ED);
+
+    // https://www.canva.com/colors/color-palettes/summer-splash/
+    private static final Color COLOR_BLUE_GREEN = new Color(0x75E6DA);
+    // ---------
+
     private static final Font MAIN_FONT = new Font("Sans serif", Font.PLAIN, 14);
     private static final Font MINI_FONT = new Font("Sans serif", Font.PLAIN, 10);
     private JTextField feelingInputTextField = new JTextField("HAP(30000,20,5,10,20,50,20)");
@@ -39,10 +50,10 @@ public class EmoReactorGUIDemo extends JFrame {
         super("Emo Reactor");
 
         brain.setAwarenessPercentage(100);
-
-        innerWindow.setLayout(new GridLayout(1, 4, 2, 2));
+        ImageIcon heroShotImage = new ImageIcon("heroShot.jpg");
+        innerWindow.setLayout(new GridLayout(1, 4, 0, 0));
         //feelingInputTextField.setPreferredSize(new Dimension(500, 30));
-        feelingInputTextField.setBackground(Color.PINK);
+        feelingInputTextField.setBackground(Color.ORANGE);
         feelingInputTextField.setEditable(true);
         feelingInputTextField.addActionListener((e) -> {
                     String[] cmd = feelingInputTextField.getText().split("\\(");
@@ -78,17 +89,15 @@ public class EmoReactorGUIDemo extends JFrame {
         timeSampleLabel.setBackground(Color.GREEN);
         timeSampleLabel.setFont(MAIN_FONT);
         innerWindow.add(timeSampleLabel);
+        innerWindow.setBackground(COLOR_BLUE_GREEN);
 
-        innerWindow.setBackground(Color.WHITE);
-
-
-        textArea1.setBackground(Color.WHITE);
+        textArea1.setBackground(COLOR_BABY_BLUE);
         textArea1.setFont(MINI_FONT);
         textArea1.setLineWrap(true);
         textArea1scrollPane = new JScrollPane(textArea1);
         textArea1scrollPane.setPreferredSize(new Dimension(500, 200));
 
-        textArea2.setBackground(Color.GRAY);
+        textArea2.setBackground(COLOR_ROYAL_BLUE);
         textArea2.setFont(MINI_FONT);
         textArea2.setLineWrap(true);
         textArea2.setText(
@@ -106,7 +115,7 @@ public class EmoReactorGUIDemo extends JFrame {
         textArea2scrollPane.setWheelScrollingEnabled(true);
         textArea2scrollPane.setPreferredSize(new Dimension(300, 200));
 
-        textArea3.setBackground(Color.LIGHT_GRAY);
+        textArea3.setBackground(COLOR_BLUE_GROTTO);
         textArea3.setFont(MINI_FONT);
         textArea3.setLineWrap(true);
         textArea3.setEditable(false);
@@ -123,11 +132,13 @@ public class EmoReactorGUIDemo extends JFrame {
 
         // scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         this.getContentPane().setLayout(new BorderLayout(1, 1));
-        this.getContentPane().add("North", innerWindow);
-        this.getContentPane().add("West", textArea2scrollPane);
-        this.getContentPane().add("East", textArea1scrollPane);
+        this.getContentPane().add("North",  innerWindow);
+        this.getContentPane().add("West",   textArea2scrollPane);
+        this.getContentPane().add("East",   textArea1scrollPane);
         this.getContentPane().add("Center", textArea3scrollPane);
-        this.getContentPane().add("South", offerFeelingJButton);
+        this.getContentPane().add("South",  offerFeelingJButton);
+
+        offerFeelingJButton.setFocusPainted(true);
     }
 
     public static void main(String[] args) throws InterruptedException {
@@ -160,11 +171,15 @@ public class EmoReactorGUIDemo extends JFrame {
                     // .filter(f -> !f.isExpired())
                     window.brain.getFeelings().stream().map(f -> {
                         long timeLeft = (f.getDuration() - (new Date().getTime() - f.getInitialTimeStamp()));
+                        long elapsedTime = f.getElapsedTime();
                         return new StringBuilder()
                                 .append("Feeling-ID  : ").append(f.getUID()).append("\n")
                                 .append("Created-TS  : ").append(f.getInitialTimeStamp()).append("\n")
+
                                 .append("Duration: ").append(BrainHelper.getTimeAsString(timeLeft >= 0L ? timeLeft : 0))
                                 .append(" / ").append(BrainHelper.getTimeAsString(f.getDuration())).append("\n")
+
+
                                 .append(
                                         f.getEmotions().stream()
                                                 .map(e -> {
