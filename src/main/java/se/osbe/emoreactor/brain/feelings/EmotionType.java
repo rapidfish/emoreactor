@@ -1,26 +1,27 @@
 package se.osbe.emoreactor.brain.feelings;
 
 public enum EmotionType {
-    AGONY("Agony", "AGY"),
-    ANGER("Anger", "AGR"),
-    DEPRESSED("Depressed", "DEP"),
-    CONFUSED("Confused", "CON"),
-    HELPLESS("Helpless", "HLP"),
-    INDIFFERENT("Indifferent", "IDF"),
     AFRAID("Afraid", "AFR"),
-    HURT("Hurt", "HRT"),
-    SADNESS("Sadness", "SAD"),
-    JUDGEMENTAL("Judgemental", "JUD"),
-    OPEN("Open", "OPE"),
-    LOVING("Loving", "LOV"),
-    HAPPY("Happy", "HAP"),
-    INTERESTED("Interested", "INT"),
+    AGONY("Agony", "AGY"),
     ALIVE("Alive", "ALV"),
-    POSITIVE("Positive", "POS"),
+    ANGER("Anger", "AGR"),
+    CONFUSED("Confused", "CON"),
+    DEPRESSED("Depressed", "DEP"),
+    HAPPY("Happy", "HAP"),
+    HELPLESS("Helpless", "HLP"),
+    HURT("Hurt", "HRT"),
+    INDIFFERENT("Indifferent", "IDF"),
+    INTERESTED("Interested", "INT"),
+    JUDGEMENTAL("Judgemental", "JUD"),
+    LOVING("Loving", "LOV"),
+    OPEN("Open", "OPE"),
     PEACEFUL("Peaceful", "PFL"),
-    STRONG("Strong", "STR"),
+    POSITIVE("Positive", "POS"),
     RELAXED("Relaxed", "RLX"),
-    RELIEF("Relieved", "RLF");
+    RELIEF("Relieved", "RLF"),
+    SADNESS("Sadness", "SAD"),
+    STRONG("Strong", "STR");
+
 
     private String emotionName;
     private String mnmonic;
