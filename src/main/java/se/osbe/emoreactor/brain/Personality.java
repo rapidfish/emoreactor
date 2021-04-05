@@ -33,7 +33,7 @@ public class Personality {
      * @param feeling    Value for feeling, sets its counter part Thinking implicitly (100 minus the value entered for introvert) making the total sum of both values 100%, always!
      * @param percieving Value for percieving, sets its counter part Judging implicitly (100 minus the value entered for introvert) making the total sum of both values 100%, always!
      */
-    Personality(float introvert, float extrovert, float intuition, float sensing, float feeling, float thinking, float percieving, float judging) {
+    public Personality(float introvert, float extrovert, float intuition, float sensing, float feeling, float thinking, float percieving, float judging) {
         if (Stream.of(introvert, extrovert, intuition, sensing, feeling, thinking, percieving, judging)
                 .filter(v -> v.compareTo(0f) < 0)
                 .count() > 0) {
