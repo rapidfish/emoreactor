@@ -81,7 +81,7 @@ public class EmoReactorGUIDemo extends JFrame {
         });
         awarenessTextfield.setText("Awareness: " + Math.round(brain.getPerceptionAwareness()) + " %  --  " + brain.getName());
 
-        upperRowPanel.setLayout(new GridLayout(2, 2, 0, 0));
+        upperRowPanel.setLayout(new GridLayout(1, 4, 0, 0));
         upperRowPanel.setBackground(UPPER_ROW_BACKGROUND_COLOR);
         upperRowPanel.add(logo);
         upperRowPanel.add(timeSampleLabel);
@@ -182,7 +182,7 @@ public class EmoReactorGUIDemo extends JFrame {
 
     public static void main(String[] args) throws InterruptedException {
         EmoReactorGUIDemo window = new EmoReactorGUIDemo();
-        window.setPreferredSize(new Dimension(850, 500));
+        window.setPreferredSize(new Dimension(850, 480));
         window.setLocation(300, 150);
         // window.setAlwaysOnTop(true);
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

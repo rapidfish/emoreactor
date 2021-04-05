@@ -15,6 +15,8 @@ import java.util.stream.Collectors;
 
 @Data
 public class EmoTilesPanel extends JPanel {
+    private static final Color COLOR_BABY_BLUE = new Color(0xBFD7ED);
+    private static final Color COLOR_BLUE_GREEN = new Color(0x75E6DA);
 
     private Map<EmotionType, EmoTilePanel> emoTiles = new HashMap<>(20);
 
@@ -37,7 +39,15 @@ public class EmoTilesPanel extends JPanel {
     public void upDateEmoTiles(Map<EmotionType, Float> emotionRegistry, Map<EmotionType, Float> inclinationRegistry) {
         Arrays.stream(EmotionType.values()).forEach(et -> {
             var emoTilePanel = emoTiles.get(et);
-            emoTilePanel.setEmoAmplitudeText(String.valueOf(Math.round(Optional.ofNullable(emotionRegistry.get(et)).orElseGet(() -> 0f))));
+            var emoAmp = Math.round(Optional.ofNullable(emotionRegistry.get(et)).orElseGet(() -> 0f));
+            if (emoAmp >= 70) {
+                emoTilePanel.setBackground(Color.PINK);
+            } else if(emoAmp > 0) {
+                emoTilePanel.setBackground(COLOR_BLUE_GREEN);
+            } else {
+                emoTilePanel.setBackground(COLOR_BABY_BLUE);
+            }
+            emoTilePanel.setEmoAmplitudeText(String.valueOf(emoAmp));
             emoTilePanel.setEmoInclinationText(String.valueOf(Math.round(Optional.ofNullable(inclinationRegistry.get(et)).orElseGet(() -> 0f))));
         });
     }
